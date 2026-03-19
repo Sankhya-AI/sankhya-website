@@ -1,0 +1,89 @@
+import type { Metadata } from "next";
+
+import { PageHero } from "@/components/page-hero";
+import { SectionHeading } from "@/components/section-heading";
+import { aboutPrinciples, companyStory } from "@/content/site";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "Sankhya AI Labs is an India-first AI research lab building small, focused models. Learn about our philosophy, principles, and why we exist.",
+};
+
+export default function AboutPage() {
+  return (
+    <div className="space-y-20 pb-10 md:space-y-24 md:pb-14">
+      <PageHero
+        eyebrow="About Sankhya AI Labs"
+        title="An AI lab that builds small models and proves them in production"
+        description="We are not building AI to be big. We are building AI to be good at specific tasks — memory, speech, and learning — and we prove every model through SensAI, our live product. We are both a research lab and a product company."
+        primaryCta={{ label: "Explore our models", href: "/models" }}
+        secondaryCta={{ label: "See SensAI", href: "https://www.sensai.co.in", external: true }}
+      />
+
+      <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="surface-card p-7 md:p-10">
+          <SectionHeading
+            eyebrow="The name"
+            title="Sankhya: structure, clarity, and disciplined thinking"
+            description="In the Samkhya tradition, understanding comes from careful enumeration and analysis — not from noise or scale. That's how we think about AI. Not larger models. Not more features. Better focus. Clearer purpose. Smaller, sharper tools."
+          />
+        </div>
+        <div className="surface-card p-7 md:p-10">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
+            Why India
+          </p>
+          <h3 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--ink)]">
+            India&apos;s constraints make us build better models
+          </h3>
+          <p className="mt-4 text-base leading-8 text-[var(--muted)]">
+            Multiple languages. Mixed devices. Weak connectivity. Dense
+            classrooms. These are not problems to solve later — they are the
+            design constraints that force our models to be smaller, faster, and
+            more resilient. If our models work in India, they work anywhere.
+          </p>
+        </div>
+      </section>
+
+      <section className="space-y-8">
+        <SectionHeading
+          eyebrow="Who we are"
+          title="A lab that builds models and a company that ships products"
+          description="We don't just publish papers. We build models, integrate them into a live product (SensAI), and prove them with real learners and institutions. Every model we build is tested in production."
+        />
+        <div className="grid gap-5 md:grid-cols-3">
+          {companyStory.map((item) => (
+            <article key={item.title} className="surface-card p-6">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+                {item.label}
+              </p>
+              <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--ink)]">
+                {item.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+                {item.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="surface-card overflow-hidden">
+        <div className="grid gap-px bg-[var(--border)] md:grid-cols-2">
+          {aboutPrinciples.map((principle) => (
+            <article key={principle.title} className="bg-white p-7 md:p-8">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+                {principle.label}
+              </p>
+              <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--ink)]">
+                {principle.title}
+              </h3>
+              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+                {principle.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
