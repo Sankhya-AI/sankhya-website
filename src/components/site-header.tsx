@@ -13,6 +13,7 @@ export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
   const pathname = usePathname();
+  const mobileCompact = collapsed && !mobileMenuOpen;
 
   useEffect(() => {
     const onScroll = () => {
@@ -51,15 +52,30 @@ export function SiteHeader() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 pt-3 sm:px-6 lg:hidden">
-        <div className="pointer-events-auto rounded-[1.6rem] border border-[var(--border)] bg-[color:rgba(255,255,255,0.86)] px-4 py-3 shadow-[0_20px_45px_rgba(15,20,31,0.08)] backdrop-blur-xl">
+        <div
+          className={`pointer-events-auto transition-all duration-300 ease-out ${
+            mobileCompact ? "mx-auto max-w-[11.5rem]" : "w-full"
+          }`}
+        >
+          <div
+            className={`border border-[var(--border)] bg-[color:rgba(255,255,255,0.82)] shadow-[0_20px_45px_rgba(15,20,31,0.08)] backdrop-blur-xl transition-all duration-300 ease-out ${
+              mobileCompact
+                ? "rounded-full px-3 py-2 shadow-[0_16px_32px_rgba(15,20,31,0.1)]"
+                : "rounded-[1.6rem] px-4 py-3"
+            }`}
+          >
           <div className="flex items-center justify-between gap-4">
-            <Brand compact />
+            <div className="transition-all duration-300 ease-out">
+              <Brand compact iconOnly={mobileCompact} />
+            </div>
             <button
               type="button"
               aria-expanded={mobileMenuOpen}
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-white text-[var(--ink)] shadow-[0_8px_20px_rgba(15,20,31,0.05)] transition hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              className={`inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-white text-[var(--ink)] shadow-[0_8px_20px_rgba(15,20,31,0.05)] transition hover:border-[var(--accent)] hover:text-[var(--accent)] ${
+                mobileCompact ? "h-10 w-10" : "h-11 w-11"
+              }`}
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -70,7 +86,7 @@ export function SiteHeader() {
             }`}
           >
             <div className="space-y-3 border-t border-[var(--border)] pt-4">
-              <SiteNav vertical onNavigate={() => setMobileMenuOpen(false)} />
+              <SiteNav vertical plain onNavigate={() => setMobileMenuOpen(false)} />
               <div className="grid gap-3">
                 <Link
                   href="/contact"
@@ -91,6 +107,7 @@ export function SiteHeader() {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
