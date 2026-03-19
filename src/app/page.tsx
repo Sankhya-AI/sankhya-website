@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <div className="space-y-20 pb-10 md:space-y-28 md:pb-14">
       {/* ─── HERO: SANA MINIMALISM ─── */}
-      <section className="hero-minimal relative isolate flex min-h-[85vh] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-[var(--border)] px-4 py-14 text-center sm:px-6 sm:py-16 md:rounded-[2.75rem] md:px-10 md:py-20">
+      <section className="hero-minimal relative isolate mt-2 flex min-h-[85vh] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-[var(--border)] px-4 py-14 text-center sm:mt-3 sm:px-6 sm:py-16 md:rounded-[2.75rem] md:px-10 md:py-20 lg:mt-0">
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center">
           {homeHero.eyebrow ? (
             <p className="hero-animate text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--accent)] sm:text-[0.78rem] sm:tracking-[0.34em]">
