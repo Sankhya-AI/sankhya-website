@@ -11,8 +11,9 @@ export function SiteFooter() {
           <div className="max-w-xl space-y-4">
             <Brand compact />
             <p className="text-sm leading-7 text-[var(--muted)]">
-              Sankhya AI Labs builds product, memory, and speech systems for how
-              India learns. SensAI is the flagship product surface of that work.
+              Sankhya AI Labs builds the memory, speech, and learning systems
+              behind SensAI, our adaptive AI teacher for Indian institutions
+              and learners.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -28,7 +29,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="flex flex-col gap-3 border-t border-[var(--border)] pt-6 text-sm text-[var(--muted)] md:flex-row md:items-center md:justify-between">
-          <p>Built in India. Designed for institutions, coaching workflows, and learners.</p>
+          <p>Built in India for schools, coaching institutes, and serious learners.</p>
           <div className="flex flex-wrap gap-4">
             <a
               href="https://www.sensai.co.in"

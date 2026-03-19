@@ -19,6 +19,11 @@ export default function Home() {
       {/* ─── HERO: SANA MINIMALISM ─── */}
       <section className="hero-minimal relative isolate flex min-h-[85vh] flex-col items-center justify-center overflow-hidden rounded-[2.75rem] border border-[var(--border)] px-6 py-20 text-center md:px-10">
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center">
+          {homeHero.eyebrow ? (
+            <p className="hero-animate text-[0.78rem] font-semibold uppercase tracking-[0.34em] text-[var(--accent)]">
+              {homeHero.eyebrow}
+            </p>
+          ) : null}
           <h1 className="hero-animate hero-animate-delay-1 text-[clamp(2.75rem,7vw,5.5rem)] font-semibold leading-[1.02] tracking-tight text-[var(--ink)]">
             {homeHero.title}
           </h1>
@@ -40,7 +45,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Agent Terminal Visual */}
+        {/* Teaching Stack Visual */}
         <div className="hero-animate hero-animate-delay-4 relative z-10 mt-16 w-full max-w-3xl md:mt-24">
           
           {/* Ambient Glows behind the glass terminal */}
@@ -56,22 +61,26 @@ export default function Home() {
               <div className="h-2.5 w-2.5 rounded-full bg-[var(--border-strong)]" />
               <div className="h-2.5 w-2.5 rounded-full bg-[var(--border-strong)]" />
               <div className="ml-2 text-[0.65rem] font-semibold uppercase tracking-widest text-[var(--muted)]">
-                Agent deployment log
+                Teaching stack status
               </div>
             </div>
             <div className="p-5 md:p-6 lg:p-8">
               <div className="terminal-line opacity-50">
                 <span className="shrink-0 w-12 text-[var(--muted)]">00.00</span>
-                <span>[system] Initializing Sankhya runtime environment...</span>
+                <span>[system] Loading SensAI classroom stack...</span>
               </div>
               <div className="terminal-line mt-2 opacity-75">
                 <span className="shrink-0 w-12 text-[var(--muted)]">00.12</span>
-                <span>[dhee-v2] Pedagogy core loaded. Memory context attached.</span>
+                <span>[dhee] Learner memory attached. Prior progress restored.</span>
+              </div>
+              <div className="terminal-line mt-2 opacity-90">
+                <span className="shrink-0 w-12 text-[var(--muted)]">00.26</span>
+                <span>[akshar/shlok] Speech input and teaching voice ready.</span>
               </div>
               <div className="terminal-line mt-2">
                 <span className="shrink-0 w-12 text-[var(--muted)]">00.45</span>
                 <span>
-                  <span className="text-emerald-600 font-semibold">success</span> Agent deployed to production cluster. Listening...<span className="terminal-cursor" />
+                  <span className="text-emerald-600 font-semibold">success</span> Session live. Lesson flow, notes, and guidance online...<span className="terminal-cursor" />
                 </span>
               </div>
             </div>
@@ -99,9 +108,9 @@ export default function Home() {
       {/* ─── PHILOSOPHY: WHY SMALL MODELS ─── */}
       <section className="space-y-8">
         <SectionHeading
-          eyebrow="Our approach"
-          title="We believe the future of AI is small, focused, and independent"
-          description="The industry is racing toward ever-larger models. We're going the other direction — building compact models that are exceptionally good at specific tasks, and designed to run without heavy infrastructure."
+          eyebrow="Why this stack"
+          title="An AI teacher needs memory, speech, and structure"
+          description="Useful education AI is not just a chatbot. It has to remember the learner, understand spoken input, explain clearly, and work inside the real constraints of Indian classrooms and coaching workflows."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {labPhilosophy.map((item) => (
@@ -123,9 +132,9 @@ export default function Home() {
       {/* ─── MODELS: THE CORE OFFERING ─── */}
       <section className="space-y-8">
         <SectionHeading
-          eyebrow="What we build"
-          title="Four models. Four specific jobs. One integrated stack."
-          description="Each model in the Sankhya stack is built for a defined task — memory, speech recognition, voice generation, and edge deployment. Together, they power a teaching system that adapts, remembers, and speaks."
+          eyebrow="What we are building"
+          title="One product surface, four core systems behind it"
+          description="SensAI is the visible product. Underneath it, we are building Dhee for learner memory, Akshar for speech recognition, Shlok for instructional voice, and a compact runtime for lower-cost deployment."
         />
         <div className="grid gap-4">
           {stackLayers.map((layer) => (
@@ -189,8 +198,8 @@ export default function Home() {
         <div className="space-y-8">
           <SectionHeading
             eyebrow="Why this matters"
-            title="Most AI isn't built for the environments that need it most"
-            description="Large models, cloud dependency, and English-first design create blind spots. The classrooms, coaching centers, and learners who need adaptive teaching the most are exactly the ones current AI serves the worst."
+            title="Generic AI tools do not solve Indian education well"
+            description="Most AI products are built for broad conversation, stable connectivity, and English-first workflows. Teaching in India needs tighter memory, clearer speech handling, and systems that work in real institutional conditions."
           />
           <div className="grid gap-5 md:grid-cols-3">
             {problemCards.map((card) => (
@@ -208,13 +217,14 @@ export default function Home() {
             Our response
           </p>
           <h3 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--ink)]">
-            Build small. Own the stack. Deploy anywhere.
+            Build the stack education actually needs.
           </h3>
           <p className="mt-4 max-w-xl text-base leading-8 text-[var(--muted)]">
-            Sankhya&apos;s answer is a stack of compact, task-specific models that
-            we build and control. Models designed for Indian languages, Indian
-            accents, and Indian infrastructure realities. Models that can
-            eventually run independently — on-device, edge, or minimal cloud.
+            Sankhya&apos;s answer is to own the layers that shape teaching quality:
+            learner memory, speech input, instructional voice, and efficient
+            deployment. That is how we move beyond generic chat and toward a
+            product that can actually support Indian classrooms and coaching
+            systems.
           </p>
           <div className="mt-8 grid gap-4">
             {homeStats.map((item) => (
@@ -237,9 +247,9 @@ export default function Home() {
       {/* ─── SENSAI: PROOF OF WORK ─── */}
       <section className="space-y-8">
         <SectionHeading
-          eyebrow="Proof of work"
-          title="Our models power a real product. SensAI is live."
-          description="SensAI is a personalized teaching platform for schools, colleges, and coaching institutes. It's not a demo — it's a working product that proves our models work in production with real learners."
+          eyebrow="Proof in product"
+          title="SensAI is where the stack meets the classroom"
+          description="SensAI is our adaptive AI teacher product for schools, coaching institutes, and learners. It is where we test teaching workflows, memory continuity, and product behavior with real users instead of stopping at model demos."
         />
         <div className="grid gap-6 lg:grid-cols-3">
           {productShowcases.map((showcase) => (
@@ -338,19 +348,19 @@ export default function Home() {
             Built in India. Built for India.
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-tight text-[var(--ink)] md:text-5xl">
-            Let&apos;s build something useful together
+            Deploy SensAI or build with the stack
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[var(--muted)]">
-            Whether you&apos;re exploring our models for your own stack,
-            deploying SensAI in your institution, or interested in collaborating
-            on small-model research — we&apos;d love to connect.
+            If you&apos;re a school, college, coaching institute, or a partner
+            interested in memory, speech, and learning infrastructure for
+            education, we&apos;d love to talk.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link href="/contact" className="btn-primary">
               Talk to us
             </Link>
-            <Link href="/models" className="btn-secondary">
-              Explore our models
+            <Link href="/products" className="btn-secondary">
+              Explore SensAI
             </Link>
             <Link
               href="https://github.com/Sankhya-AI/Dhee"

@@ -5,7 +5,7 @@ export const siteMeta = {
   shortName: "Sankhya",
   title: "Sankhya AI Labs",
   description:
-    "An India-first AI research lab building small, focused models that run independently and do the required task well. We build Dhee, Akshar, Shlok, and the compact model stack that powers SensAI.",
+    "Sankhya AI Labs builds memory, speech, and learning systems for Indian education. SensAI is our adaptive AI teacher for schools, coaching institutes, and learners.",
   url: "https://www.sankhyaailabs.com",
   locale: "en_IN",
   keywords: [
@@ -47,22 +47,22 @@ export const navItems: SiteNavItem[] = [
 ];
 
 export const homeHero: HeroContent = {
-  eyebrow: "", // Removed for minimalism
-  title: "The infrastructure for autonomous agents.",
+  eyebrow: "AI Teaching Stack for India",
+  title: "We build the AI teaching stack for India.",
   description:
-    "Sankhya AI Labs provides the foundational layer to develop, deploy, and observe production-ready agents at scale.",
-  primaryCta: { label: "Explore Platform", href: "/models" },
+    "Sankhya builds memory, speech, and learning systems for Indian education. SensAI turns that stack into an adaptive AI teacher for schools, coaching institutes, and serious learners.",
+  primaryCta: { label: "See SensAI", href: "/products" },
   secondaryCta: {
-    label: "Talk to Engineering",
-    href: "/contact",
+    label: "Explore the stack",
+    href: "/models",
     external: false,
   },
 };
 
 export const homeStats = [
-  { value: "4 models", label: "Dhee · Akshar · Shlok · Compact Runtime — each built for a specific job" },
-  { value: "Open source", label: "Dhee is open source on GitHub. We believe in building in the open." },
-  { value: "India-first", label: "Designed for Indian languages, accents, low-connectivity, and real classrooms" },
+  { value: "1 live product", label: "SensAI is our adaptive AI teacher for schools, coaching institutes, and learners." },
+  { value: "3 core systems", label: "Dhee memory, Akshar speech recognition, and Shlok voice generation shape the stack behind it." },
+  { value: "India-first", label: "Designed for multilingual classrooms, mixed devices, weak connectivity, and real teaching workflows." },
 ];
 
 export const labPhilosophy = [
