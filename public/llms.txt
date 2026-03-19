@@ -1,6 +1,6 @@
 # Sankhya AI Labs
 
-Sankhya AI Labs is an India-first AI lab building systems for how India learns.
+Sankhya AI Labs is an India-first AI lab for teaching and learning.
 Its flagship product is SensAI, an AI teaching and learning platform for schools,
 colleges, coaching institutes, and direct learners.
 

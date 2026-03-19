@@ -18,15 +18,8 @@ export function Brand({ compact = false, iconOnly = false }: BrandProps) {
         priority
       />
       {!iconOnly ? (
-        <div className="leading-tight">
-          <div className="text-lg font-semibold tracking-tight text-[var(--ink)] md:text-xl">
-            Sankhya AI Labs
-          </div>
-          {!compact ? (
-            <div className="text-xs uppercase tracking-[0.24em] text-[var(--muted)]">
-              Building systems for how India learns
-            </div>
-          ) : null}
+        <div className="text-lg font-semibold leading-tight tracking-tight text-[var(--ink)] md:text-xl">
+          Sankhya AI Labs
         </div>
       ) : null}
     </Link>
