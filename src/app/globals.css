@@ -36,6 +36,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-manrope), system-ui, sans-serif;
+  overflow-x: hidden;
 }
 
 a {
@@ -165,10 +166,18 @@ a {
 
 .terminal-line {
   display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.75rem;
   line-height: 1.6;
   color: var(--muted);
+}
+
+.terminal-line > :last-child {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
 }
 
 .terminal-cursor {
@@ -195,4 +204,16 @@ a {
 
 ::selection {
   background: rgba(255, 107, 53, 0.22);
+}
+
+@media (max-width: 640px) {
+  .hero-minimal {
+    min-height: auto;
+  }
+
+  .terminal-line {
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    line-height: 1.55;
+  }
 }

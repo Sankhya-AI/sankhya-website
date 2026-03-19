@@ -17,11 +17,11 @@ export function ProductFrame({ showcase }: { showcase: ProductShowcase }) {
           />
         </div>
       </div>
-      <div className="space-y-4 p-6">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--accent)]">
+      <div className="space-y-4 p-5 sm:p-6">
+        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-[var(--accent)] sm:text-[0.72rem] sm:tracking-[0.28em]">
           {showcase.eyebrow}
         </p>
-        <h3 className="text-2xl font-semibold tracking-tight text-[var(--ink)]">
+        <h3 className="text-xl font-semibold tracking-tight text-[var(--ink)] sm:text-2xl">
           {showcase.title}
         </h3>
         <p className="text-sm leading-7 text-[var(--muted)]">

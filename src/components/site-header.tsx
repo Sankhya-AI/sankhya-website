@@ -35,16 +35,16 @@ export function SiteHeader() {
   return (
     <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
       <div
-        className={`mx-auto max-w-7xl px-6 transition-all duration-300 ease-out md:px-10 lg:px-12 ${
+        className={`mx-auto max-w-7xl px-4 transition-all duration-300 ease-out sm:px-6 md:px-10 lg:px-12 ${
           collapsed ? "pointer-events-none invisible max-h-0 -translate-y-4 overflow-hidden opacity-0" : "max-h-[200px] translate-y-0 opacity-100"
         }`}
       >
         <div className="pointer-events-auto backdrop-blur-xl transition-all duration-300">
-          <div className="flex flex-col gap-5 py-4 xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex flex-col gap-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:gap-5 lg:py-4">
             <Brand />
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-center">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
               <SiteNav />
-              <div className="flex flex-wrap gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap">
                 <Link
                   href="/contact"
                   className="btn-primary min-h-11 px-5 py-2.5 text-sm"
@@ -66,7 +66,7 @@ export function SiteHeader() {
       </div>
 
       <div
-        className={`mx-auto flex max-w-7xl justify-center px-6 pt-2 transition-all duration-300 ease-out md:px-10 md:pt-2 lg:px-12 ${
+        className={`mx-auto hidden max-w-7xl justify-center px-4 pt-2 transition-all duration-300 ease-out sm:px-6 md:px-10 md:pt-2 lg:flex lg:px-12 ${
           collapsed
             ? "translate-y-0 opacity-100"
             : "pointer-events-none invisible -translate-y-5 opacity-0"

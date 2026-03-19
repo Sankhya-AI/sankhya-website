@@ -121,7 +121,7 @@ export default function RootLayout({
           <div className="page-pattern" />
           <div className="relative z-10 flex min-h-screen flex-col">
             <SiteHeader />
-            <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pt-28 pb-8 md:px-10 md:pt-32 md:pb-12 lg:px-12">
+            <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 pt-48 pb-8 sm:px-6 sm:pt-44 md:px-10 md:pt-48 md:pb-12 lg:px-12 lg:pt-32">
               {children}
             </main>
             <SiteFooter />

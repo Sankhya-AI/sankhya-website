@@ -17,20 +17,20 @@ export default function Home() {
   return (
     <div className="space-y-20 pb-10 md:space-y-28 md:pb-14">
       {/* ─── HERO: SANA MINIMALISM ─── */}
-      <section className="hero-minimal relative isolate flex min-h-[85vh] flex-col items-center justify-center overflow-hidden rounded-[2.75rem] border border-[var(--border)] px-6 py-20 text-center md:px-10">
+      <section className="hero-minimal relative isolate flex min-h-[85vh] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-[var(--border)] px-4 py-14 text-center sm:px-6 sm:py-16 md:rounded-[2.75rem] md:px-10 md:py-20">
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center">
           {homeHero.eyebrow ? (
-            <p className="hero-animate text-[0.78rem] font-semibold uppercase tracking-[0.34em] text-[var(--accent)]">
+            <p className="hero-animate text-[0.68rem] font-semibold uppercase tracking-[0.26em] text-[var(--accent)] sm:text-[0.78rem] sm:tracking-[0.34em]">
               {homeHero.eyebrow}
             </p>
           ) : null}
-          <h1 className="hero-animate hero-animate-delay-1 text-[clamp(2.75rem,7vw,5.5rem)] font-semibold leading-[1.02] tracking-tight text-[var(--ink)]">
+          <h1 className="hero-animate hero-animate-delay-1 text-[clamp(2.35rem,10vw,5.5rem)] font-semibold leading-[1.02] tracking-tight text-[var(--ink)]">
             {homeHero.title}
           </h1>
-          <p className="hero-animate hero-animate-delay-2 mt-6 max-w-2xl text-lg leading-8 text-[var(--ink-soft)] md:text-xl md:leading-9">
+          <p className="hero-animate hero-animate-delay-2 mt-5 max-w-2xl text-base leading-7 text-[var(--ink-soft)] sm:mt-6 sm:text-lg sm:leading-8 md:text-xl md:leading-9">
             {homeHero.description}
           </p>
-          <div className="hero-animate hero-animate-delay-3 mt-10 flex flex-wrap items-center justify-center gap-4">
+          <div className="hero-animate hero-animate-delay-3 mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-10 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
             <Link href={homeHero.primaryCta.href} className="btn-primary min-h-12 px-6 text-base">
               {homeHero.primaryCta.label}
             </Link>
@@ -46,7 +46,7 @@ export default function Home() {
         </div>
 
         {/* Teaching Stack Visual */}
-        <div className="hero-animate hero-animate-delay-4 relative z-10 mt-16 w-full max-w-3xl md:mt-24">
+        <div className="hero-animate hero-animate-delay-4 relative z-10 mt-12 w-full max-w-3xl md:mt-24">
           
           {/* Ambient Glows behind the glass terminal */}
           <div className="absolute inset-0 z-0">
@@ -56,15 +56,15 @@ export default function Home() {
           </div>
 
           <div className="agent-terminal relative z-10 overflow-hidden rounded-2xl border border-white/60 text-left">
-            <div className="flex items-center gap-2 border-b border-white/30 bg-white/20 px-4 py-3 backdrop-blur-md">
+            <div className="flex items-center gap-2 border-b border-white/30 bg-white/20 px-3 py-3 backdrop-blur-md sm:px-4">
               <div className="h-2.5 w-2.5 rounded-full bg-[var(--border-strong)]" />
               <div className="h-2.5 w-2.5 rounded-full bg-[var(--border-strong)]" />
               <div className="h-2.5 w-2.5 rounded-full bg-[var(--border-strong)]" />
-              <div className="ml-2 text-[0.65rem] font-semibold uppercase tracking-widest text-[var(--muted)]">
+              <div className="ml-1 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-[var(--muted)] sm:ml-2 sm:text-[0.65rem] sm:tracking-widest">
                 Teaching stack status
               </div>
             </div>
-            <div className="p-5 md:p-6 lg:p-8">
+            <div className="p-4 sm:p-5 md:p-6 lg:p-8">
               <div className="terminal-line opacity-50">
                 <span className="shrink-0 w-12 text-[var(--muted)]">00.00</span>
                 <span>[system] Loading SensAI classroom stack...</span>
@@ -148,7 +148,7 @@ export default function Home() {
             >
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="max-w-3xl space-y-1">
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3">
                     <h3 className="text-xl font-semibold text-[var(--ink)]">
                       {layer.label}
                     </h3>
