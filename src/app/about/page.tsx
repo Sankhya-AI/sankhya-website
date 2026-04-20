@@ -6,7 +6,8 @@ import { aboutPrinciples, companyStory } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Sankhya AI Labs is an India-first AI research lab building small, focused models. Learn about our philosophy, principles, and why we exist.",
+  description:
+    "Sankhya AI Labs is building Dhee as its main product and the cognitive infrastructure around self-evolving agents.",
 };
 
 export default function AboutPage() {
@@ -14,32 +15,32 @@ export default function AboutPage() {
     <div className="space-y-20 pb-10 md:space-y-24 md:pb-14">
       <PageHero
         eyebrow="About Sankhya AI Labs"
-        title="An AI lab that builds small models and proves them in production"
-        description="We are not building AI to be big. We are building AI to be good at specific tasks — memory, speech, and learning — and we prove every model through SensAI, our live product. We are both a research lab and a product company."
-        primaryCta={{ label: "Explore our models", href: "/models" }}
-        secondaryCta={{ label: "See SensAI", href: "https://www.sensai.co.in", external: true }}
+        title="We think AGI needs a memory OS, not just a bigger model."
+        description="Sankhya AI Labs exists to build the cognitive layer around models. Our main product is Dhee, and our core belief is that memory, context routing, and shared continuity matter more than one perfect session. SensAI remains the secondary edtech product."
+        primaryCta={{ label: "Explore Dhee", href: "/products/dhee" }}
+        secondaryCta={{ label: "See the systems", href: "/models" }}
       />
 
       <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="surface-card p-7 md:p-10">
           <SectionHeading
             eyebrow="The name"
-            title="Sankhya: structure, clarity, and disciplined thinking"
-            description="In the Samkhya tradition, understanding comes from careful enumeration and analysis — not from noise or scale. That's how we think about AI. Not larger models. Not more features. Better focus. Clearer purpose. Smaller, sharper tools."
+            title="Sankhya stands for structure, clarity, and disciplined thinking."
+            description="In the Samkhya tradition, understanding comes from careful distinction and layered reasoning. That maps naturally to how we think about agents: better cognition comes from the right structure around the model, not from scale alone."
           />
         </div>
         <div className="surface-card p-7 md:p-10">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
-            Why India
+            Core belief
           </p>
           <h3 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--ink)]">
-            India&apos;s constraints make us build better models
+            Memory is the first system.
           </h3>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            Multiple languages. Mixed devices. Weak connectivity. Dense
-            classrooms. These are not problems to solve later — they are the
-            design constraints that force our models to be smaller, faster, and
-            more resilient. If our models work in India, they work anywhere.
+            If agents cannot own memory across time, they cannot become dependable on real work. Context routing, retrieval policy, and multi-agent continuity all build on that first layer.
+          </p>
+          <p className="mt-4 text-base leading-8 text-[var(--muted)]">
+            That is why Dhee is not a side feature for us. It is the main product expression of how we think AGI will actually emerge.
           </p>
         </div>
       </section>
@@ -47,8 +48,8 @@ export default function AboutPage() {
       <section className="space-y-8">
         <SectionHeading
           eyebrow="Who we are"
-          title="A lab that builds models and a company that ships products"
-          description="We don't just publish papers. We build models, integrate them into a live product (SensAI), and prove them with real learners and institutions. Every model we build is tested in production."
+          title="A product lab shaping agent cognition through shipped systems."
+          description="We care less about abstractions and more about seeing how memory, routing, and collaboration behave in real coding workflows where developers are still wasting context on repetitive setup."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {companyStory.map((item) => (

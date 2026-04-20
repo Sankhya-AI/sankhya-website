@@ -1,14 +1,35 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { PageHero } from "@/components/page-hero";
 import { SectionHeading } from "@/components/section-heading";
-import { productCapabilities, productShowcases, productUseCases } from "@/content/site";
+import { productDirectory } from "@/content/site";
+
+const portfolioNotes = [
+  {
+    label: "Product",
+    title: "Dhee is the main product.",
+    description:
+      "Sankhya is centered on Dhee as the portable memory OS for coding agents and AGI cognition. This is the product we are actively shaping around real developer workflows.",
+  },
+  {
+    label: "Underneath",
+    title: "The deeper work is in the substrate.",
+    description:
+      "Memory ownership, context routing, retrieval policy, and shared multi-agent continuity are the systems work underneath the product surface.",
+  },
+  {
+    label: "Secondary",
+    title: "SensAI remains the secondary edtech product.",
+    description:
+      "SensAI continues as a secondary product line, but the main company story and primary product focus are now clearly centered on Dhee.",
+  },
+];
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Explore SensAI and the learning workflows Sankhya AI Labs is building for institutions and learners.",
+  description:
+    "Explore Sankhya AI Labs' products with Dhee as the main product and SensAI as the secondary edtech product.",
 };
 
 export default function ProductsPage() {
@@ -16,104 +37,94 @@ export default function ProductsPage() {
     <div className="space-y-20 pb-10 md:space-y-24 md:pb-14">
       <PageHero
         eyebrow="Products"
-        title="SensAI is our flagship learning platform"
-        description="SensAI turns Sankhya’s teaching logic into an actual learner experience: structured modules, guided study, AI-assisted notes, and teacher support across curriculum learning and competitive preparation."
-        primaryCta={{ label: "Talk to us", href: "/contact" }}
-        secondaryCta={{ label: "Visit SensAI", href: "https://www.sensai.co.in", external: true }}
+        title="Dhee is the main product. SensAI is the secondary product."
+        description="Sankhya AI Labs is centered on Dhee as the portable memory OS for coding agents. SensAI remains the secondary edtech product, but the main company story is now about memory, context routing, and self-evolving collaboration."
+        primaryCta={{ label: "See Dhee", href: "/products/dhee" }}
+        secondaryCta={{ label: "Explore the systems", href: "/models" }}
       />
 
       <section className="space-y-8">
         <SectionHeading
-          eyebrow="What it does"
-          title="A product surface for teaching, not just answering"
-          description="SensAI is meant to feel like a learning workflow. It helps create structure, carry context forward, and support the learner through notes, modules, and AI teaching assistance."
+          eyebrow="Current surface"
+          title="Two products, with one clear center of gravity."
+          description="The public story should be simple: Dhee is the main product and main thesis. SensAI is the secondary edtech product inside the same company."
         />
-        <div className="grid gap-5 md:grid-cols-3">
-          {productCapabilities.map((capability) => (
-            <article key={capability.title} className="surface-card p-6">
-              <h3 className="text-2xl font-semibold tracking-tight text-[var(--ink)]">
-                {capability.title}
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                {capability.description}
+        <div className="grid gap-5 lg:grid-cols-2">
+          {productDirectory.map((product) => (
+            <article key={product.name} className="surface-card flex h-full flex-col p-7 md:p-8">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+                    {product.label}
+                  </p>
+                  <h2 className="mt-3 text-4xl font-semibold tracking-tight text-[var(--ink)]">
+                    {product.name}
+                  </h2>
+                </div>
+                <span
+                  className={`rounded-full border px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] ${
+                    product.status === "Active"
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-slate-200 bg-slate-50 text-slate-600"
+                  }`}
+                >
+                  {product.status}
+                </span>
+              </div>
+              <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--muted)]">
+                {product.description}
               </p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-10">
-        <SectionHeading
-          eyebrow="Product proof"
-          title="Three views into the current SensAI experience"
-          description="These are current product surfaces that show how the learner flow is already being shaped."
-        />
-        <div className="space-y-10">
-          {productShowcases.map((showcase, index) => (
-            <article
-              key={showcase.title}
-              className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center"
-            >
-              <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="relative overflow-hidden rounded-[2rem] border border-[var(--border)] bg-white p-3 shadow-[0_24px_60px_rgba(15,20,31,0.08)]">
-                  <div className="absolute inset-x-3 top-3 h-10 rounded-[1rem] border border-[var(--border)] bg-[var(--surface-soft)]" />
-                  <div className="relative overflow-hidden rounded-[1.5rem] border border-[var(--border)] bg-white pt-12">
-                    <Image
-                      src={showcase.image}
-                      alt={showcase.alt}
-                      width={1365}
-                      height={768}
-                      className="h-auto w-full"
-                    />
+              <div className="mt-6 grid gap-3 md:grid-cols-3">
+                {product.points.map((point) => (
+                  <div
+                    key={point}
+                    className="rounded-[1.2rem] border border-[var(--border)] bg-white px-4 py-3 text-sm leading-7 text-[var(--ink-soft)] shadow-[0_18px_36px_rgba(15,20,31,0.04)]"
+                  >
+                    {point}
                   </div>
-                </div>
+                ))}
               </div>
-              <div className="space-y-4">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-[var(--accent)]">
-                  {showcase.eyebrow}
-                </p>
-                <h3 className="text-4xl font-semibold tracking-tight text-[var(--ink)]">
-                  {showcase.title}
-                </h3>
-                <p className="max-w-xl text-base leading-8 text-[var(--muted)]">
-                  {showcase.description}
-                </p>
-                <div className="grid gap-3">
-                  {showcase.points.map((point) => (
-                    <div
-                      key={point}
-                      className="rounded-[1.2rem] border border-[var(--border)] bg-white px-4 py-3 text-sm leading-7 text-[var(--ink-soft)] shadow-[0_18px_36px_rgba(15,20,31,0.04)]"
-                    >
-                      {point}
-                    </div>
-                  ))}
-                </div>
+              <div className="mt-8">
+                <Link href={product.href} className="btn-secondary min-h-12 px-5 py-3 text-sm">
+                  {product.ctaLabel} →
+                </Link>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="space-y-8">
-        <SectionHeading
-          eyebrow="Deployment modes"
-          title="The same product can support institutions and direct learners"
-          description="The teaching stack stays the same. The surrounding workflow changes depending on who is using it."
-        />
-        <div className="grid gap-5 md:grid-cols-3">
-          {productUseCases.map((useCase) => (
-            <article key={useCase.title} className="surface-card p-6">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
-                {useCase.label}
-              </p>
-              <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--ink)]">
-                {useCase.title}
-              </h3>
-              <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
-                {useCase.description}
-              </p>
-            </article>
-          ))}
+      <section className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="surface-card p-7 md:p-10">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
+            Why this focus
+          </p>
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl">
+            We are not building another wrapper around one model.
+          </h2>
+          <p className="mt-4 text-base leading-8 text-[var(--muted)]">
+            The product bet is that the missing layer is owned cognition. That means stable memory outside the provider, context that gets routed instead of replayed, and collaboration that happens through shared state.
+          </p>
+          <p className="mt-4 text-base leading-8 text-[var(--muted)]">
+            Dhee is the product wedge for that broader belief. We are starting with coding agents because that is where wasted context, brittle handoffs, and session resets are already painful.
+          </p>
+        </div>
+        <div className="surface-card overflow-hidden">
+          <div className="grid gap-px bg-[var(--border)]">
+            {portfolioNotes.map((note) => (
+              <div key={note.title} className="bg-white p-6 md:p-7">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.26em] text-[var(--accent)]">
+                  {note.label}
+                </p>
+                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[var(--ink)]">
+                  {note.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-[var(--muted)]">
+                  {note.description}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -121,27 +132,18 @@ export default function ProductsPage() {
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div className="max-w-2xl">
             <p className="text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[var(--accent)]">
-              Product next step
+              Next step
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--ink)] md:text-4xl">
-              If you want to see SensAI in the context of your institution or
-              learner cohort, let’s talk.
+              If Dhee fits what you are building, let&apos;s talk.
             </h2>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link
-              href="/contact"
-              className="btn-primary"
-            >
+            <Link href="/contact" className="btn-primary">
               Talk to us
             </Link>
-            <Link
-              href="https://www.sensai.co.in"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-secondary"
-            >
-              Open sensai.co.in
+            <Link href="/products/dhee" className="btn-secondary">
+              Explore Dhee
             </Link>
           </div>
         </div>

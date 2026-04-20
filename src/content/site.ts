@@ -1,28 +1,35 @@
-import type { AudienceCard, BrandToken, FeatureCard, HeroContent, ModelCard, ProductShowcase, SiteNavItem } from "@/types/site";
+import type {
+  AudienceCard,
+  BrandToken,
+  FeatureCard,
+  HeroContent,
+  ModelCard,
+  ProductDirectoryItem,
+  ProductShowcase,
+  SiteNavItem,
+} from "@/types/site";
 
 export const siteMeta = {
   name: "Sankhya AI Labs",
   shortName: "Sankhya",
   title: "Sankhya AI Labs",
   description:
-    "Sankhya AI Labs builds memory, speech, and learning systems for Indian education. SensAI is our adaptive AI teacher for schools, coaching institutes, and learners.",
+    "Sankhya AI Labs is building Dhee, a portable memory OS that turns any coding agent into a personalized, self-evolving collaborator.",
   url: "https://www.sankhyaailabs.com",
   locale: "en_IN",
   keywords: [
     "Sankhya AI Labs",
-    "small AI models",
-    "compact models",
-    "India-first AI lab",
-    "Dhee memory layer",
-    "Akshar speech recognition",
-    "Shlok speech generation",
-    "SensAI",
-    "AI research lab India",
-    "task-specific AI",
-    "offline AI models",
-    "educational AI",
-    "Indian language AI",
-    "open source AI India",
+    "Dhee",
+    "Memory OS for AGI cognition",
+    "agent memory",
+    "context routing",
+    "self evolving agents",
+    "multi agent collaboration",
+    "coding agent memory",
+    "portable agent memory",
+    "AGI infrastructure",
+    "cognitive infrastructure",
+    "agent continuity",
   ],
 };
 
@@ -40,395 +47,409 @@ export const contactMeta = {
 
 export const navItems: SiteNavItem[] = [
   { label: "Home", href: "/" },
-  { label: "Models", href: "/models" },
-  { label: "Products", href: "/products" },
+  { label: "Dhee", href: "/products/dhee" },
+  { label: "Systems", href: "/models" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
 export const homeHero: HeroContent = {
-  eyebrow: "AI Teaching Stack for India",
-  title: "We build the AI teaching stack for India.",
+  eyebrow: "Main product: Dhee",
+  title:
+    "Building Dhee, a portable memory OS that turns any coding agent into a personalized, self-evolving collaborator.",
   description:
-    "Sankhya builds memory, speech, and learning systems for Indian education. SensAI turns that stack into an adaptive AI teacher for schools, coaching institutes, and serious learners.",
-  primaryCta: { label: "See SensAI", href: "/products" },
+    "We believe AGI will not come from one god model. It will come from models plus cognitive infrastructure around them. Dhee is that memory layer: it routes the right context at the right moment, improves through use, and lets multiple agents collaborate through shared memory instead of a central orchestrator.",
+  primaryCta: { label: "Explore Dhee", href: "/products/dhee" },
   secondaryCta: {
-    label: "Explore the stack",
+    label: "See the systems",
     href: "/models",
     external: false,
   },
 };
 
 export const homeStats = [
-  { value: "1 live product", label: "SensAI is our adaptive AI teacher for schools, coaching institutes, and learners." },
-  { value: "3 core systems", label: "Dhee memory, Akshar speech recognition, and Shlok voice generation shape the stack behind it." },
-  { value: "India-first", label: "Designed for multilingual classrooms, mixed devices, weak connectivity, and real teaching workflows." },
+  {
+    value: "Stop replaying everything",
+    label:
+      "Dhee makes agents more efficient by routing only the relevant context instead of restuffing full history, rules, and tool output into every turn.",
+  },
+  {
+    value: "Get better through use",
+    label:
+      "As agents expand, reuse, reject, or rely on memory, Dhee adapts its routing and retrieval behavior so the system becomes more useful over time.",
+  },
+  {
+    value: "Collaborate without orchestration tax",
+    label:
+      "Shared memory, artifacts, and task state let multiple agents coordinate directly without needing another agent whose only job is orchestration.",
+  },
 ];
 
 export const labPhilosophy = [
   {
-    title: "Small over large",
+    title: "Models need cognitive infrastructure",
     description:
-      "We build models under a few billion parameters. Small enough to run on constrained hardware, focused enough to do one thing exceptionally well.",
+      "AGI will not come from a single god model. It will come from models combined with cognitive infrastructure around them, and memory is the first layer.",
     icon: "◇",
   },
   {
-    title: "Task-specific over general",
+    title: "Memory has to be owned",
     description:
-      "Every model we build solves a defined problem — remembering a learner, recognising Indian speech, generating instructional voice. Not everything at once.",
+      "If memory lives inside one session or one provider, you do not really own it. Dhee keeps memory portable as models, tools, and context windows keep changing.",
     icon: "◈",
   },
   {
-    title: "Independent over dependent",
+    title: "Agents should evolve through use",
     description:
-      "Our models are designed to run on their own — on-device, offline, or with minimal cloud. No vendor lock-in. No API dependency for core functions.",
+      "Dhee does not just store memory. It learns how to serve memory better over time. That is the difference between replaying context and building cognition.",
     icon: "◉",
   },
 ];
 
 export const stackLayers = [
   {
-    label: "Dhee",
-    tagline: "Learner memory layer",
+    label: "Memory substrate",
+    tagline: "Durable state outside the model",
     description:
-      "An in-house memory system that lets teaching agents carry context, preferences, and understanding across sessions. Dhee makes real personalization possible — not just prompt-level memory, but structured recall over time.",
-    state: "Live",
+      "Dhee preserves tasks, artifacts, preferences, decisions, and resumable state so agents do not have to rebuild working context every time a session restarts.",
+    state: "Active",
+    highlight: false,
+  },
+  {
+    label: "Context router",
+    tagline: "The right slice at the right time",
+    description:
+      "Instead of flooding the model with bloated history, Dhee decides what matters now, what should stay compressed, and what can remain in the background until it becomes useful.",
+    state: "Active",
     highlight: true,
   },
   {
-    label: "Akshar",
-    tagline: "Speech recognition for India",
+    label: "Shared agent fabric",
+    tagline: "Collaboration without an orchestrator",
     description:
-      "A speech-to-text stack being built for Indian accents, classroom noise, code-switching, and multilingual student interaction. Not a wrapper — a model trained on how India actually speaks.",
-    state: "Coming Soon",
-    highlight: false,
-  },
-  {
-    label: "Shlok",
-    tagline: "Instructional voice generation",
-    description:
-      "A text-to-speech model for natural, warm, Indian-language teaching voice. Built for the tone, cadence, and clarity that instructional speech demands — not generic assistant voice.",
-    state: "Coming Soon",
-    highlight: false,
-  },
-  {
-    label: "Compact Runtime",
-    tagline: "Edge deployment architecture",
-    description:
-      "A lightweight model architecture designed for low-end devices and poor-connectivity schools. The goal: the full Sankhya stack running independently, beyond cloud dependence.",
-    state: "Coming Soon",
+      "Multiple coding agents can hand off artifacts, reuse digests, and continue work through shared memory directly. Coordination becomes a property of the substrate, not a separate orchestrator agent.",
+    state: "Active",
     highlight: false,
   },
 ];
 
-export const productShowcases: ProductShowcase[] = [
-  {
-    eyebrow: "Create structured learning",
-    title: "Turn a topic or resource into a course workflow",
-    description:
-      "SensAI can start from a topic prompt or uploaded material and shape it into a usable learning path instead of leaving the learner with a blank chat box.",
-    image: "/showcase/app-create.png",
-    alt: "SensAI course creation surface showing topic-based course generation.",
-    points: [
-      "Topic-led or resource-led course creation",
-      "Better first step for teachers, coaching teams, and self-learners",
-      "Transforms raw material into structured learning",
-    ],
-  },
-  {
-    eyebrow: "Organize the journey",
-    title: "Convert subjects into guided sections and modules",
-    description:
-      "Course structure matters in both curriculum learning and exam preparation. SensAI helps package content into a format that feels teachable and revisable.",
-    image: "/showcase/app-course.png",
-    alt: "SensAI course view with modules for a UPSC history journey.",
-    points: [
-      "Curriculum or exam-prep friendly module breakdown",
-      "Clean hierarchy for long-form subjects",
-      "Lets learners return to structured progress instead of scattered files",
-    ],
-  },
-  {
-    eyebrow: "Study with support",
-    title: "Blend notes, context, and AI help inside the same workspace",
-    description:
-      "SensAI keeps the learner close to the material while still enabling guided explanation, clarification, and teacher-style assistance.",
-    image: "/showcase/app-learn.png",
-    alt: "SensAI notes and chat workspace helping a learner understand highlighted content.",
-    points: [
-      "Notes and AI guidance stay connected",
-      "Good for self-learning, revision, and doubt support",
-      "Designed to feel like a study workflow, not just a chatbot",
-    ],
-  },
-];
+export const productShowcases: ProductShowcase[] = [];
 
 export const problemCards: FeatureCard[] = [
   {
-    title: "Most AI products chase scale, not specificity",
+    title: "Session memory is not ownership",
     description:
-      "The industry defaults to ever-larger models for ever-broader tasks. But most real-world problems — especially in education — need focused, reliable execution, not general intelligence.",
+      "Most agent products remember only inside their own session boundaries. The moment the provider, toolchain, or window changes, your history and skills start getting messy or lost.",
   },
   {
-    title: "Generic models fail at Indian realities",
+    title: "Raw history is not useful context",
     description:
-      "Indian accents, code-switching, regional languages, mixed devices, and weak connectivity are not edge cases. They are the baseline. Most global AI products treat them as afterthoughts.",
+      "Developers are burning tokens on repeated history, rules, and noisy tool output that should never have been replayed in full. Context needs routing, compression, and selective expansion.",
   },
   {
-    title: "Cloud dependency limits who you can serve",
+    title: "Orchestrator agents become bottlenecks",
     description:
-      "Always-on cloud assumptions break quickly in the environments that need AI the most — under-resourced classrooms, rural coaching centers, and low-bandwidth regions.",
+      "Most multi-agent systems add another agent whose job is orchestration. We think that is the wrong abstraction. Real coordination should emerge from shared state.",
   },
 ];
 
 export const audienceCards: AudienceCard[] = [
   {
-    label: "Institutions",
-    title: "Schools and colleges",
+    label: "Coding agents",
+    title: "Agents that need continuity",
     description:
-      "Use SensAI as a self-learning and teacher-support layer that helps students continue beyond the classroom without replacing the teacher.",
+      "Use Dhee under coding agents that need to resume long tasks, retain project state, and stop wasting context on repeated setup and full-history replay.",
     points: [
-      "Curriculum-aligned modules and guided study",
-      "Support for mixed learner pace and revision",
-      "Useful where student strength varies across sections",
+      "Project facts, decisions, and artifacts stay recoverable",
+      "Better resumes after interruptions or provider switches",
+      "Long tasks stay coherent without giant transcripts",
     ],
   },
   {
-    label: "High-frequency prep",
-    title: "Coaching institutes",
+    label: "Agent platforms",
+    title: "Teams building runtimes",
     description:
-      "Use SensAI for competitive exam workflows like UPSC, JEE, and NEET, where learners need structure, repetition, and clearer explanations.",
+      "Embed Dhee when you want memory, context routing, and collaboration primitives without rebuilding your stack around a separate orchestrator framework.",
     points: [
-      "Structured exam-prep modules",
-      "Doubt support and guided revision",
-      "Scales teaching support across larger learner cohorts",
+      "Works through MCP, Python, CLI, and native integrations",
+      "Lets you keep your existing agent surface",
+      "Portable cognition layer across toolchains",
     ],
   },
   {
-    label: "Direct learning",
-    title: "Individual learners",
+    label: "Multi-agent teams",
+    title: "Workflows that outgrow central planning",
     description:
-      "Use SensAI as a self-learning companion that can structure material, assist with notes, and help carry continuity across sessions.",
+      "Use shared memory, artifacts, and handoffs so multiple agents can coordinate directly while still keeping durable state and accountability.",
     points: [
-      "Good for focused self-study and revision",
-      "Works across subject learning and prep journeys",
-      "More guided than a generic chat interface",
+      "Any agent can resume from shared context",
+      "Artifacts and digests become coordination primitives",
+      "Collaboration scales without one controller agent",
     ],
   },
 ];
 
 export const modelCards: ModelCard[] = [
   {
-    name: "Dhee",
-    role: "Learner memory layer",
+    name: "Memory Graph",
+    role: "Persistent cognition substrate",
     description:
-      "Dhee helps the teaching system remember how a learner has been taught, where they struggled, and what style worked better over time. Open-source on GitHub.",
-    status: "Live",
+      "Stores what matters across sessions: tasks, artifacts, preferences, digests, checkpoints, and evolving state that should survive beyond one model run.",
+    status: "Active",
   },
   {
-    name: "Akshar",
-    role: "Speech recognition",
+    name: "Context Router",
+    role: "Selective context delivery",
     description:
-      "Being built for Indian accents, classroom noise, code-switching, and the realities of spoken educational interaction. Not a wrapper around existing STT.",
-    status: "Coming Soon",
+      "Chooses the right slice of memory for the current task so agents work with useful state instead of drowning in transcript replay.",
+    status: "Active",
   },
   {
-    name: "Shlok",
-    role: "Speech generation",
+    name: "Collaboration Fabric",
+    role: "Shared continuity for multiple agents",
     description:
-      "The voice layer being built for clear, natural instructional speech across Indian-language teaching scenarios. Warm, not robotic.",
-    status: "Coming Soon",
-  },
-  {
-    name: "Compact Runtime",
-    role: "Edge deployment",
-    description:
-      "A lightweight model architecture so the Sankhya stack can eventually run on lower-end devices and in weak-connectivity environments — independently.",
-    status: "Coming Soon",
+      "Lets coding agents coordinate through common memory and artifacts directly, removing the need for a separate orchestrator agent to control every step.",
+    status: "Active",
   },
 ];
 
 export const indiaFirstPoints = [
   {
-    label: "Language",
-    title: "Built for how India actually speaks",
+    label: "Portability",
+    title: "Built so the memory survives model churn",
     description:
-      "Not just English-first with Indian language support bolted on. Our models are trained on Indian language patterns, accents, and code-switching from the ground up.",
+      "Providers, context windows, and agent shells change fast. Dhee is designed so the cognitive layer remains stable while the model layer keeps moving.",
   },
   {
-    label: "Infrastructure",
-    title: "Designed for low-connectivity",
+    label: "Efficiency",
+    title: "Efficiency without gimmicks",
     description:
-      "Always-on cloud assumptions break quickly outside major cities. Our compact model direction accounts for weak bandwidth, intermittent connectivity, and low-end devices.",
+      "Token efficiency shows up naturally when the right context is loaded at the right time. The goal is not forced saving tricks. The goal is better cognition.",
   },
   {
-    label: "Privacy",
-    title: "Models that run where the data lives",
+    label: "Evolution",
+    title: "Use should sharpen the system",
     description:
-      "On-device and edge deployment isn't just a feature — it's a privacy architecture. Student data stays with the institution, not on someone else's cloud.",
-  },
-  {
-    label: "Cost",
-    title: "Lower inference cost by design",
-    description:
-      "Small, task-specific models cost less to run. That's not a tradeoff — smaller models that are good at one thing often outperform large, general-purpose models at that specific task.",
+      "Every retrieval pattern teaches Dhee something about what future agents will need. That makes the substrate better the more real work it sees.",
   },
 ];
 
-/* ─── PRODUCTS PAGE ──────────────────────────────── */
+export const productDirectory: ProductDirectoryItem[] = [
+  {
+    label: "Main product",
+    name: "Dhee",
+    description:
+      "Dhee is a portable memory OS for AI agents. It gives coding agents a persistent, portable cognition layer that routes the right context, adapts from usage, and enables collaboration through shared memory instead of a separate orchestrator.",
+    href: "/products/dhee",
+    ctaLabel: "See Dhee",
+    status: "Active",
+    points: [
+      "Portable memory outside provider sessions",
+      "Context routing instead of full-history replay",
+      "Shared memory for direct multi-agent collaboration",
+    ],
+  },
+  {
+    label: "Secondary product",
+    name: "SensAI",
+    description:
+      "SensAI is our edtech product. It applies Sankhya's workflow thinking to structured learning and guided study, but it is secondary to our main product focus on Dhee.",
+    href: "/products/sensai",
+    ctaLabel: "See SensAI",
+    status: "Secondary",
+    points: [
+      "Structured learning workflows",
+      "Guided study and revision support",
+      "Secondary product line inside Sankhya AI Labs",
+    ],
+  },
+];
 
 export const productCapabilities: FeatureCard[] = [
   {
-    title: "Structured course creation",
+    title: "Portable memory you actually own",
     description:
-      "Start with a topic or resource and move toward a usable learning flow instead of isolated documents and disconnected chats.",
+      "Dhee keeps long-term memory outside the provider so context, artifacts, and learned behavior remain reusable as models and tools change.",
   },
   {
-    title: "Module-based study journeys",
+    title: "Live context routing",
     description:
-      "Organize subjects and exam-prep topics into sections and modules that feel closer to how teaching and revision actually happen.",
+      "Instead of replaying everything, Dhee decides what the active agent should see now, what should stay compressed, and what can stay dormant.",
   },
   {
-    title: "Notes with AI support",
+    title: "Self-evolving retrieval",
     description:
-      "Keep the learner inside the material while giving them ways to ask for help, clarification, and teacher-style explanation.",
+      "The system watches what gets expanded, reused, and handed off, then sharpens future retrieval so the cognitive layer improves through real work.",
   },
 ];
 
 export const productUseCases: FeatureCard[] = [
   {
-    label: "Institution layer",
-    title: "Schools and colleges",
+    label: "Resume",
+    title: "Restart long tasks without restarting the agent",
     description:
-      "A self-learning layer that supports classroom teaching, revision, and continuity outside the lecture hour.",
+      "Pick back up from prior state, decisions, and artifacts instead of spending each new session reconstructing what already happened.",
   },
   {
-    label: "Exam-prep layer",
-    title: "Coaching institutes",
+    label: "Collaborate",
+    title: "Let multiple agents work through shared memory",
     description:
-      "A structured support system for UPSC, JEE, and NEET journeys where high-frequency doubt handling and revision matter.",
+      "Artifacts, digests, and checkpoints become the handoff layer so agents can coordinate directly without a central orchestrator agent.",
   },
   {
-    label: "Direct learner layer",
-    title: "Self-learning product",
+    label: "Port",
+    title: "Keep cognition stable while the model layer changes",
     description:
-      "A product experience for serious learners who want structure, notes, and AI support without needing institution deployment.",
+      "Move across providers, tools, and shells while the memory layer stays durable, portable, and reusable.",
   },
 ];
 
-/* ─── MODELS PAGE ──────────────────────────────── */
+export const dheeCapabilities: FeatureCard[] = [
+  {
+    title: "Portable memory outside provider sessions",
+    description:
+      "Dhee preserves tasks, artifacts, skills, and context in a layer you own, so the memory remains clean even as models and tools keep evolving.",
+  },
+  {
+    title: "Context routing instead of transcript replay",
+    description:
+      "Dhee makes agents more efficient by routing the right context at the right moment instead of repeatedly stuffing full history, rules, and tool outputs into every turn.",
+  },
+  {
+    title: "Self-evolving behavior through use",
+    description:
+      "As agents expand, reuse, reject, or rely on certain context, Dhee adapts its routing and retrieval behavior so the system improves with use.",
+  },
+];
+
+export const dheeUseCases: FeatureCard[] = [
+  {
+    label: "Coding agents",
+    title: "Give software agents durable working memory",
+    description:
+      "Use Dhee under Codex, Claude Code, Cursor, or custom runtimes so project context survives across sessions, interruptions, and provider switches.",
+  },
+  {
+    label: "Multi-agent execution",
+    title: "Collaborate directly through shared state",
+    description:
+      "Most multi-agent systems add another agent whose job is orchestration. With Dhee, agents can reuse digests, pass artifacts, and continue shared tasks directly through shared memory.",
+  },
+  {
+    label: "AGI infrastructure",
+    title: "Build the cognitive layer around the model",
+    description:
+      "Dhee is designed for the belief that the future is not one giant model doing everything. The future is models plus cognitive infrastructure, and memory is the foundation.",
+  },
+];
 
 export const stackNotes: FeatureCard[] = [
   {
-    label: "Today",
-    title: "Ship with the right mix of in-house and external",
+    label: "Why now",
+    title: "Model-native memory is not enough",
     description:
-      "We use strong external APIs where they help us ship faster today — and replace the parts that matter most for quality, cost, privacy, and offline use with our own models over time.",
+      "Closed session memory feels useful until the provider changes, the task gets long, or the same developer has to restuff context yet again. The missing layer is owned cognition that survives those shifts.",
   },
   {
-    label: "What we own",
-    title: "Own the layers that define quality",
+    label: "What we build",
+    title: "Infrastructure around the model, not another wrapper",
     description:
-      "Memory, voice quality, multilingual robustness, and edge deployment are the layers most worth controlling in-house. These are what differentiate the product.",
+      "We focus on memory, routing, and shared continuity because those are the systems that let strong models behave like durable agents instead of short-lived chats.",
   },
   {
-    label: "What this unlocks",
-    title: "Better AI at lower cost",
+    label: "Where it leads",
+    title: "Self-evolving agents with stable context",
     description:
-      "Small, focused models that we control means lower inference costs, better privacy, and the ability to deploy where connectivity is poor — the environments that need AI most.",
+      "As the substrate improves through use, agents become better at resuming, coordinating, and adapting over time. That is the path we care about.",
   },
 ];
 
 export const modelApproach: FeatureCard[] = [
   {
     label: "Principle",
-    title: "Build small. Build focused.",
+    title: "Own the cognitive layer",
     description:
-      "Each model in the Sankhya stack is designed for a specific task and optimized to be as compact as possible. We believe small models that do one thing well are more useful than large models that do everything adequately.",
+      "We assume model providers will keep improving. The differentiator is the state and routing layer around them, which should not belong to any one provider.",
   },
   {
     label: "Strategy",
-    title: "Replace external dependencies with owned models",
+    title: "Route context instead of replaying everything",
     description:
-      "We take a pragmatic path: use strong third-party APIs where they help us ship today, and replace the parts that matter most for cost, privacy, control, multilingual quality, and offline deployment with our own stack over time.",
+      "Useful cognition comes from selecting the right memory for the current task, not from stuffing the model with as much history as possible.",
   },
   {
     label: "Direction",
-    title: "Toward independent, on-device AI",
+    title: "Remove the orchestrator bottleneck",
     description:
-      "The end state is a stack of small models that can run independently — on-device, edge, or minimal cloud — serving learners and institutions without dependency on expensive GPU infrastructure or unreliable connectivity.",
+      "We want any coding agent touching Dhee to become a self-evolving agent, able to collaborate through shared memory without a central controller agent.",
   },
 ];
-
-/* ─── ABOUT PAGE ──────────────────────────────── */
 
 export const companyStory: FeatureCard[] = [
   {
     label: "Who we are",
-    title: "An AI lab that builds and ships",
+    title: "A product lab focused on agent cognition",
     description:
-      "Sankhya is both a research lab and a product company. We build models, and we prove them through SensAI — our live teaching platform serving real learners and institutions.",
+      "Sankhya AI Labs is building Dhee as the main product and using real software workflows to shape what a memory system for agents should actually do. SensAI remains a secondary edtech product.",
   },
   {
     label: "What we believe",
-    title: "Small models can outperform large ones at specific tasks",
+    title: "AGI needs memory, routing, and continuity",
     description:
-      "The industry's obsession with scale is not the only path. Task-specific, compact models — trained well, deployed efficiently — can deliver better results where it matters.",
+      "Our core bet is simple: stronger models alone will not be enough. The real jump comes when models sit on top of owned cognitive infrastructure.",
   },
   {
-    label: "Where we're going",
-    title: "Independent AI for India's learning systems",
+    label: "Where we are going",
+    title: "Toward self-evolving agents without central orchestration",
     description:
-      "Our long-term direction is a full stack of small, owned models that can run independently — powering personalized teaching in every classroom, regardless of connectivity or infrastructure.",
+      "We are building for a future where agents remember, collaborate, and get sharper over time through shared memory instead of relying on one planner agent to hold everything together.",
   },
 ];
 
 export const aboutPrinciples: FeatureCard[] = [
   {
     label: "Principle 1",
-    title: "Build small, build focused",
+    title: "Memory first",
     description:
-      "We don't build models to be big. We build them to be good at a specific task — memory, speech recognition, voice generation, edge deployment.",
+      "If an agent cannot hold durable state across time, it cannot become reliable on real work. Memory is the first system we care about.",
   },
   {
     label: "Principle 2",
-    title: "India is the design constraint, not an afterthought",
+    title: "Context should be routed, not dumped",
     description:
-      "Language diversity, classroom density, device variability, and connectivity gaps are core product inputs — not edge cases we'll handle later.",
+      "Better agents need the right slice of state, not the biggest transcript. Routing matters more than brute-force replay.",
   },
   {
     label: "Principle 3",
-    title: "Prove it through product",
+    title: "Use should improve the substrate",
     description:
-      "Every model we build is tested in SensAI with real learners. We don't publish benchmarks in isolation. We ship and measure in production.",
+      "A cognitive layer should learn from retrievals, expansions, and handoffs so future work gets cleaner without constant manual tuning.",
   },
   {
     label: "Principle 4",
-    title: "Own what matters. Use what helps.",
+    title: "Collaboration should emerge from shared state",
     description:
-      "We use external APIs where they help us move faster. We build our own models where quality, privacy, cost, and offline capability demand it.",
+      "We want agents to coordinate through the memory layer itself. That keeps multi-agent work flexible and removes the central orchestrator bottleneck.",
   },
 ];
-
-/* ─── CONTACT PAGE ──────────────────────────────── */
 
 export const contactCards: FeatureCard[] = [
   {
     label: "Deploy",
-    title: "Institution pilots",
+    title: "Put Dhee under your agent stack",
     description:
-      "For schools, colleges, and coaching institutes exploring adaptive learning, guided revision, or AI teaching support through SensAI.",
+      "For teams that want portable memory, context routing, and shared continuity under coding agents or internal runtimes.",
   },
   {
-    label: "Collaborate",
-    title: "Research and model partnerships",
+    label: "Partner",
+    title: "Build on the substrate with us",
     description:
-      "For teams interested in small model research, Indian-language AI, educational speech systems, or edge deployment approaches.",
+      "For runtime builders, infra teams, and product teams exploring agent collaboration, provider portability, or long-task continuity.",
   },
   {
-    label: "Build with us",
-    title: "Join the lab",
+    label: "Secondary",
+    title: "Ask about SensAI",
     description:
-      "We're looking for people who care about building useful AI — small models, practical systems, and products that work in the real world.",
+      "For schools, educators, or product teams interested in our secondary edtech product while Dhee remains the main company focus.",
   },
 ];

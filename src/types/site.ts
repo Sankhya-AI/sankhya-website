@@ -7,6 +7,7 @@ export type LinkTarget = {
 export type SiteNavItem = {
   label: string;
   href: string;
+  children?: LinkTarget[];
 };
 
 export type HeroContent = {
@@ -43,6 +44,16 @@ export type AudienceCard = {
   label: string;
   title: string;
   description: string;
+  points: string[];
+};
+
+export type ProductDirectoryItem = {
+  label: string;
+  name: string;
+  description: string;
+  href: string;
+  ctaLabel: string;
+  status: string;
   points: string[];
 };
 

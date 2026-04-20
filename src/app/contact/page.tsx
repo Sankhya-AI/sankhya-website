@@ -7,7 +7,8 @@ import { contactCards, contactMeta } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Talk to Sankhya AI Labs about institution deployments, coaching workflows, partnerships, or product collaboration.",
+  description:
+    "Talk to Sankhya AI Labs about Dhee, agent memory, context routing, multi-agent infrastructure, or SensAI.",
 };
 
 export default function ContactPage() {
@@ -15,10 +16,10 @@ export default function ContactPage() {
     <div className="space-y-20 pb-10 md:space-y-24 md:pb-14">
       <PageHero
         eyebrow="Contact"
-        title="Let’s talk about where Sankhya can fit"
-        description="If you are exploring institution deployment, coaching workflows, student learning products, or AI infrastructure collaboration, this is a good place to start."
-        primaryCta={{ label: "Open SensAI", href: "https://www.sensai.co.in", external: true }}
-        secondaryCta={{ label: "See models", href: "/models" }}
+        title="Let&apos;s talk about memory, context, and agent continuity."
+        description="If you are exploring Dhee, building an agent runtime, or trying to stop wasting tokens on bloated context and brittle handoffs, this is the right place to start."
+        primaryCta={{ label: "Explore Dhee", href: "/products/dhee" }}
+        secondaryCta={{ label: "See the systems", href: "/models" }}
       />
 
       <section className="grid gap-5 md:grid-cols-3">
@@ -46,22 +47,34 @@ export default function ContactPage() {
             </p>
             <div className="mt-6 space-y-4">
               <Link
-                href="https://www.sensai.co.in"
-                target="_blank"
-                rel="noreferrer"
+                href="/products/dhee"
                 className="flex items-center justify-between rounded-[1.2rem] border border-[var(--border)] bg-white px-5 py-4 text-sm font-semibold text-[var(--ink)] transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
-                <span>SensAI product</span>
-                <span className="text-[var(--muted)]">sensai.co.in</span>
+                <span>Dhee product page</span>
+                <span className="text-[var(--muted)]">sankhyaailabs.com/products/dhee</span>
               </Link>
               <Link
-                href="https://engram.sensai.co.in"
+                href="https://github.com/Sankhya-AI/Dhee"
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center justify-between rounded-[1.2rem] border border-[var(--border)] bg-white px-5 py-4 text-sm font-semibold text-[var(--ink)] transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
-                <span>Dhee / Engram</span>
-                <span className="text-[var(--muted)]">engram.sensai.co.in</span>
+                <span>Dhee on GitHub</span>
+                <span className="text-[var(--muted)]">github.com</span>
+              </Link>
+              <Link
+                href="/models"
+                className="flex items-center justify-between rounded-[1.2rem] border border-[var(--border)] bg-white px-5 py-4 text-sm font-semibold text-[var(--ink)] transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              >
+                <span>Systems overview</span>
+                <span className="text-[var(--muted)]">sankhyaailabs.com/models</span>
+              </Link>
+              <Link
+                href="/products/sensai"
+                className="flex items-center justify-between rounded-[1.2rem] border border-[var(--border)] bg-white px-5 py-4 text-sm font-semibold text-[var(--ink)] transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              >
+                <span>SensAI product page</span>
+                <span className="text-[var(--muted)]">sankhyaailabs.com/products/sensai</span>
               </Link>
             </div>
           </article>
@@ -74,8 +87,7 @@ export default function ContactPage() {
               Mail-first for now
             </h3>
             <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-              This v1 site uses a mailto workflow so you can start conversations
-              immediately without waiting for backend form wiring.
+              This site still uses a simple mail workflow so conversations can start quickly while the product and systems story keeps moving.
             </p>
             <a
               href={`mailto:${contactMeta.email}`}

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   description: siteMeta.description,
   applicationName: siteMeta.name,
   keywords: siteMeta.keywords,
-  category: "education",
+  category: "technology",
   alternates: {
     canonical: "/",
   },
@@ -78,11 +78,7 @@ export default function RootLayout({
     name: siteMeta.name,
     url: siteMeta.url,
     logo: `${siteMeta.url}/brand/sankhya-logo.png`,
-    sameAs: [
-      "https://www.sensai.co.in",
-      "https://engram.sensai.co.in",
-      "https://github.com/Sankhya-AI/Dhee",
-    ],
+    sameAs: ["https://github.com/Sankhya-AI/Dhee"],
     description: siteMeta.description,
   };
 

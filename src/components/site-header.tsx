@@ -2,7 +2,6 @@
 
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Brand } from "@/components/brand";
@@ -12,7 +11,6 @@ export function SiteHeader() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
-  const pathname = usePathname();
   const mobileCompact = collapsed && !mobileMenuOpen;
 
   useEffect(() => {
@@ -36,10 +34,6 @@ export function SiteHeader() {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
@@ -82,7 +76,7 @@ export function SiteHeader() {
           </div>
           <div
             className={`overflow-hidden transition-all duration-300 ease-out ${
-              mobileMenuOpen ? "max-h-[24rem] pt-4 opacity-100" : "max-h-0 pt-0 opacity-0"
+              mobileMenuOpen ? "max-h-[34rem] pt-4 opacity-100" : "max-h-0 pt-0 opacity-0"
             }`}
           >
             <div className="space-y-3 border-t border-[var(--border)] pt-4">
@@ -96,13 +90,11 @@ export function SiteHeader() {
                   Talk to us
                 </Link>
                 <Link
-                  href="https://www.sensai.co.in"
-                  target="_blank"
-                  rel="noreferrer"
+                  href="/products/dhee"
                   onClick={() => setMobileMenuOpen(false)}
                   className="btn-secondary min-h-11 w-full px-5 py-2.5 text-sm"
                 >
-                  Explore SensAI
+                  Explore Dhee
                 </Link>
               </div>
             </div>
@@ -129,12 +121,10 @@ export function SiteHeader() {
                   Talk to us
                 </Link>
                 <Link
-                  href="https://www.sensai.co.in"
-                  target="_blank"
-                  rel="noreferrer"
+                  href="/products/dhee"
                   className="btn-secondary min-h-11 px-5 py-2.5 text-sm"
                 >
-                  Explore SensAI
+                  Explore Dhee
                 </Link>
               </div>
             </div>

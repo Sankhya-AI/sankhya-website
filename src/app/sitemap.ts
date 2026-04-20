@@ -4,11 +4,13 @@ import { navItems, siteMeta } from "@/content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const routes = navItems.flatMap((item) => [item.href, ...(item.children?.map((child) => child.href) ?? [])]);
+  const uniqueRoutes = [...new Set(routes)];
 
-  return navItems.map((item) => ({
-    url: `${siteMeta.url}${item.href}`,
+  return uniqueRoutes.map((href) => ({
+    url: `${siteMeta.url}${href}`,
     lastModified: now,
-    changeFrequency: item.href === "/" ? "weekly" : "monthly",
-    priority: item.href === "/" ? 1 : 0.7,
+    changeFrequency: href === "/" ? "weekly" : "monthly",
+    priority: href === "/" ? 1 : 0.7,
   }));
 }

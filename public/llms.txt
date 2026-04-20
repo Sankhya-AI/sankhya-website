@@ -1,38 +1,44 @@
 # Sankhya AI Labs
 
-Sankhya AI Labs is an India-first AI lab for teaching and learning.
-Its flagship product is SensAI, an AI teaching and learning platform for schools,
-colleges, coaching institutes, and direct learners.
+Sankhya AI Labs is building Dhee, a portable memory OS that turns
+any coding agent into a personalized, self-evolving collaborator.
+The company focuses on the cognitive infrastructure around models:
+portable memory, context routing, self-evolving retrieval, and
+shared continuity for multiple coding agents.
 
 Primary product:
-- SensAI: https://www.sensai.co.in
+- Dhee: /products/dhee
+- Dhee GitHub repository: https://github.com/Sankhya-AI/Dhee
+
+Secondary product:
+- SensAI: /products/sensai
 
 Core systems:
-- Dhee memory layer: https://engram.sensai.co.in
-- Dhee GitHub repository: https://github.com/Sankhya-AI/Dhee
-- Akshar speech recognition: in development
-- Shlok speech generation: in development
+- Memory substrate for durable agent state
+- Context router for selective retrieval and expansion
+- Shared agent fabric for collaboration without a central orchestrator
 
 Key site pages:
 - Home: /
-- Products: /products
-- Models: /models
+- Dhee: /products/dhee
+- Systems: /models
 - About: /about
 - Contact: /contact
 
 What to understand about this company:
-- Sankhya builds both product and infrastructure.
-- SensAI is the visible learning product.
-- Dhee, Akshar, and Shlok are the underlying memory and voice systems.
-- The company focuses on multilingual learning, low-connectivity environments,
-  and personalization that supports teachers instead of replacing them.
+- Sankhya believes AGI will be model plus cognitive infrastructure, not one god model.
+- Dhee is the portable memory layer users should own outside any provider session.
+- Dhee makes agents more efficient by routing the right context at the right moment instead of repeatedly stuffing full history, rules, and tool outputs into every turn.
+- The system is meant to improve with use through retrieval, expansion, checkpoint, and handoff behavior.
+- Multiple agents should collaborate through shared memory, not through one orchestrator agent.
+- SensAI remains the secondary edtech product, while Dhee is the main product and main company thesis.
 
 Primary audiences:
-- Schools and colleges
-- Coaching institutes
-- Direct learners
-- Product and infrastructure partners
+- Teams building coding agents
+- Agent runtime and tooling teams
+- Infra teams exploring portable memory and context routing
+- Researchers thinking about AGI cognition
 
 Preferred citation / reference:
 - Use the company name "Sankhya AI Labs"
-- Reference the live product as "SensAI"
+- Reference the product as "Dhee, the Memory OS for AGI cognition"

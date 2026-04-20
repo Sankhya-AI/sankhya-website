@@ -5,10 +5,10 @@ import { useMemo, useState } from "react";
 import { contactMeta } from "@/content/site";
 
 const interestOptions = [
-  "School or college deployment",
-  "Coaching institute deployment",
-  "Direct learner product",
-  "Model or platform partnership",
+  "Deploy Dhee in our runtime",
+  "Agent infrastructure partnership",
+  "SensAI conversation",
+  "Research conversation",
   "General conversation",
 ];
 
@@ -22,7 +22,7 @@ export function ContactForm() {
   });
 
   const mailtoHref = useMemo(() => {
-    const subject = `${form.interest} — Sankhya AI Labs enquiry`;
+    const subject = `${form.interest} | Sankhya AI Labs enquiry`;
     const body = [
       `Name: ${form.name || "-"}`,
       `Organization: ${form.organization || "-"}`,
@@ -42,11 +42,11 @@ export function ContactForm() {
         Start the conversation
       </p>
       <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[var(--ink)]">
-        Tell us what you are trying to build or deploy
+        Tell us what you are trying to build
       </h2>
       <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--muted)]">
         Fill this out and it will open your mail client with a structured brief.
-        That keeps the first conversation simple while the site remains static.
+        That keeps the first conversation simple while the site stays lightweight.
       </p>
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -73,7 +73,7 @@ export function ContactForm() {
               }))
             }
             className="h-13 w-full rounded-[1rem] border border-[var(--border)] bg-white px-4 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[color:var(--accent-soft)]"
-            placeholder="School, coaching institute, company, or team"
+            placeholder="Company, runtime team, lab, or studio"
           />
         </label>
 
@@ -86,7 +86,7 @@ export function ContactForm() {
               setForm((current) => ({ ...current, email: event.target.value }))
             }
             className="h-13 w-full rounded-[1rem] border border-[var(--border)] bg-white px-4 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[color:var(--accent-soft)]"
-            placeholder="name@organization.com"
+            placeholder="name@company.com"
           />
         </label>
 
@@ -115,7 +115,7 @@ export function ContactForm() {
               setForm((current) => ({ ...current, message: event.target.value }))
             }
             className="min-h-40 w-full rounded-[1.2rem] border border-[var(--border)] bg-white px-4 py-3 text-sm text-[var(--ink)] outline-none transition focus:border-[var(--accent)] focus:ring-4 focus:ring-[color:var(--accent-soft)]"
-            placeholder="Tell us about the learner group, deployment context, or product problem you want to solve."
+            placeholder="Tell us about the agents, workflows, or memory problem you want to solve."
           />
         </label>
       </div>
