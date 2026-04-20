@@ -104,8 +104,8 @@ export default function Home() {
       <section className="space-y-8">
         <SectionHeading
           eyebrow="Philosophy"
-          title="We think AGI is model plus cognitive infrastructure."
-          description="Dhee exists because session memory, giant transcripts, and orchestration-heavy systems are not enough for durable software work."
+          title="Why Dhee exists"
+          description="Session memory, giant transcripts, and brittle orchestration are not enough for real software work."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {labPhilosophy.map((item) => (
@@ -126,7 +126,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="How Dhee works"
           title="Three layers turn a coding agent into a personalized, self-evolving collaborator."
-          description="Dhee does not try to replace the model. It gives the model a portable cognition layer that remembers, routes context, and coordinates shared work."
+          description="Dhee adds memory, routing, and shared state around the model."
         />
         <div className="space-y-4">
           {stackLayers.map((layer) => (
@@ -180,7 +180,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Why now"
           title="Developers are still burning tokens on wasteful context."
-          description="Long tasks, provider changes, and multiple agents expose the same gap: models are strong, but the cognitive layer around them is still weak."
+          description="Long tasks and multi-agent work still break because memory and context handling are weak."
           />
           <div className="grid gap-5 md:grid-cols-3">
             {problemCards.map((card) => (
@@ -228,7 +228,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="Who it serves"
           title="Built for developers doing real software work."
-          description="Dhee is most useful when memory quality, continuity, and collaboration matter more than one clean demo run."
+          description="Use it when continuity, context quality, and handoffs matter."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {audienceCards.map((card) => (

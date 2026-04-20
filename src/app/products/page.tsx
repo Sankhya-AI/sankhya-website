@@ -37,8 +37,8 @@ export default function ProductsPage() {
     <div className="space-y-20 pb-10 md:space-y-24 md:pb-14">
       <PageHero
         eyebrow="Products"
-        title="Dhee is the main product. SensAI is the secondary product."
-        description="Sankhya AI Labs is centered on Dhee as the portable memory OS for coding agents. SensAI remains the secondary edtech product, but the main company story is now about memory, context routing, and self-evolving collaboration."
+        title="Dhee is the main product. SensAI is secondary."
+        description="Sankhya AI Labs is centered on Dhee as the memory layer for coding agents."
         primaryCta={{ label: "See Dhee", href: "/products/dhee" }}
         secondaryCta={{ label: "Explore the systems", href: "/models" }}
       />
@@ -47,7 +47,7 @@ export default function ProductsPage() {
         <SectionHeading
           eyebrow="Current surface"
           title="Two products, with one clear center of gravity."
-          description="The public story should be simple: Dhee is the main product and main thesis. SensAI is the secondary edtech product inside the same company."
+          description="Dhee carries the main thesis. SensAI stays as a secondary product."
         />
         <div className="grid gap-5 lg:grid-cols-2">
           {productDirectory.map((product) => (
@@ -103,10 +103,10 @@ export default function ProductsPage() {
             We are not building another wrapper around one model.
           </h2>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            The product bet is that the missing layer is owned cognition. That means stable memory outside the provider, context that gets routed instead of replayed, and collaboration that happens through shared state.
+            The bet is simple: the missing layer is memory and context handling outside the provider.
           </p>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            Dhee is the product wedge for that broader belief. We are starting with coding agents because that is where wasted context, brittle handoffs, and session resets are already painful.
+            We are starting with coding agents because wasted context and brittle handoffs are already painful there.
           </p>
         </div>
         <div className="surface-card overflow-hidden">

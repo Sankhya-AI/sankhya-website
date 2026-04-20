@@ -19,8 +19,8 @@ export default function DheePage() {
     <div className="space-y-20 pb-10 md:space-y-24 md:pb-14">
       <PageHero
         eyebrow="Product: Dhee"
-        title="Building Dhee, a portable memory OS that turns any coding agent into a personalized, self-evolving collaborator."
-        description="Dhee gives any agent a persistent, portable cognition layer that routes the right context at the right time, adapts from usage, and lets multiple agents collaborate through shared memory instead of through a separate orchestrator."
+        title="Dhee is portable memory for coding agents."
+        description="It routes the right context, improves through use, and lets agents collaborate through shared memory."
         primaryCta={{ label: "View Dhee on GitHub", href: "https://github.com/Sankhya-AI/Dhee", external: true }}
         secondaryCta={{ label: "Talk to us", href: "/contact" }}
         aside={
@@ -56,7 +56,7 @@ export default function DheePage() {
               </div>
             </div>
             <p className="text-sm leading-7 text-[var(--muted)]">
-              The surface stays small on purpose. Dhee is meant to plug into the agents you already run, not force a new workflow just to get durable memory.
+              Small surface. Easy to plug in. No new workflow just to get memory.
             </p>
           </aside>
         }
@@ -65,8 +65,8 @@ export default function DheePage() {
       <section className="space-y-8">
         <SectionHeading
           eyebrow="What Dhee does"
-          title="Portable memory, context routing, and self-evolution for coding agents."
-          description="Dhee keeps the layer around the model stable so software agents can remember, resume, and collaborate without reloading bloated context into every run."
+          title="Memory, routing, and collaboration."
+          description="Dhee helps agents remember, resume, and work together without replaying everything."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {dheeCapabilities.map((capability) => (
@@ -91,10 +91,10 @@ export default function DheePage() {
             Own memory outside the provider.
           </h2>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            Most memory systems today live inside a model session. That feels convenient until the provider changes, the context window shifts, or the same developer keeps paying to replay history, rules, and tool output. Dhee keeps that layer portable so the cognition survives those changes.
+            Most memory systems live inside a model session. That breaks when the provider changes or the task gets long.
           </p>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            This is not about replacing the model. It is about giving the model a durable substrate for memory, context, and state so performance does not collapse every time the surface changes.
+            Dhee keeps memory outside the provider so agents can keep working with stable context.
           </p>
         </article>
         <article className="surface-card p-7 md:p-8">
@@ -105,7 +105,7 @@ export default function DheePage() {
             No orchestrator agent in the middle.
           </h2>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            Most multi-agent systems add another agent whose job is orchestration. We think that is the wrong abstraction. Dhee lets any coding agent become a self-evolving collaborator by giving it shared memory, artifacts, checkpoints, and resumable state.
+            Most multi-agent systems add a boss agent. Dhee lets agents coordinate through shared memory instead.
           </p>
           <div className="mt-6 grid gap-3">
             <div className="rounded-[1.2rem] border border-[var(--border)] bg-white px-4 py-3 text-sm leading-7 text-[var(--ink-soft)]">
@@ -125,7 +125,7 @@ export default function DheePage() {
         <SectionHeading
           eyebrow="Where it fits"
           title="Built for real agent work, not just clean demos."
-          description="Dhee is most useful when agents need to carry state across time, providers, and teammates while staying efficient under growing context."
+          description="Best for long tasks, repeated sessions, and multi-agent workflows."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {dheeUseCases.map((useCase) => (

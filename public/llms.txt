@@ -1,10 +1,8 @@
 # Sankhya AI Labs
 
-Sankhya AI Labs is building Dhee, a portable memory OS that turns
-any coding agent into a personalized, self-evolving collaborator.
-The company focuses on the cognitive infrastructure around models:
-portable memory, context routing, self-evolving retrieval, and
-shared continuity for multiple coding agents.
+Sankhya AI Labs builds Dhee, a portable memory OS for coding agents.
+The company focuses on portable memory, context routing,
+self-evolving retrieval, and shared continuity for multiple agents.
 
 Primary product:
 - Dhee: /products/dhee
@@ -28,7 +26,7 @@ Key site pages:
 What to understand about this company:
 - Sankhya believes AGI will be model plus cognitive infrastructure, not one god model.
 - Dhee is the portable memory layer users should own outside any provider session.
-- Dhee makes agents more efficient by routing the right context at the right moment instead of repeatedly stuffing full history, rules, and tool outputs into every turn.
+- Dhee routes the right context instead of replaying full history every turn.
 - The system is meant to improve with use through retrieval, expansion, checkpoint, and handoff behavior.
 - Multiple agents should collaborate through shared memory, not through one orchestrator agent.
 - SensAI remains the secondary edtech product, while Dhee is the main product and main company thesis.

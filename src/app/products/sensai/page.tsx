@@ -14,19 +14,19 @@ const productNotes = [
     label: "Secondary product",
     title: "SensAI is our secondary edtech product.",
     description:
-      "SensAI focuses on structured learning, guided study, and product workflows for education. It remains part of Sankhya, but it is not the center of the company story anymore.",
+      "SensAI focuses on structured learning and guided study.",
   },
   {
     label: "What it taught us",
     title: "Workflow matters more than blank-chat UX.",
     description:
-      "Working on SensAI reinforced a broader lesson for us: useful software needs structure, state, and continuity. That is one reason Sankhya is now centered on Dhee.",
+      "Useful software needs structure, state, and continuity.",
   },
   {
     label: "Current focus",
     title: "Our main product is now Dhee.",
     description:
-      "If you want to understand where Sankhya is headed, start with Dhee. SensAI remains a secondary product line while Dhee carries the main thesis.",
+      "Dhee carries the main thesis for Sankhya now.",
   },
 ];
 
@@ -36,7 +36,7 @@ export default function SensaiPage() {
       <PageHero
         eyebrow="Secondary product: SensAI"
         title="SensAI is Sankhya&apos;s secondary edtech product."
-        description="SensAI remains part of Sankhya AI Labs as the secondary education-facing product, while Dhee is now the main product and main company thesis."
+        description="SensAI stays in the portfolio as the secondary education product. Dhee is the main product."
         primaryCta={{ label: "Explore Dhee", href: "/products/dhee" }}
         secondaryCta={{ label: "See all products", href: "/products" }}
       />

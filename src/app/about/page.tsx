@@ -16,7 +16,7 @@ export default function AboutPage() {
       <PageHero
         eyebrow="About Sankhya AI Labs"
         title="We think AGI needs a memory OS, not just a bigger model."
-        description="Sankhya AI Labs exists to build the cognitive layer around models. Our main product is Dhee, and our core belief is that memory, context routing, and shared continuity matter more than one perfect session. SensAI remains the secondary edtech product."
+        description="Sankhya AI Labs builds the memory and context layer around models. Dhee is the main product. SensAI is secondary."
         primaryCta={{ label: "Explore Dhee", href: "/products/dhee" }}
         secondaryCta={{ label: "See the systems", href: "/models" }}
       />
@@ -37,10 +37,10 @@ export default function AboutPage() {
             Memory is the first system.
           </h3>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            If agents cannot own memory across time, they cannot become dependable on real work. Context routing, retrieval policy, and multi-agent continuity all build on that first layer.
+            If agents cannot hold state across time, they are not reliable on real work.
           </p>
           <p className="mt-4 text-base leading-8 text-[var(--muted)]">
-            That is why Dhee is not a side feature for us. It is the main product expression of how we think AGI will actually emerge.
+            That is why Dhee is the main product for us.
           </p>
         </div>
       </section>
@@ -49,7 +49,7 @@ export default function AboutPage() {
         <SectionHeading
           eyebrow="Who we are"
           title="A product lab shaping agent cognition through shipped systems."
-          description="We care less about abstractions and more about seeing how memory, routing, and collaboration behave in real coding workflows where developers are still wasting context on repetitive setup."
+          description="We care about what actually helps agents work better in real coding workflows."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {companyStory.map((item) => (

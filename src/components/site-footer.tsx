@@ -11,7 +11,7 @@ export function SiteFooter() {
           <div className="max-w-xl space-y-4">
             <Brand compact />
             <p className="text-sm leading-7 text-[var(--muted)]">
-              Sankhya AI Labs is building Dhee, a portable memory OS that turns any coding agent into a personalized, self-evolving collaborator. SensAI remains the secondary edtech product.
+              Sankhya AI Labs builds Dhee, a portable memory OS for coding agents. SensAI is the secondary product.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -27,7 +27,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="flex flex-col gap-3 border-t border-[var(--border)] pt-6 text-sm text-[var(--muted)] md:flex-row md:items-center md:justify-between">
-          <p>Built from India for developers tired of wasting context on repetitive setup and brittle handoffs.</p>
+          <p>Built from India for developers tired of wasted context and brittle handoffs.</p>
           <div className="flex flex-wrap gap-4">
             <Link href="/products/dhee" className="transition hover:text-[var(--accent)]">
               Dhee product page

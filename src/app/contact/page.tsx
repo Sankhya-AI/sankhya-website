@@ -17,7 +17,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Contact"
         title="Let&apos;s talk about memory, context, and agent continuity."
-        description="If you are exploring Dhee, building an agent runtime, or trying to stop wasting tokens on bloated context and brittle handoffs, this is the right place to start."
+        description="If you are exploring Dhee or building agents that need better memory, start here."
         primaryCta={{ label: "Explore Dhee", href: "/products/dhee" }}
         secondaryCta={{ label: "See the systems", href: "/models" }}
       />
@@ -87,7 +87,7 @@ export default function ContactPage() {
               Mail-first for now
             </h3>
             <p className="mt-4 text-sm leading-7 text-[var(--muted)]">
-              This site still uses a simple mail workflow so conversations can start quickly while the product and systems story keeps moving.
+              Simple email for now.
             </p>
             <a
               href={`mailto:${contactMeta.email}`}
