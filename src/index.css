@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 93%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 40 20% 93%;
+    --secondary: 40 10% 88%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 40 10% 88%;
+    --muted-foreground: 0 0% 42%;
+    --accent: 40 10% 88%;
+    --accent-foreground: 0 0% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 12% 80%;
+    --input: 40 12% 80%;
+    --ring: 0 0% 10%;
+    --radius: 0.375rem;
+
+    --bg-cream: #F0EDE6;
+    --bg-dark: #0D0D0D;
+    --bg-card: #1A1A1A;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --text-light: #FFFFFF;
+    --text-muted: #999999;
+    --accent-green: #22C55E;
+    --accent-red: #EF4444;
+    --accent-blue: #3B82F6;
+    --border-light: #D4D0C8;
+    --border-dark: #333333;
+    --font-geist: 'Geist', 'Geist Fallback', sans-serif;
+    --font-dot-gothic: 'DotGothic16', 'DotGothic16 Fallback', monospace;
+    --font-space-mono: 'Space Mono', 'Space Mono Fallback', monospace;
+    --font-devanagari-display: 'Devanagari MT', 'Devanagari Sangam MN', 'ITF Devanagari', 'Kohinoor Devanagari', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-geist);
+    background-color: var(--bg-cream);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-dot-gothic);
+    font-weight: 400;
+  }
+}
+
+@layer components {
+  .grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .btn-outline {
+    @apply border border-[var(--text-primary)] text-[var(--text-primary)] bg-transparent px-5 py-3 rounded-md text-sm transition-all duration-200;
+  }
+
+  .btn-outline:hover {
+    @apply bg-[var(--text-primary)] text-[var(--bg-cream)];
+  }
+
+  .section-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .section-fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .font-pixel {
+    font-family: var(--font-dot-gothic);
+  }
+
+  .font-bit {
+    font-family: var(--font-dot-gothic);
+  }
+
+  .font-devanagari-display {
+    font-family: var(--font-devanagari-display);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: none;
+    text-rendering: geometricPrecision;
+  }
+  
+  .font-mono {
+    font-family: var(--font-space-mono);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.animate-marquee-left {
+  animation: marquee-left 30s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 30s linear infinite;
+}
+
+.animate-marquee-left:hover,
+.animate-marquee-right:hover {
+  animation-play-state: paused;
+}
