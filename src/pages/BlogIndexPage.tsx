@@ -1,7 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router';
 import { BlogPoster } from '../components/BlogPoster';
+import { Seo } from '../components/Seo';
 import { blogPosts } from '../content/blog';
+import { blogIndexJsonLd } from '../lib/seo';
 
 export function BlogIndexPage() {
   const [featured, ...sideArticles] = blogPosts;
@@ -12,6 +14,12 @@ export function BlogIndexPage() {
 
   return (
     <main className="bg-cream pt-20 text-[#14110f]">
+      <Seo
+        title="Blog - Sankhya AI Labs"
+        description="Essays from Sankhya AI Labs on Dhee, agent memory, context routing, portable cognition, and self-evolving AI systems."
+        path="/blog"
+        jsonLd={blogIndexJsonLd(blogPosts)}
+      />
       <section className="border-b border-[#bdb6ae] px-5 pt-16 pb-16 md:px-8 md:pt-24 md:pb-24">
         <h1 className="max-w-[1480px] font-bit text-[clamp(4.2rem,8vw,9rem)] font-normal leading-[0.92] tracking-normal">
           Latest from the blog.

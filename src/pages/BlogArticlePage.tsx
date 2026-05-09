@@ -2,8 +2,10 @@ import { ArrowUpRight } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, Navigate, useParams } from 'react-router';
 import { BlogPoster } from '../components/BlogPoster';
+import { Seo } from '../components/Seo';
 import { blogPosts, getBlogPost } from '../content/blog';
 import type { BlogVisual } from '../content/blog';
+import { blogPostingJsonLd, breadcrumbJsonLd } from '../lib/seo';
 
 function DiagramShell({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -291,6 +293,20 @@ export function BlogArticlePage() {
 
   return (
     <main className="bg-cream">
+      <Seo
+        title={`${post.title} - Sankhya AI Labs`}
+        description={post.excerpt}
+        path={`/blog/${post.slug}`}
+        type="article"
+        jsonLd={[
+          blogPostingJsonLd(post),
+          breadcrumbJsonLd([
+            { name: 'Home', url: '/' },
+            { name: 'Blog', url: '/blog' },
+            { name: post.title, url: `/blog/${post.slug}` },
+          ]),
+        ]}
+      />
       <article>
         <header data-navbar-inverse="true" className="relative overflow-visible bg-[#20201f] px-6 pt-32 pb-0 text-[#f5efe7] sm:px-10 md:px-12 md:pt-36 lg:px-16">
           <div

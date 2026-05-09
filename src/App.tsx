@@ -8,6 +8,8 @@ import { CityConnections } from './sections/CityConnections';
 import { Blog } from './sections/Blog';
 import { Footer } from './sections/Footer';
 import { PixelDither } from './components/PixelDither';
+import { Seo } from './components/Seo';
+import { organizationJsonLd, websiteJsonLd } from './lib/seo';
 import { Analytics } from '@vercel/analytics/react';
 import { Navigate, Route, Routes } from 'react-router';
 
@@ -17,6 +19,7 @@ import { BlogIndexPage } from './pages/BlogIndexPage';
 function LandingPage() {
   return (
     <>
+      <Seo jsonLd={[organizationJsonLd(), websiteJsonLd()]} />
       <Hero />
       <div className="relative z-10 bg-cream">
         <Features />
