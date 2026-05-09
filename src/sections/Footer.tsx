@@ -1,7 +1,8 @@
 const menuLinks = [
-  ['Stack', '#stack'],
-  ['Why us', '#why-us'],
-  ['Systems', '#systems'],
+  ['Stack', '/#stack'],
+  ['Why us', '/#why-us'],
+  ['Systems', '/#systems'],
+  ['Blog', '/#blog'],
 ];
 
 const followLinks = [

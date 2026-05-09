@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { useLocation } from 'react-router';
 
 const navItems = [
-  { label: 'Stack', href: '#stack', id: 'stack' },
-  { label: 'Why us', href: '#why-us', id: 'why-us' },
-  { label: 'Systems', href: '#systems', id: 'systems' },
+  { label: 'Stack', href: '/#stack', id: 'stack' },
+  { label: 'Why us', href: '/#why-us', id: 'why-us' },
+  { label: 'Systems', href: '/#systems', id: 'systems' },
+  { label: 'Blog', href: '/#blog', id: 'blog' },
 ];
 
 export function Navbar() {
+  const location = useLocation();
   const [inverted, setInverted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState('');
@@ -15,12 +18,18 @@ export function Navbar() {
 
   useEffect(() => {
     const updateNavState = () => {
+      const isBlogRoute = location.pathname.startsWith('/blog');
       const inverseSections = Array.from(document.querySelectorAll('[data-navbar-inverse]'));
       const shouldInvert = inverseSections.some((section) => {
         const rect = section.getBoundingClientRect();
         return rect.top < 76 && rect.bottom > 0;
       });
       setInverted(shouldInvert);
+
+      if (isBlogRoute) {
+        setActiveId('blog');
+        return;
+      }
 
       const current = navItems.find((item) => {
         const section = document.getElementById(item.id);
@@ -46,7 +55,7 @@ export function Navbar() {
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
     };
-  }, []);
+  }, [location.pathname]);
 
   const navSurface = inverted
     ? 'border-white/10 bg-[#0d0d0d]/78 text-[#f8ead8] shadow-lg'
@@ -68,7 +77,7 @@ export function Navbar() {
       <nav className={`h-16 border-y backdrop-blur-2xl transition-colors duration-300 md:h-14 ${navSurface}`}>
         <div className="mx-auto flex h-full w-full items-center justify-between">
           <div className="flex items-center">
-            <a href="#home" className="flex shrink-0 items-center gap-3 px-3 md:px-4" aria-label="Sankhya AI Labs home">
+            <a href="/" className="flex shrink-0 items-center gap-3 px-3 md:px-4" aria-label="Sankhya AI Labs home">
               <img src="/assets/sankhya-logo.png" alt="Sankhya AI Labs" className="h-[29px] w-[29px] shrink-0 self-center" />
               <span className="flex items-center gap-2.5 leading-none">
                 <span className={`font-mono text-[25px] font-normal leading-none tracking-normal md:text-[26px] ${inverted ? 'text-[#f8ead8]' : 'text-[#14110f]'}`}>
