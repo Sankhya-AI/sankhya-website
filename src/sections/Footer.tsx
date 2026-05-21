@@ -1,12 +1,14 @@
 const menuLinks = [
+  ['Home', '/#home'],
   ['Stack', '/#stack'],
-  ['Why us', '/#why-us'],
+  ['Memory', '/#memory'],
   ['Systems', '/#systems'],
   ['Blog', '/#blog'],
 ];
 
 const followLinks = [
-  ['Star on GitHub', 'https://github.com/Sankhya-AI/dhee'],
+  ['Star Dhee on GitHub', 'https://github.com/Sankhya-AI/dhee'],
+  ['Explore Dhee', 'https://dhee.sankhyaailabs.com'],
 ];
 
 export function Footer() {
@@ -32,7 +34,7 @@ export function Footer() {
         }}
       />
 
-      <div className="mx-auto flex min-h-[340px] max-w-[1540px] flex-col px-5 pt-14 pb-7 md:min-h-[410px] md:px-8 md:pt-16">
+      <div className="mx-auto flex min-h-[320px] max-w-[1540px] flex-col px-5 pt-12 pb-7 md:min-h-[360px] md:px-8 md:pt-14">
         <div className="grid gap-12 md:grid-cols-[180px_180px_minmax(0,1fr)_270px]">
           <div>
             <h4 className="mb-3 font-mono text-xs font-bold uppercase tracking-normal text-white/88">
@@ -75,7 +77,7 @@ export function Footer() {
           </div>
 
           <div className="max-w-[420px] font-mono text-sm leading-relaxed text-white/58 md:justify-self-center">
-            Sankhya builds shared memory, context routing, and execution fabric for agentic systems that need to keep work moving across tools, teams, and time.
+            Sankhya builds Chotu, a local-first personal AI assistant, and Dhee, the context compiler that lets it remember, act, verify, and learn across sessions.
           </div>
 
           <div>
@@ -94,7 +96,7 @@ export function Footer() {
 
         <div className="mt-auto flex flex-col gap-3 border-t border-white/10 pt-6 font-mono text-[11px] uppercase text-white/42 md:flex-row md:items-center md:justify-between">
           <span>© 2026 Sankhya AI Labs</span>
-          <span>Built for memory-aware agents and human operators</span>
+          <span>Built for Chotu, Dhee, and memory-aware work</span>
         </div>
       </div>
     </footer>

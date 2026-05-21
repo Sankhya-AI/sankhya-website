@@ -6,6 +6,7 @@ import {
   Database,
   FileText,
   MessageSquare,
+  MonitorDot,
   Network,
   RadioTower,
   Search,
@@ -58,13 +59,13 @@ function SmallSignalCard({ label, title, meta }: { label: string; title: string;
 
 function CentralCommandDemo() {
   return (
-    <ScreenFrame title="sankhya://command-fabric">
+    <ScreenFrame title="chotu://orb-workspace">
       <DottedSurface className="min-h-[clamp(320px,42svh,380px)] p-4 md:p-5">
         <div className="grid min-h-[300px] gap-4 md:grid-cols-[1fr_1.05fr_1fr]">
           <div className="space-y-4 self-center">
-            <SmallSignalCard label="voice agent" title="Citizen callback needs policy context" meta="JanSetu / ward 12" />
-            <SmallSignalCard label="code agent" title="Deploy blocked by stale environment state" meta="repo / infra" />
-            <SmallSignalCard label="research" title="New circular changes eligibility wording" meta="policy monitor" />
+            <SmallSignalCard label="screen context" title="You are reviewing pricing copy" meta="browser / active tab" />
+            <SmallSignalCard label="repo agent" title="Website branch has unpushed edits" meta="git / local worktree" />
+            <SmallSignalCard label="task ui" title="Homepage rewrite needs approval" meta="draft / waiting" />
           </div>
 
           <div className="relative flex items-center justify-center">
@@ -73,38 +74,38 @@ function CentralCommandDemo() {
             <div className="relative z-10 w-full max-w-[260px] rounded-lg border border-black bg-[#111] p-5 text-white shadow-[0_18px_48px_rgba(0,0,0,0.32)]">
               <div className="mb-4 flex items-center gap-3">
                 <div className="grid h-10 w-10 place-items-center rounded bg-[#d04c23]">
-                  <BrainCircuit size={20} />
+                  <MonitorDot size={20} />
                 </div>
                 <div>
-                  <div className="font-mono text-sm font-bold">Sankhya Fabric</div>
-                  <div className="font-mono text-[10px] uppercase tracking-normal text-white/55">shared context</div>
+                  <div className="font-mono text-sm font-bold">Chotu</div>
+                  <div className="font-mono text-[10px] uppercase tracking-normal text-white/55">chat + tasks + code</div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
                 <div className="rounded bg-white/10 p-2">
-                  <div className="text-white/50">signals</div>
-                  <div className="text-lg">14</div>
+                  <div className="text-white/50">tasks</div>
+                  <div className="text-lg">8</div>
                 </div>
                 <div className="rounded bg-white/10 p-2">
-                  <div className="text-white/50">agents</div>
-                  <div className="text-lg">6</div>
+                  <div className="text-white/50">tools</div>
+                  <div className="text-lg">live</div>
                 </div>
                 <div className="rounded bg-white/10 p-2">
-                  <div className="text-white/50">actions</div>
+                  <div className="text-white/50">runs</div>
                   <div className="text-lg">3</div>
                 </div>
                 <div className="rounded bg-white/10 p-2">
                   <div className="text-white/50">memory</div>
-                  <div className="text-lg">live</div>
+                  <div className="text-lg">Dhee</div>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="space-y-4 self-center">
-            <SmallSignalCard label="field ops" title="Operator approval needed before escalation" meta="human in loop" />
-            <SmallSignalCard label="analytics" title="Pattern found across 38 similar requests" meta="trend signal" />
-            <SmallSignalCard label="memory" title="Decision saved for the next matching case" meta="learning layer" />
+            <SmallSignalCard label="browser proof" title="Visual pass saved with screenshots" meta="evidence / local" />
+            <SmallSignalCard label="owner approval" title="Only accepted changes touch the repo" meta="safe patch" />
+            <SmallSignalCard label="learning" title="Style feedback becomes reusable context" meta="next run" />
           </div>
         </div>
       </DottedSurface>
@@ -114,27 +115,27 @@ function CentralCommandDemo() {
 
 function ContextIntakeDemo() {
   const rows = [
-    ['policy_pdf', 'eligibility rule', '0.94', 'route'],
-    ['meeting_note', 'operator preference', '0.88', 'attach'],
-    ['repo_log', 'deploy blocker', '0.86', 'assign'],
-    ['old_thread', 'duplicate chatter', '0.22', 'skip'],
+    ['repo_tree', 'pricing route', '0.96', 'load'],
+    ['browser_trace', 'cta mismatch', '0.91', 'attach'],
+    ['screen_note', 'nav feedback', '0.84', 'attach'],
+    ['old_thread', 'stale hero image', '0.19', 'skip'],
   ];
 
   return (
-    <ScreenFrame title="sankhya://context-intake">
+    <ScreenFrame title="dhee://context-compiler">
       <div className="min-h-[clamp(320px,42svh,380px)] bg-[#11100e] p-4 font-mono text-xs text-[#f7efe4] md:p-5">
         <div className="mb-5 flex flex-wrap items-center gap-2 text-[11px] text-[#8d857c]">
-          <span className="text-[#64c779]">~/lab</span>
-          <span>scan --sources calls docs repos notes</span>
-          <span className="ml-auto rounded bg-[#1e2b1f] px-2 py-1 text-[#75d586]">connected</span>
+          <span className="text-[#64c779]">~/chotu</span>
+          <span>compile --sources screen repo browser memory</span>
+          <span className="ml-auto rounded bg-[#1e2b1f] px-2 py-1 text-[#75d586]">Dhee connected</span>
         </div>
         <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
           <div className="space-y-3">
             {[
-              ['Call transcript', 'intent, location, urgency'],
-              ['Policy PDF', 'rule, exception, evidence'],
-              ['Repo history', 'decision, blocker, owner'],
-              ['Operator notes', 'preference, approval path'],
+              ['Screen context', 'what the user is seeing now'],
+              ['Virtual repo tree', 'files, ownership, dirty state'],
+              ['Browser evidence', 'screenshots, console, layout checks'],
+              ['Owner preference', 'style rules and product decisions'],
             ].map(([title, meta]) => (
               <div key={title} className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
                 <div className="flex items-center gap-3">
@@ -151,11 +152,11 @@ function ContextIntakeDemo() {
           <div className="rounded-lg border border-white/10 bg-[#161b1c] p-4">
             <div className="mb-3 flex items-center gap-2 text-[#74aee8]">
               <Database size={15} />
-              context_router.score
+              dhee.context.compile
             </div>
             <div className="grid grid-cols-[1.1fr_1fr_0.6fr_0.6fr] gap-x-3 gap-y-2 text-[11px]">
               <div className="text-[#8d857c]">source</div>
-              <div className="text-[#8d857c]">entity</div>
+              <div className="text-[#8d857c]">packet</div>
               <div className="text-[#8d857c]">score</div>
               <div className="text-[#8d857c]">action</div>
               {rows.flatMap(([source, entity, score, action]) => [
@@ -166,7 +167,7 @@ function ContextIntakeDemo() {
               ])}
             </div>
             <div className="mt-5 rounded border border-[#2b5630] bg-[#112015] p-3 text-[#74d582]">
-              selected 6 useful facts, skipped 112 noisy lines, opened 2 agent tasks
+              selected 6 useful facts, skipped 112 noisy lines, opened one bounded run
             </div>
           </div>
         </div>
@@ -177,22 +178,22 @@ function ContextIntakeDemo() {
 
 function SignalRouterDemo() {
   return (
-    <ScreenFrame title="sankhya://signal-router">
+    <ScreenFrame title="chotu://task-router">
       <DottedSurface className="min-h-[clamp(320px,42svh,380px)] p-4 md:p-5">
         <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
           <div className="rounded-lg border border-black/10 bg-white/92 p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between border-b border-black/10 pb-3">
-              <div className="font-mono text-[11px] uppercase tracking-normal text-[#7c746d]">channel / public-services</div>
+              <div className="font-mono text-[11px] uppercase tracking-normal text-[#7c746d]">chat / current request</div>
               <div className="font-mono text-[11px] text-[#7c746d]">Today 14:02</div>
             </div>
             <div className="space-y-4 font-mono text-sm text-[#24201d]">
-              <p><strong>Sankhya</strong> flagged a spike in ward 12 benefit calls: <span className="rounded bg-[#ffe2d4] px-2 py-1 text-[#b64923]">eligibility confusion</span> +38% above baseline.</p>
+              <p><strong>You</strong> ask Chotu to refresh a product page and keep the existing visual character: <span className="rounded bg-[#ffe2d4] px-2 py-1 text-[#b64923]">change copy, not the whole design</span>.</p>
               <p className="rounded-lg bg-[#f0ece6] p-4">
-                No prior approved playbook for this policy class. Ask research agent to verify circular, then route a human-readable update to operators?
+                Chotu turns the vague ask into a task packet: inspect the route, patch the copy, verify the page, then ask before saving the run as reusable memory.
               </p>
               <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded bg-[#d982a8] font-bold text-white">OP</div>
-                <p>Yes. Keep the outbound note short and include the document link.</p>
+                <div className="grid h-10 w-10 place-items-center rounded bg-[#d982a8] font-bold text-white">YOU</div>
+                <p>Use the current aesthetic. Keep the owner in control.</p>
               </div>
             </div>
           </div>
@@ -201,15 +202,15 @@ function SignalRouterDemo() {
             <div className="mb-4 flex items-center gap-3">
               <RadioTower size={18} className="text-[#70d980]" />
               <div>
-                <div className="font-mono text-sm font-bold">Running procedure</div>
-                <div className="font-mono text-[10px] uppercase tracking-normal text-white/45">signal {'->'} action</div>
+                <div className="font-mono text-sm font-bold">Routing task</div>
+                <div className="font-mono text-[10px] uppercase tracking-normal text-white/45">request {'->'} bounded run</div>
               </div>
             </div>
             {[
-              ['Research agent', 'Circular verified', 'done'],
-              ['Context router', 'Operator note drafted', 'done'],
-              ['Human approval', 'Awaiting review', 'open'],
-              ['Voice agent', 'Queue update after approval', 'queued'],
+              ['Dhee compiler', 'Relevant context loaded', 'done'],
+              ['Repo planner', 'Scoped patch drafted', 'done'],
+              ['Owner approval', 'Waiting before apply', 'open'],
+              ['Browser verifier', 'Queued after changes', 'queued'],
             ].map(([label, desc, state]) => (
               <div key={label} className="flex items-start gap-3 border-t border-white/10 py-3 font-mono">
                 <span className={`mt-1 h-2.5 w-2.5 rounded-full ${state === 'done' ? 'bg-[#70d980]' : state === 'open' ? 'bg-[#f0b35c]' : 'bg-white/30'}`} />
@@ -229,22 +230,22 @@ function SignalRouterDemo() {
 
 function ActionLoopDemo() {
   return (
-    <ScreenFrame title="sankhya://action-loop">
+    <ScreenFrame title="chotu://coding-loop">
       <div className="min-h-[clamp(320px,42svh,380px)] bg-[#f8f5ee] p-4 md:p-5">
         <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="rounded-lg border border-[#ded4c8] bg-white p-5">
             <div className="mb-4 flex items-center gap-3">
               <Workflow size={18} className="text-[#c94d25]" />
               <div>
-                <div className="font-mono text-sm font-bold text-[#211d1a]">Approval lane</div>
-                <div className="font-mono text-[10px] uppercase tracking-normal text-[#8a8178]">human guided execution</div>
+                <div className="font-mono text-sm font-bold text-[#211d1a]">Coding lane</div>
+                <div className="font-mono text-[10px] uppercase tracking-normal text-[#8a8178]">human approved execution</div>
               </div>
             </div>
             <div className="space-y-3">
               {[
-                ['Draft operator update', 'ready for review', 'review'],
-                ['Schedule follow-up call', 'needs location confirmation', 'blocked'],
-                ['Update playbook', 'will save after approval', 'queued'],
+                ['Patch workspace', 'isolated diff ready', 'review'],
+                ['Run browser check', 'captures proof after apply', 'queued'],
+                ['Save learning', 'only after accepted outcome', 'queued'],
               ].map(([title, meta, state]) => (
                 <div key={title} className="rounded-lg border border-[#ded4c8] bg-[#fbfaf6] p-4 font-mono">
                   <div className="flex items-center gap-3">
@@ -265,14 +266,14 @@ function ActionLoopDemo() {
           <div className="rounded-lg border border-black bg-[#101010] p-5 font-mono text-white shadow-[0_18px_44px_rgba(0,0,0,0.26)]">
             <div className="mb-4 flex items-center gap-2 text-[11px] text-white/50">
               <Terminal size={14} />
-              sankhya run --with-approval
+              chotu run --with-approval
             </div>
             <div className="space-y-3 text-xs">
-              <div><span className="text-[#70d980]">ok</span> loaded live context packet: ward_12_policy_confusion</div>
-              <div><span className="text-[#70d980]">ok</span> matched 38 similar calls and 1 policy change</div>
-              <div><span className="text-[#f0b35c]">hold</span> action requires operator approval</div>
+              <div><span className="text-[#70d980]">ok</span> loaded context packet: pricing_page_refresh</div>
+              <div><span className="text-[#70d980]">ok</span> matched prior visual decisions and current repo state</div>
+              <div><span className="text-[#f0b35c]">hold</span> proposed patch requires owner approval</div>
               <div className="rounded border border-[#324a35] bg-[#111d13] p-4 text-[#dcebd8]">
-                Proposed response: "We are verifying eligibility under the updated circular. Please keep your location proof ready for the callback."
+                Proposed change: update product copy, keep the retro layout, verify desktop and mobile before final handoff.
               </div>
               <div className="flex gap-2 pt-1">
                 <button className="rounded bg-[#d04c23] px-4 py-2 text-xs font-bold text-white">Approve</button>
@@ -288,7 +289,7 @@ function ActionLoopDemo() {
 
 function LearningLayerDemo() {
   return (
-    <ScreenFrame title="sankhya://learning-layer">
+    <ScreenFrame title="dhee://learning-layer">
       <DottedSurface className="min-h-[clamp(320px,42svh,380px)] p-4 md:p-5">
         <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
           <div className="rounded-lg border border-black/10 bg-white/92 p-5">
@@ -298,15 +299,15 @@ function LearningLayerDemo() {
               </div>
               <div>
                 <div className="font-mono text-sm font-bold text-[#24201d]">Reusable decision</div>
-                <div className="font-mono text-[10px] uppercase tracking-normal text-[#8a8178]">learned from operator approval</div>
+                <div className="font-mono text-[10px] uppercase tracking-normal text-[#8a8178]">learned from accepted work</div>
               </div>
               <span className="ml-auto rounded bg-[#dff6e4] px-2 py-1 font-mono text-[10px] font-bold text-[#27753a]">saved</span>
             </div>
             <p className="font-mono text-sm leading-relaxed text-[#39332e]">
-              For this policy class, ask for location proof before escalation and keep the citizen-facing message under 80 words.
+              When updating the website, keep visual changes scoped, verify in the browser, and save feedback as reusable style memory.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              {['trigger: eligibility_confusion', 'scope: ward-level policy', 'approval: operator first'].map((item) => (
+              {['trigger: product_copy', 'scope: website', 'approval: owner first'].map((item) => (
                 <div key={item} className="rounded border border-[#ded4c8] bg-[#fbfaf6] p-3 font-mono text-[10px] text-[#5f5a55]">{item}</div>
               ))}
             </div>
@@ -314,9 +315,9 @@ function LearningLayerDemo() {
 
           <div className="space-y-4">
             {[
-              ['Next matching case', 'The agent starts with the saved playbook instead of asking the same questions again.'],
-              ['Team preference', 'Human approvals become clear operating rules, not tribal memory.'],
-              ['System feedback', 'Every action writes back what happened so the next run is smarter.'],
+              ['Next matching run', 'Chotu starts with the saved visual rules instead of asking the same questions again.'],
+              ['Preference memory', 'Owner feedback becomes operating context, not a buried chat message.'],
+              ['System feedback', 'Browser proof and outcomes teach Dhee what context helped and what was noise.'],
             ].map(([title, text], index) => (
               <div key={title} className="rounded-lg border border-[#ded4c8] bg-white/92 p-4 font-mono shadow-sm">
                 <div className="flex items-center gap-3">
@@ -338,51 +339,51 @@ function LearningLayerDemo() {
 const stages = [
   {
     id: '01',
-    eyebrow: 'The central command',
-    title: 'Connect the moving parts without flattening them into chat.',
+    eyebrow: 'The orb',
+    title: 'A tiny surface for chat, tasks, and serious work.',
     description:
-      'Sankhya gives agents, people, and systems a shared operating surface. Calls, repos, documents, approvals, and signals stay connected to the work they change.',
-    note: 'context graph',
+      'Chotu starts as a small desktop orb, then expands into chat and task views when the work needs structure.',
+    note: 'personal surface',
     icon: Network,
     Demo: CentralCommandDemo,
   },
   {
     id: '02',
-    eyebrow: 'Context intake',
-    title: 'Turn scattered artifacts into usable context packets.',
+    eyebrow: 'Context compiler',
+    title: 'Dhee gives Chotu the right working set before it acts.',
     description:
-      'Agents should not reread the whole world every time. Sankhya scores the useful fragments, skips noise, and hands each agent the context it needs.',
-    note: 'router',
+      'Repos, screen context, browser evidence, decisions, and preferences become a compact task packet instead of a bloated transcript.',
+    note: 'Dhee memory',
     icon: Search,
     Demo: ContextIntakeDemo,
   },
   {
     id: '03',
-    eyebrow: 'Signal routing',
-    title: 'Spot the pattern and route the next step.',
+    eyebrow: 'Task routing',
+    title: 'One request becomes the right bounded run.',
     description:
-      'When something important appears across calls, code, operations, or research, the system opens the right task with the right memory and the right owner.',
-    note: 'live signals',
+      'Chotu decides what needs chat, what needs a plan, what needs code, and what needs approval before anything changes.',
+    note: 'safe actions',
     icon: RadioTower,
     Demo: SignalRouterDemo,
   },
   {
     id: '04',
-    eyebrow: 'Execution loops',
-    title: 'Agents can act, but the important steps stay reviewable.',
+    eyebrow: 'Coding loop',
+    title: 'Plan, patch, verify, ask, repeat.',
     description:
-      'Sankhya closes the gap between insight and action with approval lanes, tool runs, operator updates, and traceable outcomes.',
-    note: 'human in loop',
+      'For code work, Chotu can inspect a repo, make scoped changes, verify in the browser, collect feedback, and save the evidence.',
+    note: 'browser proof',
     icon: ShieldCheck,
     Demo: ActionLoopDemo,
   },
   {
     id: '05',
     eyebrow: 'Learning layer',
-    title: 'Every approved action becomes better starting context.',
+    title: 'Every accepted run makes the next run warmer.',
     description:
-      'The system remembers decisions, preferences, and procedures so useful behavior compounds instead of resetting at the next session.',
-    note: 'shared memory',
+      'Dhee turns feedback, decisions, and successful traces into memory so Chotu feels more experienced each time.',
+    note: 'compounding context',
     icon: BrainCircuit,
     Demo: LearningLayerDemo,
   },
@@ -457,10 +458,10 @@ export function Features() {
         <div className="mx-auto flex min-h-[42svh] w-full max-w-[1500px] flex-col justify-start pt-24 pb-8 md:min-h-[44svh] md:pt-28">
           <div className="mb-5 flex items-center gap-2 font-mono text-xs uppercase tracking-normal text-white/50">
             <span className="h-1.5 w-1.5 rounded-full bg-white/55" />
-            Systems in motion
+            Chotu in motion
           </div>
           <h2 className="max-w-[1120px] font-pixel text-[54px] leading-[0.88] text-white md:text-[88px] lg:text-[112px]">
-            Infrastructure for agentic work.
+            A personal assistant that can actually carry the work.
           </h2>
         </div>
       </div>

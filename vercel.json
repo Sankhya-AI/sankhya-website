@@ -26,7 +26,11 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!.*\\..*).*)",
+      "source": "/downloads/:artifact",
+      "destination": "/api/downloads/:artifact"
+    },
+    {
+      "source": "/((?!api/|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]

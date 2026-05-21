@@ -1,13 +1,13 @@
 const integrations = [
-  { name: 'Claude Code', description: "Terminal coding agents can inherit repo decisions, prior attempts, and review constraints without replaying the whole transcript." },
-  { name: 'Codex', description: "A second agent can resume the same project with the same shared trail, not a pasted summary that goes stale by the next change." },
-  { name: 'Cursor', description: 'Editor-native work stays connected to CLI work so rules, preferences, and learnings move with the codebase.' },
-  { name: 'Voice Agents', description: 'Live calls can route intent, location, and policy context to the right follow-up system while keeping operators in control.' },
-  { name: 'Research', description: 'Signals from papers, policy changes, markets, or field notes can become traceable tasks with source context attached.' },
-  { name: 'Git', description: "Repo memory rides on the trail teams already produce: commits, branches, diffs, and review threads." },
-  { name: 'GitHub', description: "PR decisions, code ownership, and review feedback become scoped memory when an agent edits nearby files." },
-  { name: 'Routing API', description: "Reusable schemas score memories, scope context, and share promoted learnings between agentic systems." },
-  { name: 'Local-first', description: "Systems can run close to the work, then become reviewable and collaborative when a team needs a shared layer." },
+  { name: 'Desktop Orb', description: 'Chotu starts as a tiny surface on your desktop, then opens into chat or tasks only when the work needs structure.' },
+  { name: 'Chat UI', description: 'Ask, clarify, plan, and hand over context without turning every request into a giant prompt ritual.' },
+  { name: 'Task UI', description: 'Longer work becomes visible: intent, plan, blocked steps, owner approval, browser proof, and final handoff.' },
+  { name: 'Coding Runs', description: 'Chotu can inspect a repo, prepare a bounded patch, verify in the browser, and ask before applying risky changes.' },
+  { name: 'Dhee Memory', description: 'Dhee compiles the right context from prior decisions, preferences, task state, and evidence before Chotu acts.' },
+  { name: 'Screen Context', description: 'Useful screen observations become evidence for the current task, not permanent truth that overwrites your profile.' },
+  { name: 'Browser Proof', description: 'Visual work is checked where users see it: screenshots, console logs, DOM state, and interaction evidence.' },
+  { name: 'GitHub', description: 'Repo decisions, review feedback, and accepted patches become scoped memory for future coding runs.' },
+  { name: 'Local-first', description: 'Chotu runs close to your machine, keeps control with you, and shares only what you choose to share.' },
 ];
 
 function IntegrationCard({ name, description }: { name: string; description: string }) {

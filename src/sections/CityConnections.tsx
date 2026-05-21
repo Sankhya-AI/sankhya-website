@@ -1,31 +1,31 @@
 import { useEffect, useRef, useState } from 'react';
-import { Terminal, GitBranch, Workflow, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Bot, BrainCircuit, MonitorDot, Workflow } from 'lucide-react';
 
 const audiences = [
   {
-    eyebrow: 'For operating teams',
-    title: 'Turn scattered tools into one working memory.',
+    eyebrow: 'Available soon',
+    title: 'Chotu Personal AI Assistant',
     description:
-      'Sankhya connects calls, documents, repos, approvals, and signals so agents can act with the history humans already built.',
-    cta: 'See the systems',
-    href: '#stack',
+      'The desktop orb, chat surface, task view, private Chotu Memory, and approval-gated actions for people who want an assistant that can carry real work.',
+    cta: 'Subscribe',
+    href: '/pricing',
     points: [
-      'Shared memory for agents and teams',
-      'Approval lanes for high-stakes work',
-      'Reusable learning from every outcome',
+      'Orb, chat, and task UI',
+      'Dhee-powered Chotu Memory',
+      'Bounded coding runs with browser proof',
     ],
   },
   {
-    eyebrow: 'For agent builders',
-    title: 'Build on routing, memory, and execution fabric.',
+    eyebrow: 'Coming soon',
+    title: 'Chotu Desk Companion',
     description:
-      'The lab designs the primitives that let useful agent behavior compound instead of disappearing at the end of a session.',
-    cta: 'See the systems',
-    href: '#stack',
+      'A physical companion for the desk that brings the same Chotu Memory into voice-first, ambient work without turning your day into another dashboard.',
+    cta: 'Follow the build',
+    href: '#blog',
     points: [
-      'Context routers for task-specific memory',
-      'Schemas for multi-agent handoffs',
-      'Interfaces that keep humans in control',
+      'Ambient presence',
+      'Voice-first help',
+      'Same private Chotu Memory',
     ],
   },
 ];
@@ -52,70 +52,72 @@ export function CityConnections() {
       className="w-full bg-cream grid-pattern py-16 md:py-24 px-4 md:px-8 overflow-hidden"
     >
       <div className={`max-w-[1400px] mx-auto transition-all duration-600 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
-        {/* Header */}
         <div className="mb-12 md:mb-16">
           <h2 className="font-pixel text-4xl md:text-5xl text-[var(--text-primary)] mb-4">
-            One lab. Many surfaces.
+            Products from Sankhya.
           </h2>
-          <p className="font-mono text-sm text-[var(--text-secondary)] max-w-[640px] leading-relaxed">
-            Sankhya builds the connective infrastructure agents need before they can become dependable coworkers: memory, routing, approvals, and feedback loops.
+          <p className="font-mono text-sm text-[var(--text-secondary)] max-w-[720px] leading-relaxed">
+            Chotu is the product layer. Dhee is the memory engine underneath it. The lab builds both so the assistant can remember, act, verify, and stay under your control.
           </p>
         </div>
 
-        {/* Three quick-route cards */}
         <div className="grid md:grid-cols-3 gap-0 border border-[var(--border-light)] mb-12">
           <div className="p-6 border-b md:border-r border-[var(--border-light)]">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
-                <Terminal size={16} className="text-white" />
+                <Bot size={16} className="text-white" />
               </div>
             </div>
             <h3 className="font-mono text-sm font-bold text-[var(--text-primary)] mb-2">
-              Capture the working trail
+              Personal assistant
             </h3>
             <p className="font-mono text-xs text-[var(--text-secondary)] leading-relaxed">
-              Calls, repos, support notes, research, policies, and approvals become durable context instead of scattered residue.
+              The orb, chat, and task surface for everyday work that needs memory, judgment, and follow-through.
             </p>
           </div>
 
           <div className="p-6 border-b md:border-r border-[var(--border-light)]">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
-                <GitBranch size={16} className="text-white" />
-              </div>
-            </div>
-            <h3 className="font-mono text-sm font-bold text-[var(--text-primary)] mb-2">
-              Route context to the right agent
-            </h3>
-            <p className="font-mono text-xs text-[var(--text-secondary)] leading-relaxed">
-              Each agent gets the few facts, constraints, and decisions needed for its work without dragging the full history along.
-            </p>
-          </div>
-
-          <div className="p-6 border-b border-[var(--border-light)]">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
                 <Workflow size={16} className="text-white" />
               </div>
             </div>
             <h3 className="font-mono text-sm font-bold text-[var(--text-primary)] mb-2">
-              Close the learning loop
+              Coding loop
             </h3>
             <p className="font-mono text-xs text-[var(--text-secondary)] leading-relaxed">
-              Human approvals, blocked actions, and successful outcomes become reusable operating knowledge for the next run.
+              Repo context, isolated patches, browser evidence, owner feedback, and safe approval gates in one loop.
+            </p>
+          </div>
+
+          <div className="p-6 border-b border-[var(--border-light)]">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
+                <BrainCircuit size={16} className="text-white" />
+              </div>
+            </div>
+            <h3 className="font-mono text-sm font-bold text-[var(--text-primary)] mb-2">
+              Memory substrate
+            </h3>
+            <p className="font-mono text-xs text-[var(--text-secondary)] leading-relaxed">
+              Dhee compiles context, preserves decisions, and turns accepted work into reusable learning.
             </p>
           </div>
         </div>
 
-        {/* Two audience paths */}
         <div className="grid md:grid-cols-2 gap-0 border border-[var(--border-light)]">
           {audiences.map((a, idx) => (
             <div
               key={idx}
               className={`p-6 md:p-8 ${idx === 0 ? 'border-b md:border-b-0 md:border-r border-[var(--border-light)]' : ''}`}
             >
-              <div className="font-mono text-xs text-[var(--text-secondary)] uppercase tracking-wider mb-3">
-                {a.eyebrow}
+              <div className="mb-5 flex items-center justify-between gap-4">
+                <div className="font-mono text-xs text-[var(--text-secondary)] uppercase tracking-wider">
+                  {a.eyebrow}
+                </div>
+                <div className="grid h-9 w-9 place-items-center rounded-md border border-[var(--border-light)] bg-white/55">
+                  <MonitorDot size={17} className="text-[#c94d25]" />
+                </div>
               </div>
               <h3 className="font-pixel text-2xl md:text-3xl text-[var(--text-primary)] mb-4 leading-tight">
                 {a.title}
@@ -126,7 +128,7 @@ export function CityConnections() {
               <ul className="space-y-2 mb-6">
                 {a.points.map((p) => (
                   <li key={p} className="font-mono text-sm text-[var(--text-primary)] flex items-start gap-2">
-                    <span className="text-[var(--text-muted)] mt-0.5">→</span>
+                    <span className="text-[var(--text-muted)] mt-0.5">-&gt;</span>
                     <span>{p}</span>
                   </li>
                 ))}
