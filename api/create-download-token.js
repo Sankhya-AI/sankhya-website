@@ -2,7 +2,13 @@ import crypto from 'node:crypto';
 import { desktopEntitlementWindow } from './_desktop-license.js';
 import { admin, getAdminAuth, getAdminDb, requireEnv } from './_firebase-admin.js';
 
-const allowedArtifacts = new Set(['chotu-darwin-arm64.zip', 'chotu-darwin-x64.zip', 'chotu-win32-x64.zip']);
+const allowedArtifacts = new Set([
+  'chotu-darwin-arm64.zip',
+  'chotu-darwin-x86_64.zip',
+  'chotu-darwin-x64.zip',
+  'chotu-windows-x64.zip',
+  'chotu-win32-x64.zip',
+]);
 const downloadTokenTtlSeconds = 60;
 
 function signPayload(payload) {

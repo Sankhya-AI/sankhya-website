@@ -2,11 +2,22 @@ import crypto from 'node:crypto';
 import { get } from '@vercel/blob';
 import { admin, getAdminDb, requireEnv } from '../_firebase-admin.js';
 
-const allowedArtifacts = new Set(['chotu-darwin-arm64.zip', 'chotu-darwin-x64.zip', 'chotu-win32-x64.zip']);
+const artifactBlobNames = new Map([
+  ['chotu-darwin-arm64.zip', 'chotu-darwin-arm64.zip'],
+  ['chotu-darwin-x86_64.zip', 'chotu-darwin-x86_64.zip'],
+  ['chotu-darwin-x64.zip', 'chotu-darwin-x86_64.zip'],
+  ['chotu-windows-x64.zip', 'chotu-windows-x64.zip'],
+  ['chotu-win32-x64.zip', 'chotu-windows-x64.zip'],
+]);
 
 function blobPathForArtifact(artifact) {
   const prefix = (process.env.CHOTU_BLOB_RELEASE_PREFIX || 'chotu/releases/stable/0.1.0').replace(/^\/+|\/+$/g, '');
-  return `${prefix}/${artifact}`;
+  return `${prefix}/${artifactBlobNames.get(artifact)}`;
+}
+
+function blobGetOptions() {
+  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
+  return token ? { access: 'private', token, useCache: false } : { access: 'private', useCache: false };
 }
 
 function signPayload(payload) {
@@ -35,10 +46,25 @@ function verifyToken(token, artifact) {
   return decoded;
 }
 
+async function isDownloadTokenAvailable(decoded) {
+  const db = getAdminDb();
+  const tokenRef = db.collection('downloadTokens').doc(decoded.jti);
+  const snapshot = await tokenRef.get();
+  const data = snapshot.data();
+  const expiresAtMs = data?.expiresAt?.toMillis?.() ?? 0;
+
+  return Boolean(
+    snapshot.exists &&
+      !data.usedAt &&
+      data.uid === decoded.uid &&
+      data.artifact === decoded.artifact &&
+      expiresAtMs > Date.now()
+  );
+}
+
 async function consumeDownloadToken(decoded) {
   const db = getAdminDb();
   const tokenRef = db.collection('downloadTokens').doc(decoded.jti);
-
   return db.runTransaction(async (transaction) => {
     const snapshot = await transaction.get(tokenRef);
     const data = snapshot.data();
@@ -69,16 +95,13 @@ export default async function handler(req, res) {
 
   try {
     const artifact = req.query.artifact;
-    if (!allowedArtifacts.has(artifact)) return res.status(404).send('Unknown artifact');
+    if (!artifactBlobNames.has(artifact)) return res.status(404).send('Unknown artifact');
     const decodedToken = verifyToken(req.query.token, artifact);
-    if (!decodedToken || !(await consumeDownloadToken(decodedToken))) {
+    if (!decodedToken || !(await isDownloadTokenAvailable(decodedToken))) {
       return res.status(401).send('Invalid, used, or expired download link');
     }
 
-    const blob = await get(blobPathForArtifact(artifact), {
-      access: 'private',
-      token: requireEnv('BLOB_READ_WRITE_TOKEN'),
-    });
+    const blob = await get(blobPathForArtifact(artifact), blobGetOptions());
 
     if (!blob) {
       return res.status(404).send('Release artifact is not available yet');
@@ -86,6 +109,10 @@ export default async function handler(req, res) {
 
     if (!blob.stream || blob.statusCode !== 200) {
       return res.status(502).send('Could not fetch release artifact');
+    }
+
+    if (!(await consumeDownloadToken(decodedToken))) {
+      return res.status(401).send('Invalid, used, or expired download link');
     }
 
     res.setHeader('Content-Type', blob.blob.contentType || 'application/zip');

@@ -22,12 +22,12 @@ const downloadOptions = [
     detail: 'Apple Silicon',
   },
   {
-    artifact: 'chotu-darwin-x64.zip',
+    artifact: 'chotu-darwin-x86_64.zip',
     label: 'Mac Intel',
     detail: 'Intel x64',
   },
   {
-    artifact: 'chotu-win32-x64.zip',
+    artifact: 'chotu-windows-x64.zip',
     label: 'Windows',
     detail: 'Windows x64',
   },
