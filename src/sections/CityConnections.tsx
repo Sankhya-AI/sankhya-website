@@ -7,7 +7,7 @@ const audiences = [
     title: 'Chotu Personal AI Assistant',
     description:
       'The desktop orb, chat surface, task view, private Chotu Memory, and approval-gated actions for people who want an assistant that can carry real work.',
-    cta: 'Subscribe',
+    cta: 'View pricing',
     href: '/pricing',
     points: [
       'Orb, chat, and task UI',

@@ -1,4 +1,4 @@
-import { ArrowUpRight, Github, ShoppingBag } from 'lucide-react';
+import { ArrowUpRight, Github } from 'lucide-react';
 import { ChotuOrb } from '../components/ChotuOrb';
 import { PixelDither } from '../components/PixelDither';
 
@@ -24,12 +24,9 @@ export function Hero() {
       <div className="absolute inset-x-0 top-[88px] h-[756px] bg-[radial-gradient(ellipse_at_50%_34%,rgba(255,250,244,0.9)_0%,rgba(255,247,235,0.66)_38%,rgba(248,234,216,0.1)_74%,rgba(248,234,216,0)_100%)]" />
 
       <div className="relative z-20 mx-auto flex max-w-[1500px] flex-col items-center px-4 text-center md:px-8">
-        <div className="inline-flex items-center gap-3 rounded-md border border-[#2a1208]/18 bg-[#fffaf2]/86 px-3 py-2 text-left shadow-[0_14px_44px_rgba(42,18,8,0.13)] backdrop-blur-sm">
-          <ChotuOrb size="lg" />
-          <div className="font-mono leading-none">
-            <p className="text-[10px] font-bold uppercase text-[#77706a]">Chotu desktop icon</p>
-            <p className="mt-1 text-sm font-bold text-[#14110f]">Chotu is live</p>
-          </div>
+        <div className="inline-flex items-center gap-2.5 rounded-full border border-[#d8d3ca] bg-[#fffaf2]/92 py-1.5 pl-1.5 pr-4 text-left shadow-[0_2px_0_rgba(20,17,15,0.08),0_16px_42px_rgba(42,18,8,0.10)] backdrop-blur-sm">
+          <ChotuOrb size="md" />
+          <span className="font-mono text-sm font-bold leading-none text-[#4b4641]">Chotu is live</span>
         </div>
 
         <h1
@@ -58,13 +55,6 @@ export function Hero() {
         </div>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-          <a
-            href="/pricing"
-            className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#2a1208]/70 bg-[#f0ede6]/82 px-4 py-2 font-mono text-sm font-medium text-[#2a1208] shadow-sm backdrop-blur-sm transition-colors hover:bg-[#e8e4dc]"
-          >
-            <ShoppingBag size={16} />
-            Subscribe
-          </a>
           <a
             href="https://github.com/Sankhya-AI/dhee"
             target="_blank"

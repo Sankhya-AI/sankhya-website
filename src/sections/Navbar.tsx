@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, LayoutDashboard, LogIn, Menu, X } from 'lucide-react';
+import type { User } from 'firebase/auth';
+import { hasFirebaseConfig, signInWithGoogle, watchAuthState } from '@/lib/firebase';
 
 const navItems = [
   { label: 'Stack', href: '/#stack', id: 'stack' },
@@ -30,7 +32,11 @@ export function Navbar() {
   const [inverted, setInverted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState('');
+  const [user, setUser] = useState<User | null>(null);
+  const [authBusy, setAuthBusy] = useState(false);
   const frameRef = useRef(0);
+
+  useEffect(() => watchAuthState(setUser), []);
 
   useEffect(() => {
     const updateNavState = () => {
@@ -85,6 +91,33 @@ export function Navbar() {
     ? 'border-white/12 bg-[#101010]/96 text-white shadow-[0_18px_60px_rgba(0,0,0,0.38)]'
     : 'border-[#d4d0c8] bg-[#f5f1ea]/98 text-[#1a1a1a] shadow-[0_18px_60px_rgba(0,0,0,0.12)]';
 
+  const currentPath = window.location.pathname;
+  const accountLabel = user ? 'Dashboard' : 'Login';
+  const offerActionLabel = user ? 'Dashboard' : 'Sign up';
+  const AccountIcon = user ? LayoutDashboard : LogIn;
+
+  const handleAccountAction = async () => {
+    if (user) {
+      window.location.href = '/account';
+      return;
+    }
+
+    if (!hasFirebaseConfig) {
+      window.location.href = '/account';
+      return;
+    }
+
+    setAuthBusy(true);
+    try {
+      const result = await signInWithGoogle();
+      setUser(result.user);
+    } catch {
+      window.location.href = '/account';
+    } finally {
+      setAuthBusy(false);
+    }
+  };
+
   return (
     <header className="fixed top-0 right-0 left-0 z-50">
       <div className="h-8 overflow-hidden border-b border-white/10 bg-[#080706] text-[#f8ead8]">
@@ -98,6 +131,16 @@ export function Navbar() {
               {offerMessages.map((message) => (
                 <span key={`${copy}-${message}`} className="inline-flex items-center gap-8">
                   <span>{message}</span>
+                  <button
+                    type="button"
+                    onClick={() => void handleAccountAction()}
+                    disabled={authBusy}
+                    tabIndex={copy === 1 ? -1 : 0}
+                    className="inline-flex h-5 items-center gap-1 rounded-sm border border-[#f8ead8]/24 px-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-[#f8ead8] transition-colors hover:border-[#f8ead8]/55 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 md:text-[11px]"
+                  >
+                    {offerActionLabel}
+                    <AccountIcon size={12} />
+                  </button>
                   <span className="h-1 w-1 rounded-full bg-[#cf5a32]" />
                 </span>
               ))}
@@ -168,17 +211,29 @@ export function Navbar() {
 
             <a
               href="/pricing"
-              className={`ml-5 hidden h-8 items-center justify-center gap-2 rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors md:inline-flex ${ctaClass}`}
+              className={`group relative inline-flex h-8 w-max items-center justify-center rounded-md bg-transparent px-3 py-1 font-sans text-sm font-medium transition-colors ${
+                currentPath === '/pricing' ? activeLinkClass : linkClass
+              }`}
             >
-              Subscribe
-              <ArrowUpRight size={14} />
+              Pricing
+              {currentPath === '/pricing' && (
+                <span
+                  aria-hidden="true"
+                  className={`absolute bottom-0 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${
+                    inverted ? 'bg-[#f8ead8]' : 'bg-[#cf5a32]'
+                  }`}
+                />
+              )}
             </a>
-            <a
-              href="/account"
-              className={`hidden h-8 items-center justify-center gap-2 rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors md:inline-flex ${ctaClass}`}
+            <button
+              type="button"
+              onClick={() => void handleAccountAction()}
+              disabled={authBusy}
+              className={`hidden h-8 items-center justify-center gap-2 rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 md:inline-flex ${ctaClass}`}
             >
-              Account
-            </a>
+              <AccountIcon size={14} />
+              {authBusy ? 'Opening...' : accountLabel}
+            </button>
           </div>
 
           <button
@@ -234,18 +289,25 @@ export function Navbar() {
               <a
                 href="/pricing"
                 onClick={() => setMenuOpen(false)}
-                className={`mt-3 inline-flex h-9 items-center justify-center gap-2 rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors ${ctaClass}`}
+                className={`flex items-center justify-between rounded-md px-2 py-2 font-mono text-sm ${
+                  currentPath === '/pricing' ? activeLinkClass : linkClass
+                }`}
               >
-                Subscribe
-                <ArrowUpRight size={14} />
+                Pricing
+                {currentPath === '/pricing' && <span className="h-1 w-1 rounded-full bg-[#cf5a32]" />}
               </a>
-              <a
-                href="/account"
-                onClick={() => setMenuOpen(false)}
-                className={`ml-2 mt-3 inline-flex h-9 items-center justify-center rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors ${ctaClass}`}
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  void handleAccountAction();
+                }}
+                disabled={authBusy}
+                className={`mt-3 inline-flex h-9 items-center justify-center gap-2 rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${ctaClass}`}
               >
-                Account
-              </a>
+                <AccountIcon size={14} />
+                {authBusy ? 'Opening...' : accountLabel}
+              </button>
             </div>
           </div>
         )}

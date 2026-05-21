@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, Check, CreditCard, KeyRound, LogOut, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Check, KeyRound, LayoutDashboard, LogOut, ShieldCheck } from 'lucide-react';
 import type { User } from 'firebase/auth';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ChotuOrb } from '@/components/ChotuOrb';
 import { ensureCustomerProfile } from '@/lib/customer';
 import {
-  buildCheckoutUrl,
   fetchChotuSubscription,
   hasFirebaseConfig,
   signInWithGoogle,
@@ -34,7 +32,7 @@ const chotuFeatures = [
   },
   {
     title: 'Updates and support',
-    detail: 'The local app remains yours after download; active plans keep updates and support flowing.',
+    detail: 'The local app remains yours after download; dashboard plans keep updates and support flowing.',
   },
   {
     title: 'chotu_api coming soon',
@@ -86,23 +84,19 @@ export function PricingPage() {
     }
   };
 
-  const handleBuy = async () => {
-    try {
-      const checkoutUrl = await buildCheckoutUrl(user);
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Could not open the Razorpay subscription link.');
+  const handlePricingCta = async () => {
+    if (user) {
+      window.location.href = '/account';
+      return;
     }
+
+    await handleGoogleAuth();
   };
 
   return (
     <main className="min-h-screen bg-cream pt-24 text-[#1a1a1a]">
       <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-14 pt-6 md:grid-cols-[minmax(0,1fr)_400px] md:px-8 lg:px-10">
         <div className="pt-8 md:pt-16">
-          <Badge className="mb-5 flex w-fit items-center gap-2 rounded-md border-[#cf5a32]/25 bg-[#ffe2d4] px-3 py-1 font-mono text-[#b64923]">
-            <ChotuOrb size="sm" label="Chotu" />
-            Chotu Personal AI Assistant
-          </Badge>
           <h1 className="max-w-4xl text-balance font-pixel text-5xl leading-[0.98] tracking-normal text-[#14110f] md:text-7xl">
             Chotu, your personal super assistant.
           </h1>
@@ -125,13 +119,14 @@ export function PricingPage() {
           <div className="mt-8 flex flex-wrap items-center gap-5">
             <div>
               <div className="font-mono text-2xl font-bold leading-none text-[#14110f]">Free for the first month</div>
-              <div className="mt-2 font-mono text-xs uppercase text-[#77706a]">Then Rs 1999 through Razorpay, about $20 outside India</div>
+              <div className="mt-2 font-mono text-xs uppercase text-[#77706a]">Sign in to open your Chotu dashboard</div>
             </div>
             <Button
-              onClick={handleBuy}
+              onClick={() => void handlePricingCta()}
+              disabled={busy || (!user && !hasFirebaseConfig)}
               className="h-11 rounded-md bg-[#14110f] px-5 font-mono text-sm text-[#f8ead8] hover:bg-[#2a2521]"
             >
-              Start subscription
+              {user ? 'Dashboard' : busy ? 'Opening Google' : 'Sign in with Google'}
               <ArrowRight className="size-4" />
             </Button>
           </div>
@@ -144,10 +139,10 @@ export function PricingPage() {
                 <p className="font-mono text-xs uppercase text-[#f8ead8]/55">Launch plan</p>
                 <h2 className="mt-2 font-mono text-3xl font-bold">Free for 1 month</h2>
                 <p className="mt-3 text-sm leading-6 text-[#f8ead8]/70">
-                  Then Rs 1999 through Razorpay. Outside India, pay by card and your bank converts it.
+                  Sign in to connect your account, download Chotu, and manage plan details from the dashboard.
                 </p>
               </div>
-              <ChotuOrb size="md" label="Chotu" />
+              <ChotuOrb size="md" label="Chotu" variant="dark" />
             </div>
 
             <div className="mt-5 space-y-3 border-t border-white/10 pt-5 font-mono text-xs text-[#f8ead8]/78">
@@ -161,16 +156,26 @@ export function PricingPage() {
               </div>
               <div className="flex items-start gap-2">
                 <Check className="mt-0.5 size-4 text-[#e9c46a]" />
-                <span>UPI in India, cards outside India through Razorpay</span>
+                <span>Account dashboard after Google sign-in</span>
               </div>
             </div>
 
             <Button
-              onClick={handleBuy}
+              onClick={() => void handlePricingCta()}
+              disabled={busy || (!user && !hasFirebaseConfig)}
               className="mt-6 h-11 w-full justify-center rounded-md bg-[#f8ead8] px-5 font-mono text-sm text-[#14110f] hover:bg-white"
             >
-              Start subscription
-              <ArrowRight className="size-4" />
+              {user ? (
+                <>
+                  <LayoutDashboard className="size-4" />
+                  Dashboard
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="size-4" />
+                  {busy ? 'Opening Google' : 'Sign in with Google'}
+                </>
+              )}
             </Button>
           </div>
 
@@ -207,7 +212,7 @@ export function PricingPage() {
                   Sign in with Google
                 </Button>
                 <p className="mt-3 font-mono text-xs leading-5 text-[#77706a]">
-                  Sign in connects your dashboard. Checkout opens through Razorpay.
+                  Sign in connects your dashboard. Plan and account actions live there.
                 </p>
               </div>
             )}
@@ -224,13 +229,15 @@ export function PricingPage() {
               <div>
                 <p className="font-mono text-xs uppercase text-[#77706a]">Subscription</p>
                 <h3 className="mt-1 font-mono text-xl font-bold text-[#14110f]">
-                  {subscription?.status === 'active' ? 'Active' : 'Awaiting purchase'}
+                  {subscription?.status === 'active' ? 'Active' : 'Dashboard managed'}
                 </h3>
               </div>
-              <CreditCard className="size-5 text-[#cf5a32]" />
+              <LayoutDashboard className="size-5 text-[#cf5a32]" />
             </div>
             <p className="mt-4 border-t border-[#d4d0c8] pt-4 text-sm leading-6 text-[#5f5a54]">
-              {subscription?.entitlement ?? 'Active plans keep updates, support, managed keys, and chotu_api access.'}
+              {subscription?.status === 'active'
+                ? 'Your Chotu dashboard is ready for downloads and account actions.'
+                : 'Sign in to view downloads, invoices, account details, and chotu_api updates.'}
             </p>
           </div>
 

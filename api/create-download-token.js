@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { desktopEntitlementWindow } from './_desktop-license.js';
 import { admin, getAdminAuth, getAdminDb, requireEnv } from './_firebase-admin.js';
 
 const allowedArtifacts = new Set(['chotu-darwin-arm64.zip', 'chotu-darwin-x64.zip', 'chotu-win32-x64.zip']);
@@ -22,16 +23,6 @@ async function verifyBearer(req) {
   return getAdminAuth().verifyIdToken(token);
 }
 
-function hasActiveDownloadEntitlement(subscription) {
-  if (subscription?.status !== 'active' || subscription?.access?.updates !== true) return false;
-
-  const accessUntil = subscription.currentPeriodEnd || subscription.updateUntil;
-  if (!accessUntil) return true;
-
-  const accessUntilMs = typeof accessUntil?.toMillis === 'function' ? accessUntil.toMillis() : new Date(accessUntil).getTime();
-  return Number.isFinite(accessUntilMs) && accessUntilMs > Date.now();
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -48,8 +39,9 @@ export default async function handler(req, res) {
     const db = getAdminDb();
     const snapshot = await db.collection('users').doc(decoded.uid).collection('subscriptions').doc('chotu').get();
     const subscription = snapshot.data();
-    if (!hasActiveDownloadEntitlement(subscription)) {
-      return res.status(403).json({ error: 'Active plan required for updates and downloads' });
+    const entitlementWindow = desktopEntitlementWindow(subscription);
+    if (!entitlementWindow?.downloadEnabled) {
+      return res.status(403).json({ error: 'Active Chotu plan or launch trial required for downloads' });
     }
 
     const jti = crypto.randomUUID();
