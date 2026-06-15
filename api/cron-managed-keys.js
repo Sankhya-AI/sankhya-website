@@ -94,7 +94,11 @@ export default async function handler(req, res) {
       const uid = doc.ref.parent.parent.id;
       const hash = doc.data()?.managedApiKey?.openrouterKeyHash;
       try {
-        if (hash) await disableKey(hash);
+        if (!hash) {
+          console.warn(`[cron] revoke uid=${uid}: no hash, skipping`);
+          continue;
+        }
+        await disableKey(hash);
         await doc.ref.update({ 'managedApiKey.status': 'disabled' });
         processed++;
       } catch (err) {

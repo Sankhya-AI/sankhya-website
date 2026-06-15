@@ -37,10 +37,12 @@ export default async function handler(req, res) {
 
     // Atomic lock: pending → provisioning
     let didLock = false;
+    let abortReason = null;
     await db.runTransaction(async (t) => {
       const freshSnap = await t.get(subRef);
       const freshStatus = freshSnap.data()?.managedApiKey?.status;
-      if (freshStatus === 'active' || freshStatus === 'provisioning') return;
+      if (freshStatus === 'active') { abortReason = 'active'; return; }
+      if (freshStatus === 'provisioning') { abortReason = 'provisioning'; return; }
       t.update(subRef, {
         'managedApiKey.status': 'provisioning',
         'managedApiKey.provisionedAt': new Date().toISOString(),
@@ -49,6 +51,7 @@ export default async function handler(req, res) {
     });
 
     if (!didLock) {
+      if (abortReason === 'provisioning') return res.status(409).json({ error: 'Key provisioning already in progress' });
       return res.status(200).json({ ok: true, status: 'already_active' });
     }
 

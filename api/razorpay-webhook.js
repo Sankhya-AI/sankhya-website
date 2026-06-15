@@ -163,7 +163,13 @@ export default async function handler(req, res) {
     }
 
     if (inactiveEvents.has(eventName)) {
-      await subRef.update({ 'managedApiKey.status': 'pending_revocation' });
+      await db.runTransaction(async (t) => {
+        const snap = await t.get(subRef);
+        const s = snap.data()?.managedApiKey?.status;
+        if (s === 'active' || s === 'pending') {
+          t.update(subRef, { 'managedApiKey.status': 'pending_revocation' });
+        }
+      });
     }
 
     return res.status(200).json({ ok: true });
