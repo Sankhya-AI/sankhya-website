@@ -3,6 +3,7 @@ import { admin, getAdminDb, requireEnv } from './_firebase-admin.js';
 
 const activeEvents = new Set(['payment.captured', 'payment_link.paid', 'subscription.authenticated', 'subscription.charged']);
 const inactiveEvents = new Set(['payment.failed', 'subscription.cancelled', 'subscription.halted', 'subscription.completed']);
+const keyProvisioningEvents = new Set(['payment.captured', 'payment_link.paid']);
 
 function getRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -144,9 +145,26 @@ export default async function handler(req, res) {
       return res.status(202).json({ ok: true, unmatched: true });
     }
 
-    await userRef.collection('subscriptions').doc('chotu').set(buildSubscriptionPatch(eventName, event.payload), {
-      merge: true,
-    });
+    const subRef = userRef.collection('subscriptions').doc('chotu');
+    await subRef.set(buildSubscriptionPatch(eventName, event.payload), { merge: true });
+
+    if (keyProvisioningEvents.has(eventName)) {
+      await db.runTransaction(async (t) => {
+        const snap = await t.get(subRef);
+        const currentStatus = snap.data()?.managedApiKey?.status;
+        if (!currentStatus || currentStatus === 'disabled') {
+          t.update(subRef, {
+            'managedApiKey.status': 'pending',
+            'managedApiKey.openrouterKeyHash': null,
+            'managedApiKey.provisionedAt': null,
+          });
+        }
+      });
+    }
+
+    if (inactiveEvents.has(eventName)) {
+      await subRef.update({ 'managedApiKey.status': 'pending_revocation' });
+    }
 
     return res.status(200).json({ ok: true });
   } catch (error) {
