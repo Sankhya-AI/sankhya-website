@@ -31,6 +31,11 @@ export type ChotuSubscription = {
     requests: number;
     tokens: number;
   };
+  managedApiKey?: {
+    status: 'pending' | 'provisioning' | 'active' | 'pending_revocation' | 'disabled';
+    openrouterKeyHash: string | null;
+    provisionedAt: string | null;
+  } | null;
 };
 
 export type FirebaseServices = {
