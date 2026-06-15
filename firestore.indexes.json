@@ -1,4 +1,12 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "subscriptions",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "managedApiKey.status", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }
