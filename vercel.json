@@ -33,5 +33,8 @@
       "source": "/((?!api/|.*\\..*).*)",
       "destination": "/index.html"
     }
+  ],
+  "crons": [
+    { "path": "/api/cron-managed-keys", "schedule": "0 2 * * *" }
   ]
 }
