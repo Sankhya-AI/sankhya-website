@@ -3,9 +3,7 @@ import { get } from '@vercel/blob';
 import { admin, getAdminDb, requireEnv } from '../_firebase-admin.js';
 
 const artifactBlobNames = new Map([
-  ['chotu-darwin-arm64.zip', 'chotu-darwin-arm64.zip'],
-  ['chotu-darwin-x86_64.zip', 'chotu-darwin-x86_64.zip'],
-  ['chotu-darwin-x64.zip', 'chotu-darwin-x86_64.zip'],
+  ['chotu-darwin-arm64.dmg', 'chotu-darwin-arm64.dmg'],
   ['chotu-windows-x64.zip', 'chotu-windows-x64.zip'],
   ['chotu-win32-x64.zip', 'chotu-windows-x64.zip'],
 ]);
@@ -115,7 +113,10 @@ export default async function handler(req, res) {
       return res.status(401).send('Invalid, used, or expired download link');
     }
 
-    res.setHeader('Content-Type', blob.blob.contentType || 'application/zip');
+    res.setHeader(
+      'Content-Type',
+      blob.blob.contentType || (artifact.endsWith('.dmg') ? 'application/x-apple-diskimage' : 'application/zip')
+    );
     res.setHeader('Content-Disposition', `attachment; filename="${artifact}"`);
     res.setHeader('Content-Length', String(blob.blob.size));
     res.setHeader('ETag', blob.blob.etag);

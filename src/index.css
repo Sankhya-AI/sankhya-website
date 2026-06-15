@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'ChotuPixelCircle';
+  font-display: swap;
+  font-style: normal;
+  font-weight: 500;
+  src: url('./assets/fonts/GeistPixel-Circle.woff2') format('woff2');
+}
+
 @layer base {
   :root {
     --background: 40 20% 93%;
@@ -38,7 +46,7 @@
     --border-light: #D4D0C8;
     --border-dark: #333333;
     --font-geist: 'Geist', 'Geist Fallback', sans-serif;
-    --font-dot-gothic: 'DotGothic16', 'DotGothic16 Fallback', monospace;
+    --font-dot-gothic: 'ChotuPixelCircle', 'DotGothic16', 'DotGothic16 Fallback', monospace;
     --font-space-mono: 'Space Mono', 'Space Mono Fallback', monospace;
     --font-devanagari-display: 'Devanagari MT', 'Devanagari Sangam MN', 'ITF Devanagari', 'Kohinoor Devanagari', sans-serif;
   }

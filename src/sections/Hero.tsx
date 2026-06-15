@@ -1,73 +1,113 @@
-import { ArrowUpRight, Github } from 'lucide-react';
-import { ChotuOrb } from '../components/ChotuOrb';
+import { ArrowDown, ArrowUpRight, Download } from 'lucide-react';
 import { PixelDither } from '../components/PixelDither';
 
 export function Hero() {
   return (
-    <section id="home" className="relative z-20 min-h-[840px] w-full overflow-hidden bg-[#f8ead8] pt-[172px] pb-20 md:min-h-[880px] md:pt-[252px]">
-      <div className="absolute inset-x-0 top-[88px] h-[756px] overflow-hidden">
-        <img
-          src="/assets/sankhya-hero-clean-fabric.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 hidden h-full w-full object-cover object-center opacity-72 md:block"
-        />
-        <img
-          src="/assets/sankhya-hero-clean-fabric.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 block h-full w-full object-cover object-[52%_50%] opacity-72 md:hidden"
-        />
-      </div>
+    <section
+      id="home"
+      data-navbar-inverse="true"
+      className="relative z-20 min-h-[820px] w-full overflow-hidden bg-[#0f0a06] pt-[156px] pb-20 md:min-h-[860px] md:pt-[224px]"
+    >
+      {/* Background image with parallax-like fixed attachment */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/assets/sankhya-ghats-hero.png)' }}
+      />
 
-      <div className="absolute inset-x-0 top-[88px] h-[756px] bg-[linear-gradient(180deg,rgba(255,255,255,0.56)_0%,rgba(255,244,226,0.22)_42%,rgba(248,234,216,0)_100%)]" />
-      <div className="absolute inset-x-0 top-[88px] h-[756px] bg-[radial-gradient(ellipse_at_50%_34%,rgba(255,250,244,0.9)_0%,rgba(255,247,235,0.66)_38%,rgba(248,234,216,0.1)_74%,rgba(248,234,216,0)_100%)]" />
+      {/* Darkening overlay for readability */}
+      <div className="absolute inset-0 bg-black/50" />
 
+      {/* Radial spotlight over the image */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse at 50% 30%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%)',
+        }}
+      />
+
+      {/* Subtle grid overlay for texture */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '56px 56px',
+          maskImage:
+            'linear-gradient(180deg, transparent 0%, black 18%, black 70%, transparent 100%)',
+        }}
+      />
+
+      {/* Hero content */}
       <div className="relative z-20 mx-auto flex max-w-[1500px] flex-col items-center px-4 text-center md:px-8">
-        <div className="inline-flex items-center gap-2.5 rounded-full border border-[#d8d3ca] bg-[#fffaf2]/92 py-1.5 pl-1.5 pr-4 text-left shadow-[0_2px_0_rgba(20,17,15,0.08),0_16px_42px_rgba(42,18,8,0.10)] backdrop-blur-sm">
-          <ChotuOrb size="md" />
-          <span className="font-mono text-sm font-bold leading-none text-[#4b4641]">Chotu is live</span>
-        </div>
-
         <h1
-          className="mt-6 max-w-[1220px] font-bit text-[48px] font-normal leading-[1.06] text-[#201008] md:text-[72px] xl:text-[88px]"
-          style={{ textShadow: '0 1px 0 rgba(255,250,244,0.88), 0 0 34px rgba(255,250,244,0.9)' }}
+          className="max-w-[1160px] font-bit text-[44px] font-normal leading-[1.04] text-[#fff8f0] md:text-[68px] xl:text-[80px]"
+          style={{
+            textShadow:
+              '0 2px 8px rgba(0,0,0,0.6), 0 0 40px rgba(0,0,0,0.3)',
+          }}
         >
-          Superhuman architecture for agents that work everywhere.
+          Let <span className="text-[#ff8a4c]">Chotu</span> use your laptop
+          like you do.
         </h1>
 
-        <p className="mt-5 max-w-[920px] font-mono text-sm font-medium leading-[1.32] text-[#35251b] md:mt-6 md:text-base">
-          Sankhya AI Labs builds the memory, runtime, and control systems that turn frontier models into reliable agents for every serious workflow.
+        <p className="mt-6 max-w-[830px] font-sans text-base font-medium leading-[1.62] text-[#d8cfc4] md:text-lg">
+          Chotu sees what you see, remembers what you ask it to keep, and
+          completes tasks through Claude, Codex, browser, terminal, and local
+          tools. It asks before risky steps and shows what changed.
         </p>
 
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2 font-mono text-[11px] font-bold uppercase leading-none text-[#5d4d43] md:text-xs">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#cf5a32]" />
-          <span>Native to Kimi K2.6. Powered by Dhee. Recall R@5 99.4% on LongMemEval.</span>
+        <div className="mt-6 flex max-w-[980px] flex-wrap items-center justify-center gap-2 font-mono text-[10px] font-bold uppercase leading-none text-[#b8afa6] md:text-[11px]">
+          {[
+            'See your screen',
+            'Use your tools',
+            'Remember your rules',
+            'Ask before changes',
+            'Show proof',
+          ].map((item) => (
+            <span
+              key={item}
+              className="rounded-full border border-white/15 bg-white/8 px-3 py-2 shadow-[0_1px_0_rgba(20,17,15,0.2)]"
+            >
+              {item}
+            </span>
+          ))}
           <a
             href="https://github.com/Sankhya-AI/Dhee/blob/main/benchmarks/longmemeval/README.md"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-[#c84f29] underline decoration-[#c84f29]/35 underline-offset-4 transition-colors hover:text-[#8f3519]"
+            className="inline-flex items-center gap-1 rounded-full border border-[#c84f29]/40 bg-[#c84f29]/15 px-3 py-2 text-[#ff9e7a] transition-colors hover:bg-[#c84f29]/25 hover:text-[#ffdac9]"
           >
-            proof
+            Dhee memory proof
             <ArrowUpRight size={12} />
           </a>
         </div>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
           <a
-            href="https://github.com/Sankhya-AI/dhee"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-[#2a1208]/70 bg-[#f0ede6]/82 px-4 py-2 font-mono text-sm font-medium text-[#2a1208] shadow-sm backdrop-blur-sm transition-colors hover:bg-[#e8e4dc]"
+            href="/pricing"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[#f8ead8]/70 bg-[#f8ead8] px-5 py-2 font-mono text-sm font-bold text-[#15110e] shadow-sm transition-colors hover:bg-white"
           >
-            <Github size={16} />
-            Dhee GitHub
+            <Download size={16} />
+            Download / Sign in
+          </a>
+          <a
+            href="#stack"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-white/20 bg-white/10 px-5 py-2 font-mono text-sm font-medium text-[#ede8e1] shadow-sm backdrop-blur-sm transition-colors hover:bg-white/20"
+          >
+            See how Chotu works
+            <ArrowDown size={15} />
           </a>
         </div>
       </div>
 
-      <section aria-hidden="true" className="absolute inset-x-0 top-[706px] z-10 hidden h-[270px] sm:block">
+      {/* Pixel Dither transition at bottom */}
+      <section
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[706px] z-10 hidden h-[270px] sm:block"
+      >
         <PixelDither
           fillColor="var(--bg-dark)"
           pattern="noise"

@@ -1,31 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, LayoutDashboard, LogIn, Menu, X } from 'lucide-react';
+import { LayoutDashboard, LogIn, Menu, X } from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { hasFirebaseConfig, signInWithGoogle, watchAuthState } from '@/lib/firebase';
 
 const navItems = [
-  { label: 'Stack', href: '/#stack', id: 'stack' },
-  { label: 'Why us', href: '/#why-us', id: 'why-us' },
-  { label: 'Systems', href: '/#systems', id: 'systems' },
-  { label: 'Memory', href: '/#memory', id: 'memory' },
-  { label: 'Blog', href: '/#blog', id: 'blog' },
-];
-
-const productItems = [
-  {
-    label: 'Chotu Personal AI Assistant',
-    href: '/#home',
-    meta: 'Orb, chat, tasks, coding, self-improvement',
-  },
-  {
-    label: 'Chotu Desk Companion',
-    href: '/#systems',
-    meta: 'Coming soon',
-  },
+  { label: 'See', href: '/#home', id: 'home' },
+  { label: 'Do', href: '/#stack', id: 'stack' },
+  { label: 'Remember', href: '/#memory', id: 'memory' },
+  { label: 'Use Cases', href: '/#systems', id: 'systems' },
+  { label: 'Notes', href: '/#blog', id: 'blog' },
 ];
 
 const offerMessages = [
-  'Check out Chotu, your personal super assistant',
+  'Chotu sees your screen, uses your tools, and asks before it changes anything',
 ];
 
 export function Navbar() {
@@ -74,22 +61,18 @@ export function Navbar() {
   }, []);
 
   const navSurface = inverted
-    ? 'border-white/10 bg-[#0d0d0d]/78 text-[#f8ead8] shadow-lg'
+    ? 'border-white/12 bg-[#080706]/88 text-[#f8ead8] shadow-lg'
     : 'border-[#d4d0c8]/70 bg-[#f0ede6]/82 text-[#1a1a1a] shadow-lg';
 
   const linkClass = inverted
-    ? 'text-white/62 hover:text-white'
+    ? 'text-[#f8ead8]/78 hover:text-white'
     : 'text-[#6b6b6b] hover:text-[#1a1a1a]';
 
   const activeLinkClass = inverted ? 'text-white' : 'text-[#1a1a1a]';
 
   const ctaClass = inverted
-    ? 'border-white/70 bg-transparent text-white shadow-sm hover:bg-white/10'
+    ? 'border-[#f8ead8]/70 bg-transparent text-[#f8ead8] shadow-sm hover:bg-white/10 hover:text-white'
     : 'border-[#1a1a1a]/70 bg-transparent text-[#45413d] shadow-sm hover:bg-[#e8e4dc] hover:text-[#1a1a1a]';
-
-  const dropdownSurface = inverted
-    ? 'border-white/12 bg-[#101010]/96 text-white shadow-[0_18px_60px_rgba(0,0,0,0.38)]'
-    : 'border-[#d4d0c8] bg-[#f5f1ea]/98 text-[#1a1a1a] shadow-[0_18px_60px_rgba(0,0,0,0.12)]';
 
   const currentPath = window.location.pathname;
   const accountLabel = user ? 'Dashboard' : 'Login';
@@ -136,7 +119,7 @@ export function Navbar() {
                     onClick={() => void handleAccountAction()}
                     disabled={authBusy}
                     tabIndex={copy === 1 ? -1 : 0}
-                    className="inline-flex h-5 items-center gap-1 rounded-sm border border-[#f8ead8]/24 px-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-[#f8ead8] transition-colors hover:border-[#f8ead8]/55 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 md:text-[11px]"
+                    className="hidden h-5 items-center gap-1 rounded-sm border border-[#f8ead8]/24 px-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-[#f8ead8] transition-colors hover:border-[#f8ead8]/55 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:inline-flex md:text-[11px]"
                   >
                     {offerActionLabel}
                     <AccountIcon size={12} />
@@ -153,42 +136,16 @@ export function Navbar() {
           <a href="/#home" className="flex shrink-0 items-center gap-3 px-3 md:px-4" aria-label="Sankhya AI Labs home">
             <img src="/assets/sankhya-logo.png" alt="Sankhya AI Labs" className="h-[29px] w-[29px] shrink-0 self-center" />
             <span className="flex items-baseline gap-2.5 leading-none">
-              <span className={`font-mono text-[25px] font-normal leading-none tracking-normal md:text-[26px] ${inverted ? 'text-[#f8ead8]' : 'text-[#14110f]'}`}>
-                sankhya
+              <span className={`font-bit text-[25px] font-normal leading-none tracking-normal md:text-[26px] ${inverted ? 'text-[#f8ead8]' : 'text-[#050505]'}`}>
+                Sankhya
               </span>
-              <span className={`font-mono text-[10px] font-bold leading-none tracking-normal md:text-[11px] ${inverted ? 'text-[#f8ead8]/72' : 'text-[#14110f]/72'}`}>
+              <span className={`font-bit text-[10px] font-bold leading-none tracking-normal md:text-[11px] ${inverted ? 'text-[#f8ead8]/72' : 'text-[#050505]'}`}>
                 AI LABS
               </span>
             </span>
           </a>
 
           <div className="ml-auto mr-4 hidden items-center gap-1 md:flex">
-            <div className="group relative">
-              <button
-                className={`inline-flex h-8 items-center justify-center gap-1 rounded-md bg-transparent px-3 py-1 font-sans text-sm font-medium transition-colors ${linkClass}`}
-                type="button"
-              >
-                Products
-                <ChevronDown size={14} className="transition-transform duration-200 group-hover:rotate-180" />
-              </button>
-              <div className={`invisible absolute right-0 top-9 w-[300px] translate-y-1 rounded-lg border p-2 opacity-0 backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 ${dropdownSurface}`}>
-                {productItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    className={`block rounded-md px-3 py-3 transition-colors ${
-                      inverted ? 'hover:bg-white/[0.08]' : 'hover:bg-[#ebe5dc]'
-                    }`}
-                  >
-                    <span className="block font-mono text-xs font-bold">{item.label}</span>
-                    <span className={`mt-1 block font-mono text-[11px] ${inverted ? 'text-white/48' : 'text-[#77706a]'}`}>
-                      {item.meta}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
-
             {navItems.map((item) => (
               <a
                 key={item.href}
@@ -266,25 +223,6 @@ export function Navbar() {
                   {activeId === item.id && <span className="h-1 w-1 rounded-full bg-[#cf5a32]" />}
                 </a>
               ))}
-
-              <div className="pt-3">
-                <div className={`px-2 pb-2 font-mono text-[10px] font-bold uppercase ${inverted ? 'text-white/45' : 'text-[#8b8580]'}`}>
-                  Products
-                </div>
-                {productItems.map((item) => (
-                  <a
-                    key={item.label}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={`block rounded-md px-2 py-2 font-mono text-sm ${linkClass}`}
-                  >
-                    <span className="block font-bold">{item.label}</span>
-                    <span className={`mt-1 block text-[11px] ${inverted ? 'text-white/45' : 'text-[#77706a]'}`}>
-                      {item.meta}
-                    </span>
-                  </a>
-                ))}
-              </div>
 
               <a
                 href="/pricing"

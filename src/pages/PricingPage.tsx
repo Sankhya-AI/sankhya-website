@@ -3,6 +3,7 @@ import { ArrowRight, Check, KeyRound, LayoutDashboard, LogOut, ShieldCheck } fro
 import type { User } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { ChotuOrb } from '@/components/ChotuOrb';
+import { Seo } from '@/components/Seo';
 import { ensureCustomerProfile } from '@/lib/customer';
 import {
   fetchChotuSubscription,
@@ -15,28 +16,28 @@ import {
 
 const chotuFeatures = [
   {
-    title: 'Desktop-native assistant',
-    detail: 'Chotu lives on your machine as a personal assistant for the work you are already doing.',
+    title: 'Observe your work',
+    detail: 'Chotu lives close to the desktop so it can start from the app, repo, and task you are already inside.',
   },
   {
-    title: 'Repo-aware memory',
-    detail: 'Run chotu init and Chotu compiles rich Dhee context so it can reason across your codebase.',
+    title: 'Remember with Dhee',
+    detail: 'Dhee compiles screen context, repo state, decisions, episodes, and preferences into the right working set.',
   },
   {
-    title: 'Kimi K2.6-native',
-    detail: 'Built for fast agent workflows with strong model context and practical developer actions.',
+    title: 'Run bounded tasks',
+    detail: 'Chat, planning, commands, and coding work become visible runs with clear scope and approval points.',
   },
   {
-    title: 'You control keys',
-    detail: 'Use your own model key locally today, with Sankhya-managed keys coming soon.',
+    title: 'Act with approval',
+    detail: 'Risky edits, commands, and sharing stay gated so Chotu can help without taking ownership away from you.',
   },
   {
-    title: 'Updates and support',
-    detail: 'The local app remains yours after download; dashboard plans keep updates and support flowing.',
+    title: 'Prove the result',
+    detail: 'Browser proof, tests, screenshots, logs, and runtime checks come back with the work instead of hand-wavy status.',
   },
   {
-    title: 'chotu_api coming soon',
-    detail: 'Lowest cost, highest quality API access for Chotu when the hosted API opens.',
+    title: 'Learn after acceptance',
+    detail: 'Accepted outcomes and rejected attempts write back into Dhee so the next run starts warmer.',
   },
 ];
 
@@ -95,13 +96,25 @@ export function PricingPage() {
 
   return (
     <main className="min-h-screen bg-cream pt-24 text-[#1a1a1a]">
+      <Seo
+        title="Download / Sign In - Sankhya AI Labs"
+        description="Start with Sankhya AI Labs desktop assistant access. Sign in, open your dashboard, download the app, and begin with a free first month."
+        path="/pricing"
+        keywords={[
+          'Sankhya AI Labs pricing',
+          'AI assistant download',
+          'desktop AI assistant',
+          'autonomous AI agent access',
+          'agent memory assistant',
+        ]}
+      />
       <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-14 pt-6 md:grid-cols-[minmax(0,1fr)_400px] md:px-8 lg:px-10">
         <div className="pt-8 md:pt-16">
           <h1 className="max-w-4xl text-balance font-pixel text-5xl leading-[0.98] tracking-normal text-[#14110f] md:text-7xl">
-            Chotu, your personal super assistant.
+            Start with Chotu. Keep the work remembered.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[#5f5a54]">
-            A desktop AI assistant that understands your repo, keeps rich Dhee memory, and helps you move through developer work faster.
+            Chotu is a local-first personal AI assistant powered by Dhee memory. It observes context, plans bounded work, acts with approval, verifies the result, and learns from what you accept.
           </p>
 
           <div className="mt-8 grid max-w-4xl gap-3 sm:grid-cols-2">

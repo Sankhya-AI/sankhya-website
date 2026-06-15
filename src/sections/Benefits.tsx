@@ -2,29 +2,29 @@ import { useEffect, useRef, useState } from 'react';
 
 const benefits = [
   {
-    title: 'A small orb, not another tab',
-    metric: '01 - Product surface',
-    description: 'Chotu stays close to the desktop as an orb, then expands into chat and task views when a request becomes real work.',
+    title: 'Memory',
+    metric: '01 - Dhee',
+    description: 'Keep preferences, decisions, prior work, and accepted lessons available across tools and sessions.',
   },
   {
-    title: 'Context before action',
-    metric: '02 - Dhee compiler',
-    description: 'Dhee turns screen context, repo state, browser evidence, prior decisions, and preferences into the compact working set Chotu needs.',
+    title: 'Approvals',
+    metric: '02 - Control',
+    description: 'Gate commands, edits, sharing, spending, and other risky steps so autonomy does not take ownership away from you.',
   },
   {
-    title: 'Coding with receipts',
-    metric: '03 - Browser proof',
-    description: 'For code work, Chotu plans, patches, verifies in the browser, asks for feedback, and saves evidence instead of pretending a diff is done.',
+    title: 'Tool use',
+    metric: '03 - Action',
+    description: 'Let agents move through browsers, terminals, editors, coding tools, and local workflows with clear scope.',
   },
   {
-    title: 'Control stays yours',
-    metric: 'What breaks today',
-    description: 'Most assistants either only talk or act too freely. Chotu keeps risky steps behind owner approval and keeps every run reviewable.',
+    title: 'Proof',
+    metric: '04 - Verify',
+    description: 'Return diffs, tests, screenshots, console state, and runtime checks with the answer.',
   },
   {
-    title: 'Every run teaches the next',
-    metric: '',
-    description: 'Accepted decisions, rejected attempts, product taste, and working habits become memory.\nThe assistant gets warmer instead of restarting cold.',
+    title: 'Self-evolution',
+    metric: '05 - Improve',
+    description: 'Turn accepted outcomes and rejected attempts into better future behavior.\nThe assistant gets warmer instead of restarting cold.',
     large: true,
   },
 ];
@@ -48,15 +48,17 @@ export function Benefits() {
     <section
       id="why-us"
       ref={sectionRef}
-      className="w-full bg-cream grid-pattern py-16 md:py-24 px-4 md:px-8"
+      className="flex min-h-[calc(100svh-112px)] w-full items-center bg-cream grid-pattern px-4 py-16 md:px-8 md:py-20"
     >
-      <div className={`max-w-[1400px] mx-auto transition-all duration-600 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+      <div className={`mx-auto w-full max-w-[1400px] transition-all duration-600 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
         <div className="mb-12">
           <h2 className="font-pixel text-4xl md:text-5xl text-[var(--text-primary)] mb-4">
-            Why Chotu feels different.
+            Sankhya builds infrastructure for autonomous agents.
           </h2>
           <p className="font-mono text-sm text-[var(--text-secondary)] max-w-[700px] leading-relaxed">
-            Most assistants talk. Chotu carries context, plans bounded work, asks before acting, verifies the result, and remembers what you approved. It is built for people who want an assistant that can actually stay with the work.
+            Chotu is the first agent built on the stack. Under it sits the
+            work that matters for reliable autonomy: memory, approvals, proof,
+            tool use, and learning loops that improve with accepted outcomes.
           </p>
         </div>
 
@@ -84,10 +86,13 @@ export function Benefits() {
 
           <div className="p-6 md:p-8 border-b md:border-r border-[var(--border-light)] flex flex-col justify-center">
             <div className="font-pixel text-3xl md:text-4xl text-[var(--text-primary)] leading-tight">
-              small orb
+              Remember
             </div>
             <div className="font-pixel text-3xl md:text-4xl text-[var(--text-primary)] leading-tight mt-2">
-              serious work
+              Verify
+            </div>
+            <div className="font-pixel text-3xl md:text-4xl text-[#d97445] leading-tight mt-2">
+              Evolve
             </div>
           </div>
         </div>

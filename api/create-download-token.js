@@ -3,9 +3,7 @@ import { desktopEntitlementWindow } from './_desktop-license.js';
 import { admin, getAdminAuth, getAdminDb, requireEnv } from './_firebase-admin.js';
 
 const allowedArtifacts = new Set([
-  'chotu-darwin-arm64.zip',
-  'chotu-darwin-x86_64.zip',
-  'chotu-darwin-x64.zip',
+  'chotu-darwin-arm64.dmg',
   'chotu-windows-x64.zip',
   'chotu-win32-x64.zip',
 ]);
