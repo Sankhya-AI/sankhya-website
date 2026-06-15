@@ -184,4 +184,15 @@ export async function createDesktopLoginUrl(
   return body.url;
 }
 
+export async function triggerManagedKeyProvisioning(user: User): Promise<{ status: string }> {
+  const idToken = await user.getIdToken();
+  const response = await fetch('/api/provision-managed-key', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${idToken}` },
+  });
+  const body = (await response.json().catch(() => ({}))) as { error?: string; status?: string; ok?: boolean };
+  if (!response.ok) throw new Error(body.error ?? 'Key provisioning failed');
+  return { status: body.status ?? 'active' };
+}
+
 export { hasFirebaseConfig };

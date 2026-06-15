@@ -11,6 +11,7 @@ import {
   RAZORPAY_SUBSCRIPTION_LINK,
   signInWithGoogle,
   signOutOfFirebase,
+  triggerManagedKeyProvisioning,
   watchAuthState,
   type ChotuSubscription,
 } from '@/lib/firebase';
@@ -80,6 +81,11 @@ export function AccountPage() {
         setMessage(error instanceof Error ? error.message : 'Could not finish Chotu Desktop sign-in.');
       });
   }, [desktopCallbackUrl, desktopLoginRequested, user]);
+
+  useEffect(() => {
+    if (!user || subscription?.managedApiKey?.status !== 'pending') return;
+    triggerManagedKeyProvisioning(user).catch(console.error);
+  }, [user, subscription?.managedApiKey?.status]);
 
   useEffect(() => {
     let mounted = true;
