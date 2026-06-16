@@ -1,14 +1,17 @@
 const menuLinks = [
-  ['Home', '/#home'],
-  ['Stack', '/#stack'],
-  ['Memory', '/#memory'],
-  ['Systems', '/#systems'],
-  ['Blog', '/#blog'],
+  ['See', '/#home'],
+  ['Do', '/#stack'],
+  ['Remember', '/#memory'],
+  ['Use Cases', '/#systems'],
+  ['Notes', '/#blog'],
+  ['Pricing', '/pricing'],
 ];
 
 const followLinks = [
-  ['Star Dhee on GitHub', 'https://github.com/Sankhya-AI/dhee'],
+  ['Download / Sign in', '/pricing'],
   ['Explore Dhee', 'https://dhee.sankhyaailabs.com'],
+  ['Star Dhee on GitHub', 'https://github.com/Sankhya-AI/dhee'],
+  ['Read the blog', '/blog'],
 ];
 
 export function Footer() {
@@ -64,8 +67,8 @@ export function Footer() {
                 <li key={label}>
                   <a
                     href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className="inline-flex items-center gap-2 font-mono text-sm text-white/58 transition-colors hover:text-white"
                   >
                     <span>↳</span>
@@ -77,7 +80,9 @@ export function Footer() {
           </div>
 
           <div className="max-w-[420px] font-mono text-sm leading-relaxed text-white/58 md:justify-self-center">
-            Sankhya builds Chotu, a local-first personal AI assistant, and Dhee, the context compiler that lets it remember, act, verify, and learn across sessions.
+            Sankhya AI Labs builds infrastructure for autonomous AI agents.
+            Chotu is our first agent: it sees your screen, uses your tools,
+            remembers what you ask it to keep, and proves what changed.
           </div>
 
           <div>
@@ -96,7 +101,7 @@ export function Footer() {
 
         <div className="mt-auto flex flex-col gap-3 border-t border-white/10 pt-6 font-mono text-[11px] uppercase text-white/42 md:flex-row md:items-center md:justify-between">
           <span>© 2026 Sankhya AI Labs</span>
-          <span>Built for Chotu, Dhee, and memory-aware work</span>
+          <span>Built to see, remember, act, and prove</span>
         </div>
       </div>
     </footer>

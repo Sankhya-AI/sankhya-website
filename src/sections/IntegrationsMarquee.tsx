@@ -1,13 +1,13 @@
 const integrations = [
-  { name: 'Desktop Orb', description: 'Chotu starts as a tiny surface on your desktop, then opens into chat or tasks only when the work needs structure.' },
-  { name: 'Chat UI', description: 'Ask, clarify, plan, and hand over context without turning every request into a giant prompt ritual.' },
-  { name: 'Task UI', description: 'Longer work becomes visible: intent, plan, blocked steps, owner approval, browser proof, and final handoff.' },
-  { name: 'Coding Runs', description: 'Chotu can inspect a repo, prepare a bounded patch, verify in the browser, and ask before applying risky changes.' },
-  { name: 'Dhee Memory', description: 'Dhee compiles the right context from prior decisions, preferences, task state, and evidence before Chotu acts.' },
-  { name: 'Screen Context', description: 'Useful screen observations become evidence for the current task, not permanent truth that overwrites your profile.' },
-  { name: 'Browser Proof', description: 'Visual work is checked where users see it: screenshots, console logs, DOM state, and interaction evidence.' },
-  { name: 'GitHub', description: 'Repo decisions, review feedback, and accepted patches become scoped memory for future coding runs.' },
-  { name: 'Local-first', description: 'Chotu runs close to your machine, keeps control with you, and shares only what you choose to share.' },
+  { name: 'Read the screen', description: 'Chotu starts from the browser, editor, terminal, and task you already have open.' },
+  { name: 'Open apps', description: 'It can move through local tools and browser surfaces instead of waiting for pasted context.' },
+  { name: 'Run Codex', description: 'Send coding work through Codex when the job needs repo edits, tests, and verification.' },
+  { name: 'Use Claude', description: 'Lean on Claude for reasoning, drafting, and long-context work when that is the better tool.' },
+  { name: 'Patch files', description: 'Keep code changes scoped, inspectable, and tied to the request you actually made.' },
+  { name: 'Search memory', description: 'Dhee brings back your preferences, prior decisions, and accepted lessons at the right moment.' },
+  { name: 'Ask approval', description: 'Commands, edits, spending, sharing, and risky actions stay visible before they happen.' },
+  { name: 'Show proof', description: 'Chotu returns the diff, checks, screenshots, console state, and unresolved questions.' },
+  { name: 'Keep learning', description: 'Accepted outcomes warm the next run without making every session start from zero.' },
 ];
 
 function IntegrationCard({ name, description }: { name: string; description: string }) {

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowUpRight, Check, CreditCard, Download, FileText, LinkIcon, LogIn, LogOut } from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
+import { Seo } from '@/components/Seo';
 import { ensureCustomerProfile } from '@/lib/customer';
 import {
   buildCheckoutUrl,
@@ -18,19 +19,16 @@ import {
 
 const downloadOptions = [
   {
-    artifact: 'chotu-darwin-arm64.zip',
+    artifact: 'chotu-darwin-arm64.dmg',
     label: 'Mac M-series',
-    detail: 'Apple Silicon',
-  },
-  {
-    artifact: 'chotu-darwin-x86_64.zip',
-    label: 'Mac Intel',
-    detail: 'Intel x64',
+    detail: 'Apple Silicon DMG',
+    available: true,
   },
   {
     artifact: 'chotu-windows-x64.zip',
     label: 'Windows',
-    detail: 'Windows x64',
+    detail: 'Windows x64 coming next',
+    available: false,
   },
 ] as const;
 
@@ -50,7 +48,7 @@ function formatDate(value?: string | null) {
 export function AccountPage() {
   const [user, setUser] = useState<User | null>(null);
   const [subscription, setSubscription] = useState<ChotuSubscription | null>(null);
-  const [selectedArtifact, setSelectedArtifact] = useState<ChotuArtifact>('chotu-darwin-arm64.zip');
+  const [selectedArtifact, setSelectedArtifact] = useState<ChotuArtifact>('chotu-darwin-arm64.dmg');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
@@ -175,6 +173,12 @@ export function AccountPage() {
 
   return (
     <main className="min-h-screen bg-cream px-4 pb-14 pt-28 text-[#1a1a1a] md:px-8 lg:px-10">
+      <Seo
+        title="Account - Sankhya AI Labs"
+        description="Private Sankhya AI Labs account dashboard for desktop assistant downloads, plan state, and billing access."
+        path="/account"
+        robots="noindex, nofollow"
+      />
       <section className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[minmax(0,0.86fr)_minmax(380px,1fr)]">
         <article className="rounded-lg border border-[#d4d0c8] bg-[#fffaf2] p-5 shadow-[0_20px_60px_rgba(24,20,16,0.08)]">
           <div className="flex flex-wrap items-start justify-between gap-4">
@@ -252,7 +256,7 @@ export function AccountPage() {
             <Download className="size-5 text-[#e9c46a]" />
           </div>
 
-          <div className="mt-5 grid gap-2 sm:grid-cols-3" role="radiogroup" aria-label="Choose Chotu desktop download">
+          <div className="mt-5 grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label="Choose Chotu desktop download">
             {downloadOptions.map((option) => {
               const selected = selectedArtifact === option.artifact;
 
@@ -260,11 +264,20 @@ export function AccountPage() {
                 <button
                   key={option.artifact}
                   type="button"
-                  onClick={() => setSelectedArtifact(option.artifact)}
+                  onClick={() => {
+                    if (option.available) {
+                      setSelectedArtifact(option.artifact);
+                    } else {
+                      setMessage('Windows downloads are not published yet. Use Mac M-series for this release.');
+                    }
+                  }}
+                  disabled={!option.available}
                   className={`min-h-[92px] rounded-md border p-3 text-left font-mono transition ${
                     selected
                       ? 'border-[#e9c46a] bg-[#f8ead8] text-[#14110f]'
-                      : 'border-white/12 bg-white/[0.06] text-[#f8ead8] hover:border-white/35 hover:bg-white/[0.1]'
+                      : option.available
+                        ? 'border-white/12 bg-white/[0.06] text-[#f8ead8] hover:border-white/35 hover:bg-white/[0.1]'
+                        : 'cursor-not-allowed border-white/10 bg-white/[0.03] text-[#f8ead8]/45'
                   }`}
                   aria-checked={selected}
                   role="radio"
