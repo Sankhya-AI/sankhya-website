@@ -1,5 +1,5 @@
 import { admin, getAdminAuth, getAdminDb, requireEnv } from './_firebase-admin.js';
-import { createProvisionedKey } from './_openrouter.js';
+import { createProvisionedKey, disableKey } from './_openrouter.js';
 
 async function verifyBearer(req) {
   const header = req.headers.authorization || '';
@@ -40,9 +40,12 @@ export default async function handler(req, res) {
     let abortReason = null;
     await db.runTransaction(async (t) => {
       const freshSnap = await t.get(subRef);
-      const freshStatus = freshSnap.data()?.managedApiKey?.status;
+      const fresh = freshSnap.data();
+      const freshStatus = fresh?.managedApiKey?.status;
+      if (!fresh?.access?.managedKeys) { abortReason = 'inactive'; return; }
       if (freshStatus === 'active') { abortReason = 'active'; return; }
       if (freshStatus === 'provisioning') { abortReason = 'provisioning'; return; }
+      if (freshStatus === 'pending_revocation') { abortReason = 'revocation'; return; }
       t.update(subRef, {
         'managedApiKey.status': 'provisioning',
         'managedApiKey.provisionedAt': new Date().toISOString(),
@@ -52,30 +55,79 @@ export default async function handler(req, res) {
 
     if (!didLock) {
       if (abortReason === 'provisioning') return res.status(409).json({ error: 'Key provisioning already in progress' });
+      if (abortReason === 'inactive') return res.status(403).json({ error: 'Active plan required' });
+      if (abortReason === 'revocation') return res.status(409).json({ error: 'Key revocation already in progress' });
       return res.status(200).json({ ok: true, status: 'already_active' });
     }
 
+    let createdHash = null;
     try {
       const uid = decoded.uid;
       const name = `chotu_${uid.slice(0, 8)}_${Math.floor(Date.now() / 1000)}`;
       const limitUsd = requireEnv('OPENROUTER_CREDIT_LIMIT_USD');
       const { key, hash } = await createProvisionedKey(name, limitUsd);
+      createdHash = hash;
 
       const secretRef = db.collection('users').doc(uid).collection('secrets').doc('openrouter');
-      await secretRef.set({ apiKey: key, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+      let shouldDisableCreatedKey = false;
+      await db.runTransaction(async (t) => {
+        const freshSnap = await t.get(subRef);
+        const fresh = freshSnap.data();
+        if (!fresh?.access?.managedKeys || fresh?.managedApiKey?.status !== 'provisioning') {
+          shouldDisableCreatedKey = true;
+          t.update(subRef, {
+            'managedApiKey.status': 'pending_revocation',
+            'managedApiKey.openrouterKeyHash': hash,
+            'managedApiKey.provisionedAt': new Date().toISOString(),
+          });
+          return;
+        }
 
-      await subRef.update({
-        'managedApiKey.status': 'active',
-        'managedApiKey.openrouterKeyHash': hash,
+        t.set(secretRef, { apiKey: key, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+        t.update(subRef, {
+          'managedApiKey.status': 'active',
+          'managedApiKey.openrouterKeyHash': hash,
+          'managedApiKey.provisionedAt': new Date().toISOString(),
+        });
       });
+
+      if (shouldDisableCreatedKey) {
+        try {
+          await disableKey(hash);
+          await subRef.update({
+            'managedApiKey.status': 'disabled',
+            'managedApiKey.provisionedAt': null,
+          });
+        } catch (disableError) {
+          console.error('Created key after plan changed; queued revocation:', disableError);
+        }
+        return res.status(409).json({ error: 'Plan changed while provisioning; key queued for revocation' });
+      }
 
       return res.status(200).json({ ok: true, status: 'active' });
     } catch (provisionError) {
       console.error('Provisioning failed, resetting to pending:', provisionError);
-      await subRef.update({
-        'managedApiKey.status': 'pending',
-        'managedApiKey.provisionedAt': null,
-      }).catch((e) => console.error('Failed to reset status:', e));
+      if (createdHash) {
+        await disableKey(createdHash)
+          .then(() => subRef.update({
+            'managedApiKey.status': 'disabled',
+            'managedApiKey.openrouterKeyHash': createdHash,
+            'managedApiKey.provisionedAt': null,
+          }))
+          .catch((e) => {
+            console.error('Failed to disable orphaned key:', e);
+            return subRef.update({
+              'managedApiKey.status': 'pending_revocation',
+              'managedApiKey.openrouterKeyHash': createdHash,
+              'managedApiKey.provisionedAt': null,
+            });
+          });
+      } else {
+        await subRef.update({
+          'managedApiKey.status': 'pending',
+          'managedApiKey.provisionedAt': null,
+        }).catch((e) => console.error('Failed to reset status:', e));
+      }
       return res.status(500).json({ error: 'Key provisioning failed, will retry' });
     }
   } catch (error) {

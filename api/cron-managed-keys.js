@@ -18,8 +18,9 @@ async function provisionKey(db, subRef, uid) {
   let didLock = false;
   await db.runTransaction(async (t) => {
     const snap = await t.get(subRef);
-    const status = snap.data()?.managedApiKey?.status;
-    if (status !== 'pending') return;
+    const sub = snap.data();
+    const status = sub?.managedApiKey?.status;
+    if (status !== 'pending' || !sub?.access?.managedKeys) return;
     t.update(subRef, {
       'managedApiKey.status': 'provisioning',
       'managedApiKey.provisionedAt': new Date().toISOString(),
@@ -29,24 +30,70 @@ async function provisionKey(db, subRef, uid) {
 
   if (!didLock) return;
 
+  let createdHash = null;
   try {
     const name = `chotu_${uid.slice(0, 8)}_${Math.floor(Date.now() / 1000)}`;
     const limitUsd = requireEnv('OPENROUTER_CREDIT_LIMIT_USD');
     const { key, hash } = await createProvisionedKey(name, limitUsd);
+    createdHash = hash;
 
     const secretRef = db.collection('users').doc(uid).collection('secrets').doc('openrouter');
-    await secretRef.set({ apiKey: key, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+    let shouldDisableCreatedKey = false;
+    await db.runTransaction(async (t) => {
+      const freshSnap = await t.get(subRef);
+      const fresh = freshSnap.data();
+      if (!fresh?.access?.managedKeys || fresh?.managedApiKey?.status !== 'provisioning') {
+        shouldDisableCreatedKey = true;
+        t.update(subRef, {
+          'managedApiKey.status': 'pending_revocation',
+          'managedApiKey.openrouterKeyHash': hash,
+          'managedApiKey.provisionedAt': new Date().toISOString(),
+        });
+        return;
+      }
 
-    await subRef.update({
-      'managedApiKey.status': 'active',
-      'managedApiKey.openrouterKeyHash': hash,
+      t.set(secretRef, { apiKey: key, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+      t.update(subRef, {
+        'managedApiKey.status': 'active',
+        'managedApiKey.openrouterKeyHash': hash,
+        'managedApiKey.provisionedAt': new Date().toISOString(),
+      });
     });
+
+    if (shouldDisableCreatedKey) {
+      try {
+        await disableKey(hash);
+        await subRef.update({
+          'managedApiKey.status': 'disabled',
+          'managedApiKey.provisionedAt': null,
+        });
+      } catch (disableError) {
+        console.error(`[cron] created key after plan changed; queued revocation uid=${uid}:`, disableError);
+      }
+    }
   } catch (err) {
     console.error(`[cron] provision failed uid=${uid}:`, err);
-    await subRef.update({
-      'managedApiKey.status': 'pending',
-      'managedApiKey.provisionedAt': null,
-    }).catch((e) => console.error('[cron] reset failed:', e));
+    if (createdHash) {
+      await disableKey(createdHash)
+        .then(() => subRef.update({
+          'managedApiKey.status': 'disabled',
+          'managedApiKey.openrouterKeyHash': createdHash,
+          'managedApiKey.provisionedAt': null,
+        }))
+        .catch((e) => {
+          console.error('[cron] failed to disable orphaned key:', e);
+          return subRef.update({
+            'managedApiKey.status': 'pending_revocation',
+            'managedApiKey.openrouterKeyHash': createdHash,
+            'managedApiKey.provisionedAt': null,
+          });
+        });
+    } else {
+      await subRef.update({
+        'managedApiKey.status': 'pending',
+        'managedApiKey.provisionedAt': null,
+      }).catch((e) => console.error('[cron] reset failed:', e));
+    }
   }
 }
 
@@ -95,7 +142,12 @@ export default async function handler(req, res) {
       const hash = doc.data()?.managedApiKey?.openrouterKeyHash;
       try {
         if (!hash) {
-          console.warn(`[cron] revoke uid=${uid}: no hash, skipping`);
+          console.warn(`[cron] revoke uid=${uid}: no hash, marking disabled`);
+          await doc.ref.update({
+            'managedApiKey.status': 'disabled',
+            'managedApiKey.provisionedAt': null,
+          });
+          processed++;
           continue;
         }
         await disableKey(hash);
@@ -119,11 +171,12 @@ export default async function handler(req, res) {
     const cutoff = new Date(Date.now() - STALE_LOCK_MS).toISOString();
     for (const doc of staleSnap.docs) {
       const uid = doc.ref.parent.parent.id;
-      const provisionedAt = doc.data()?.managedApiKey?.provisionedAt;
+      const data = doc.data();
+      const provisionedAt = data?.managedApiKey?.provisionedAt;
       if (provisionedAt && provisionedAt < cutoff) {
         try {
           await doc.ref.update({
-            'managedApiKey.status': 'pending',
+            'managedApiKey.status': data?.access?.managedKeys ? 'pending' : 'disabled',
             'managedApiKey.provisionedAt': null,
           });
           processed++;

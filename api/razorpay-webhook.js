@@ -151,13 +151,22 @@ export default async function handler(req, res) {
     if (keyProvisioningEvents.has(eventName)) {
       await db.runTransaction(async (t) => {
         const snap = await t.get(subRef);
-        const currentStatus = snap.data()?.managedApiKey?.status;
+        const currentKey = snap.data()?.managedApiKey;
+        const currentStatus = currentKey?.status;
         if (!currentStatus || currentStatus === 'disabled') {
           t.update(subRef, {
             'managedApiKey.status': 'pending',
             'managedApiKey.openrouterKeyHash': null,
             'managedApiKey.provisionedAt': null,
           });
+        } else if (currentStatus === 'pending_revocation') {
+          t.update(subRef, currentKey.openrouterKeyHash
+            ? { 'managedApiKey.status': 'active' }
+            : {
+                'managedApiKey.status': 'pending',
+                'managedApiKey.openrouterKeyHash': null,
+                'managedApiKey.provisionedAt': null,
+              });
         }
       });
     }
@@ -166,7 +175,7 @@ export default async function handler(req, res) {
       await db.runTransaction(async (t) => {
         const snap = await t.get(subRef);
         const s = snap.data()?.managedApiKey?.status;
-        if (s === 'active' || s === 'pending') {
+        if (s === 'active' || s === 'pending' || s === 'provisioning') {
           t.update(subRef, { 'managedApiKey.status': 'pending_revocation' });
         }
       });
