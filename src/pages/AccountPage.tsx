@@ -467,17 +467,6 @@ export function AccountPage() {
         </section>
       )}
 
-      <section className="mx-auto mt-5 max-w-7xl overflow-hidden rounded-lg border border-[#14110f] bg-[#14110f] p-5 text-[#f8ead8]">
-        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="font-mono text-xs font-bold uppercase text-[#f8ead8]/55">Footer banner</p>
-            <h2 className="mt-2 font-mono text-3xl font-bold leading-none">chotu_api coming soon</h2>
-          </div>
-          <p className="max-w-xl text-sm leading-6 text-[#f8ead8]/68">
-            Hosted Chotu API access will be added to this dashboard when it opens.
-          </p>
-        </div>
-      </section>
     </main>
   );
 }

@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     const decoded = await verifyBearer(req);
     if (!decoded?.uid) return res.status(401).json({ error: 'Sign in required' });
 
-    const { artifact = 'chotu-darwin-arm64.zip' } = await readJson(req);
+    const { artifact = 'chotu-darwin-arm64.dmg' } = await readJson(req);
     if (!allowedArtifacts.has(artifact)) return res.status(400).json({ error: 'Unknown artifact' });
 
     const db = getAdminDb();
