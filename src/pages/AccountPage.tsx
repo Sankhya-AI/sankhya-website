@@ -375,6 +375,8 @@ export function AccountPage() {
             </Button>
             <p className="mt-3 font-mono text-[11px] leading-5 text-[#f8ead8]/60">
               Private one-use links are created after checking your active plan or launch trial.
+              For Mac, open the DMG, drag Chotu to Applications, then launch Chotu from Applications.
+              macOS does not show a separate installer progress screen for this DMG.
             </p>
           </div>
         </article>
