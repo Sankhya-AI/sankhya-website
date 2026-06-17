@@ -1,19 +1,4 @@
 {
-  "indexes": [
-    {
-      "collectionGroup": "subscriptions",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        { "fieldPath": "managedApiKey.status", "order": "ASCENDING" }
-      ]
-    },
-    {
-      "collectionGroup": "subscriptions",
-      "queryScope": "COLLECTION_GROUP",
-      "fields": [
-        { "fieldPath": "managedApiKey.limitSyncPending", "order": "ASCENDING" }
-      ]
-    }
-  ],
+  "indexes": [],
   "fieldOverrides": []
 }

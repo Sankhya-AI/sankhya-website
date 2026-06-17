@@ -73,8 +73,9 @@ VITE_RAZORPAY_TOPUP_LINK_12USD  # ₹1999 -> $12 credits
    Enable events: `payment.captured`, `payment_link.paid`, `subscription.authenticated`,
    `subscription.charged`, `payment.failed`, `subscription.cancelled`, `subscription.halted`,
    `subscription.completed`.
-4. Deploy Firestore indexes: `firebase deploy --only firestore:indexes` (adds the
-   `managedApiKey.limitSyncPending` collection-group index).
+4. Deploy Firestore rules/indexes: `firebase deploy --only firestore`. The top-up
+   limit-sync query uses Firestore's automatic single-field index; no extra composite
+   index is required for `managedApiKey.limitSyncPending`.
 
 ## Endpoints added / changed
 
