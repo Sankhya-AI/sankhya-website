@@ -12,7 +12,7 @@ import { doc, getDoc, getFirestore, type Firestore } from 'firebase/firestore';
 
 export type ChotuSubscription = {
   status: 'none' | 'pending' | 'active' | 'expired';
-  plan: 'chotu';
+  plan: 'chotu' | 'byok';
   entitlement: string;
   updateUntil: string | null;
   access: {
@@ -22,7 +22,7 @@ export type ChotuSubscription = {
     managedKeys: boolean;
     chotuApi: boolean;
   };
-  billingMode: 'one_time' | 'manual' | 'razorpay' | 'lago' | 'demo';
+  billingMode: 'one_time' | 'manual' | 'razorpay' | 'lago' | 'demo' | 'byok';
   razorpayCustomerId?: string | null;
   razorpaySubscriptionId?: string | null;
   currentPeriodEnd?: string | null;
@@ -35,8 +35,21 @@ export type ChotuSubscription = {
     status: 'pending' | 'provisioning' | 'active' | 'pending_revocation' | 'disabled';
     openrouterKeyHash: string | null;
     provisionedAt: string | null;
+    creditLimitUsd?: number | null;
   } | null;
 };
+
+// Base monthly managed-credit grant (USD). Top-ups stack on top within a month.
+export const MANAGED_BASE_CREDIT_USD = 12;
+
+// Top-up packs: ₹ price → USD credits added to the current month's limit.
+export const TOPUP_PACKS = [
+  { usd: 3, inr: 499, envName: 'VITE_RAZORPAY_TOPUP_LINK_3USD', link: 'https://rzp.io/rzp/MrUioHC' },
+  { usd: 6, inr: 999, envName: 'VITE_RAZORPAY_TOPUP_LINK_6USD', link: 'https://rzp.io/rzp/f1e43wc0' },
+  { usd: 12, inr: 1999, envName: 'VITE_RAZORPAY_TOPUP_LINK_12USD', link: 'https://rzp.io/rzp/tMc5XGg' },
+] as const;
+
+export type TopUpUsd = (typeof TOPUP_PACKS)[number]['usd'];
 
 export type FirebaseServices = {
   app: FirebaseApp;
@@ -54,7 +67,7 @@ const firebaseConfig = {
   measurementId: 'G-TPML5YJSJH',
 };
 
-export const RAZORPAY_SUBSCRIPTION_LINK = 'https://rzp.io/rzp/RHLF89P';
+export const RAZORPAY_SUBSCRIPTION_LINK = 'https://rzp.io/rzp/eEubzej';
 
 const requiredFirebaseConfig = {
   apiKey: firebaseConfig.apiKey,
@@ -182,6 +195,50 @@ export async function createDesktopLoginUrl(
     throw new Error(body.error ?? 'Could not start Chotu Desktop sign-in.');
   }
   return body.url;
+}
+
+export async function selectByokPlan(user: User): Promise<void> {
+  const idToken = await user.getIdToken();
+  const response = await fetch('/api/select-plan', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ plan: 'byok' }),
+  });
+  const body = (await response.json().catch(() => ({}))) as { error?: string };
+  if (!response.ok) throw new Error(body.error ?? 'Could not select the free plan.');
+}
+
+// Re-derive entitlement from Razorpay in case a webhook was missed or delayed.
+// `paymentId` (from the post-checkout redirect) recovers a dropped first payment.
+export async function syncSubscription(
+  user: User,
+  paymentId?: string | null
+): Promise<ChotuSubscription | null> {
+  const idToken = await user.getIdToken();
+  const response = await fetch('/api/sync-subscription', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(paymentId ? { paymentId } : {}),
+  });
+  if (!response.ok) return null;
+  return fetchChotuSubscription(user);
+}
+
+export function topUpCheckoutUrl(user: User | null, usd: TopUpUsd): string {
+  const pack = TOPUP_PACKS.find((entry) => entry.usd === usd);
+  const link = pack ? (import.meta.env[pack.envName] as string | undefined) || pack.link : undefined;
+  if (!link) throw new Error('Top-up is not configured yet. Try again soon.');
+
+  const url = new URL(link);
+  // rzp.io short links carry their notes (kind=topup, topup_usd) server-side and
+  // ignore query params; full checkout URLs can take buyer hints for matching.
+  if (url.hostname !== 'rzp.io' && user) {
+    url.searchParams.set('firebase_uid', user.uid);
+    if (user.email) url.searchParams.set('email', user.email);
+    url.searchParams.set('kind', 'topup');
+    url.searchParams.set('topup_usd', String(usd));
+  }
+  return url.toString();
 }
 
 export async function triggerManagedKeyProvisioning(user: User): Promise<{ status: string }> {

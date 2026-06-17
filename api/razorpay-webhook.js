@@ -1,9 +1,21 @@
 import crypto from 'node:crypto';
 import { admin, getAdminDb, requireEnv } from './_firebase-admin.js';
+import { updateKeyLimit } from './_openrouter.js';
+import { applyManagedTopUp, managedBaseCreditUsd, topUpUsdFromNotes } from './_topups.js';
 
 const activeEvents = new Set(['payment.captured', 'payment_link.paid', 'subscription.authenticated', 'subscription.charged']);
 const inactiveEvents = new Set(['payment.failed', 'subscription.cancelled', 'subscription.halted', 'subscription.completed']);
 const keyProvisioningEvents = new Set(['payment.captured', 'payment_link.paid']);
+
+function getTopUp(payload) {
+  const payment = getEntity(payload, 'payment');
+  const paymentLink = getEntity(payload, 'payment_link');
+  const notes = getNotes(payment, paymentLink);
+  return {
+    paymentId: payment.id || paymentLink.payment_id || null,
+    usd: topUpUsdFromNotes(notes),
+  };
+}
 
 function getRawBody(req) {
   return new Promise((resolve, reject) => {
@@ -140,12 +152,43 @@ export default async function handler(req, res) {
     }
 
     const db = getAdminDb();
+
+    // Idempotency: Razorpay can re-deliver the same event. Claim the event id
+    // exactly once so retries (especially top-ups) never double-apply.
+    const rawEventId = req.headers['x-razorpay-event-id'];
+    const eventId = Array.isArray(rawEventId) ? rawEventId[0] : rawEventId;
+    if (eventId) {
+      const eventRef = db.collection('webhookEvents').doc(String(eventId));
+      const claimed = await db.runTransaction(async (t) => {
+        const snap = await t.get(eventRef);
+        if (snap.exists) return false;
+        t.set(eventRef, { event: eventName, at: admin.firestore.FieldValue.serverTimestamp() });
+        return true;
+      });
+      if (!claimed) return res.status(200).json({ ok: true, duplicate: true });
+    }
+
     const userRef = await findUserRef(db, event.payload);
     if (!userRef) {
       return res.status(202).json({ ok: true, unmatched: true });
     }
 
     const subRef = userRef.collection('subscriptions').doc('chotu');
+
+    // Top-up payment: add credits to the current month and raise the OpenRouter
+    // key limit immediately. Does not touch entitlement/access/usage.
+    const topUp = getTopUp(event.payload);
+    if (activeEvents.has(eventName) && topUp.usd != null) {
+      const result = await applyManagedTopUp({
+        db,
+        subRef,
+        paymentId: topUp.paymentId,
+        source: 'webhook',
+        usd: topUp.usd,
+      });
+      return res.status(200).json({ ok: true, topup: topUp.usd, ...result });
+    }
+
     await subRef.set(buildSubscriptionPatch(eventName, event.payload), { merge: true });
 
     if (keyProvisioningEvents.has(eventName)) {
@@ -169,6 +212,31 @@ export default async function handler(req, res) {
               });
         }
       });
+    }
+
+    // Activation and monthly renewal reset the managed credit limit back to the
+    // monthly base (dropping last month's top-ups). Apply now if a key already
+    // exists (renewal); fresh keys are created at base by provisioning.
+    if (activeEvents.has(eventName)) {
+      let hash = null;
+      await db.runTransaction(async (t) => {
+        const snap = await t.get(subRef);
+        const data = snap.data() || {};
+        if (!data.access?.managedKeys) return;
+        hash = data.managedApiKey?.openrouterKeyHash || null;
+        t.set(subRef, {
+          managedApiKey: { creditLimitUsd: managedBaseCreditUsd(), limitSyncPending: true },
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true });
+      });
+      if (hash) {
+        try {
+          await updateKeyLimit(hash, managedBaseCreditUsd());
+          await subRef.set({ managedApiKey: { limitSyncPending: false } }, { merge: true });
+        } catch (err) {
+          console.error('limit reset on activation/renewal failed (cron will retry):', err);
+        }
+      }
     }
 
     if (inactiveEvents.has(eventName)) {

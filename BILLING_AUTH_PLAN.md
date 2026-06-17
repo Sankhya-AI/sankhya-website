@@ -1,5 +1,9 @@
 # Chotu Auth, Subscription, and Usage Architecture
 
+> Historical planning note. The current implemented billing/top-up flow is in
+> `BILLING_FLOW_RUNBOOK.md`; follow that runbook for Razorpay links, webhooks,
+> BYOK, managed credits, and desktop key delivery.
+
 ## Recommendation
 
 Start with Firebase Auth plus a small server-owned entitlement record. Do not integrate Lago Cloud until there are real paid customers or usage-based invoices to reconcile. Lago's docs currently position open source as forever-free, while premium cloud/self-hosted plans do not offer free trials, so it should remain an adapter behind your backend rather than a frontend dependency.
@@ -43,7 +47,7 @@ Best fit:
 Use a Razorpay Payment Link first. It is cheaper and faster than a custom payment gateway integration, and it keeps Razorpay secrets out of the Vite frontend.
 
 Frontend-only launch:
-- Use `https://rzp.io/rzp/RHLF89P` as the default Razorpay subscription link.
+- Use `https://rzp.io/rzp/eEubzej` as the default Razorpay subscription link.
 - Optionally override with `VITE_RAZORPAY_PAYMENT_LINK_URL` in `.env.local`.
 - Keep checkout in INR for now. If Razorpay International Payments is enabled, outside-India customers can pay by card and their card issuer converts the Rs 1999 charge.
 - After payment, manually mark the matching Firestore entitlement active until webhooks are added.

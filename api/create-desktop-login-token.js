@@ -43,10 +43,23 @@ export default async function handler(req, res) {
     const body = await readJson(req);
     const callbackUrl = validateLoopbackCallback(body.callbackUrl);
     const db = getAdminDb();
-    const snapshot = await db.collection('users').doc(decoded.uid).collection('subscriptions').doc('chotu').get();
+    const userRef = db.collection('users').doc(decoded.uid);
+    const snapshot = await userRef.collection('subscriptions').doc('chotu').get();
     const subscription = snapshot.data();
     const entitlement = desktopEntitlementFromSubscription(decoded, subscription);
-    callbackUrl.searchParams.set('license_token', encodeLicenseToken(entitlement));
+
+    // Deliver the account's own managed OpenRouter key inside the same
+    // short-lived loopback token, but only when managed AI is active. The key
+    // is never readable by the browser (firestore.rules denies the secrets
+    // subcollection); only this admin-side handler can read it.
+    let managedKey = null;
+    if (subscription?.access?.managedKeys && subscription?.managedApiKey?.status === 'active') {
+      const secretSnap = await userRef.collection('secrets').doc('openrouter').get();
+      const secret = secretSnap.data();
+      if (secret?.apiKey) managedKey = secret.apiKey;
+    }
+
+    callbackUrl.searchParams.set('license_token', encodeLicenseToken(entitlement, managedKey));
     return res.status(200).json({
       url: callbackUrl.toString(),
       expiresInSeconds: 60,

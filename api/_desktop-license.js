@@ -91,6 +91,16 @@ export function desktopEntitlementWindow(subscription) {
     };
   }
   if (subscription.access?.localApp === false) return null;
+  // Free BYOK plan: perpetual local app + downloads, no managed credits. Granted
+  // regardless of billing dates because nothing is billed.
+  if (subscription.plan === 'byok' || subscription.billingMode === 'byok') {
+    return {
+      status: 'active',
+      trialEndsAt: isoFromFirestore(subscription.trialEndsAt),
+      updatesUntil: addDaysIso(3650),
+      downloadEnabled: true,
+    };
+  }
   if (subscription.status !== 'active') return null;
   const accessUntil = isoFromFirestore(subscription.currentPeriodEnd) || isoFromFirestore(subscription.updateUntil);
   if (!accessUntil) {
@@ -157,6 +167,13 @@ export function desktopEntitlementFromSubscription(decodedUser, subscription) {
   });
 }
 
-export function encodeLicenseToken(entitlement) {
-  return Buffer.from(JSON.stringify({ entitlement }), 'utf8').toString('base64url');
+export function encodeLicenseToken(entitlement, managedKey = null) {
+  const payload = { entitlement };
+  // The per-user managed OpenRouter key rides alongside (not inside) the signed
+  // entitlement so the signature stays clean. It only travels over the
+  // short-lived 127.0.0.1 desktop callback.
+  if (typeof managedKey === 'string' && managedKey.trim()) {
+    payload.managed_key = managedKey.trim();
+  }
+  return Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
 }

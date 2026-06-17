@@ -31,6 +31,24 @@ export async function createProvisionedKey(name, limitUsd) {
   return { key, hash };
 }
 
+export async function updateKeyLimit(hash, limitUsd) {
+  const limit = parseFloat(limitUsd);
+  if (!Number.isFinite(limit) || limit < 0) throw new Error(`Invalid key limit: ${limitUsd}`);
+
+  const res = await fetch(`${BASE_URL}/keys/${encodeURIComponent(hash)}`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ limit }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`OpenRouter updateKeyLimit failed ${res.status}: ${text}`);
+  }
+
+  return { ok: true, limit };
+}
+
 export async function disableKey(hash) {
   const res = await fetch(`${BASE_URL}/keys/${encodeURIComponent(hash)}`, {
     method: 'PATCH',

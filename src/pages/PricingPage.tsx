@@ -149,10 +149,10 @@ export function PricingPage() {
           <div className="rounded-md border border-[#d4d0c8] bg-[#14110f] p-5 text-[#f8ead8]">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="font-mono text-xs uppercase text-[#f8ead8]/55">Launch plan</p>
-                <h2 className="mt-2 font-mono text-3xl font-bold">Free for 1 month</h2>
+                <p className="font-mono text-xs uppercase text-[#f8ead8]/55">Two ways to run Chotu</p>
+                <h2 className="mt-2 font-mono text-3xl font-bold">Managed or BYOK</h2>
                 <p className="mt-3 text-sm leading-6 text-[#f8ead8]/70">
-                  Sign in to connect your account, download Chotu, and manage plan details from the dashboard.
+                  Sign in to pick your plan, download Chotu, and manage everything from the dashboard.
                 </p>
               </div>
               <ChotuOrb size="md" label="Chotu" variant="dark" />
@@ -160,16 +160,16 @@ export function PricingPage() {
 
             <div className="mt-5 space-y-3 border-t border-white/10 pt-5 font-mono text-xs text-[#f8ead8]/78">
               <div className="flex items-start gap-2">
-                <Check className="mt-0.5 size-4 text-[#e9c46a]" />
-                <span>Desktop app access</span>
+                <Check className="mt-0.5 size-4 shrink-0 text-[#e9c46a]" />
+                <span><strong className="text-[#f8ead8]">Managed — Rs 1999/mo:</strong> AI credits included, no key setup</span>
               </div>
               <div className="flex items-start gap-2">
-                <Check className="mt-0.5 size-4 text-[#e9c46a]" />
-                <span>Updates and support while active</span>
+                <Check className="mt-0.5 size-4 shrink-0 text-[#e9c46a]" />
+                <span><strong className="text-[#f8ead8]">Bring your own key — free:</strong> use your own provider key</span>
               </div>
               <div className="flex items-start gap-2">
-                <Check className="mt-0.5 size-4 text-[#e9c46a]" />
-                <span>Account dashboard after Google sign-in</span>
+                <Check className="mt-0.5 size-4 shrink-0 text-[#e9c46a]" />
+                <span>First month free to try, updates and support while active</span>
               </div>
             </div>
 

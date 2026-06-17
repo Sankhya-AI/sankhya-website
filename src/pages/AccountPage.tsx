@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowUpRight, Check, CreditCard, Download, FileText, LinkIcon, LogIn, LogOut } from 'lucide-react';
+import { ArrowUpRight, Check, CreditCard, Download, KeyRound, LogIn, LogOut, Plus, Sparkles } from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { Button } from '@/components/ui/button';
 import { Seo } from '@/components/Seo';
@@ -9,12 +9,17 @@ import {
   createDesktopLoginUrl,
   fetchChotuSubscription,
   hasFirebaseConfig,
-  RAZORPAY_SUBSCRIPTION_LINK,
+  MANAGED_BASE_CREDIT_USD,
+  selectByokPlan,
   signInWithGoogle,
   signOutOfFirebase,
+  syncSubscription,
+  TOPUP_PACKS,
+  topUpCheckoutUrl,
   triggerManagedKeyProvisioning,
   watchAuthState,
   type ChotuSubscription,
+  type TopUpUsd,
 } from '@/lib/firebase';
 
 const downloadOptions = [
@@ -51,11 +56,16 @@ export function AccountPage() {
   const [selectedArtifact, setSelectedArtifact] = useState<ChotuArtifact>('chotu-darwin-arm64.dmg');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
+  const [planBusy, setPlanBusy] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const desktopRedirectStarted = useRef(false);
   const desktopLoginRequested = useMemo(() => new URLSearchParams(window.location.search).get('desktop_login') === '1', []);
   const desktopCallbackUrl = useMemo(
     () => new URLSearchParams(window.location.search).get('callback') || 'http://127.0.0.1:7777/v1/auth/browser-callback',
+    []
+  );
+  const redirectPaymentId = useMemo(
+    () => new URLSearchParams(window.location.search).get('razorpay_payment_id'),
     []
   );
 
@@ -85,6 +95,32 @@ export function AccountPage() {
     triggerManagedKeyProvisioning(user).catch(console.error);
   }, [user, subscription?.managedApiKey?.status]);
 
+  // Reliability: right after a Razorpay redirect, verify the captured payment so
+  // access is granted even if the webhook was missed or delayed.
+  useEffect(() => {
+    if (!user || !redirectPaymentId) return;
+    syncSubscription(user, redirectPaymentId)
+      .then((next) => {
+        if (next) {
+          setSubscription(next);
+          setMessage('Payment confirmed. Your Chotu plan is active.');
+        }
+      })
+      .catch(() => undefined);
+  }, [user, redirectPaymentId]);
+
+  // Reliability: if the account still looks unpaid/pending, ask the server to
+  // reconcile against Razorpay in case a webhook was missed or delayed.
+  useEffect(() => {
+    if (!user || !subscription) return;
+    if (!['pending', 'none', 'expired'].includes(subscription.status)) return;
+    syncSubscription(user)
+      .then((next) => {
+        if (next) setSubscription(next);
+      })
+      .catch(() => undefined);
+  }, [user, subscription?.status]);
+
   useEffect(() => {
     let mounted = true;
 
@@ -111,6 +147,11 @@ export function AccountPage() {
   const nextPaymentDate = subscription?.currentPeriodEnd ? formatDate(subscription.currentPeriodEnd) : 'After free month';
   const selectedDownload = downloadOptions.find((option) => option.artifact === selectedArtifact) ?? downloadOptions[0];
 
+  const planIsByok = subscription?.plan === 'byok' || subscription?.billingMode === 'byok';
+  const planIsManaged = (subscription?.access?.managedKeys ?? false) && !planIsByok;
+  const keyStatus = subscription?.managedApiKey?.status ?? null;
+  const creditLimit = subscription?.managedApiKey?.creditLimitUsd ?? MANAGED_BASE_CREDIT_USD;
+
   const handleGoogleAuth = async () => {
     setBusy(true);
     setMessage('');
@@ -134,8 +175,34 @@ export function AccountPage() {
     }
   };
 
-  const handleInvoiceMessage = () => {
-    setMessage('Past invoices will appear here after Razorpay webhook sync is connected. Razorpay also emails receipts after successful payments.');
+  const handleSelectByok = async () => {
+    if (!user) {
+      setMessage('Sign in first to choose the free plan.');
+      return;
+    }
+    setPlanBusy(true);
+    setMessage('');
+    try {
+      await selectByokPlan(user);
+      setSubscription(await fetchChotuSubscription(user));
+      setMessage('Free Bring-your-own-key plan is active. Download Chotu, then add your own model key in Settings.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Could not select the free plan.');
+    } finally {
+      setPlanBusy(false);
+    }
+  };
+
+  const handleTopUp = (usd: TopUpUsd) => {
+    if (!user) {
+      setMessage('Sign in first to top up credits.');
+      return;
+    }
+    try {
+      window.location.href = topUpCheckoutUrl(user, usd);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Top-up is not available yet.');
+    }
   };
 
   const handleDownload = async () => {
@@ -313,62 +380,92 @@ export function AccountPage() {
         </article>
       </section>
 
-      <section className="mx-auto mt-5 grid max-w-7xl gap-4 md:grid-cols-3">
-        <article className="rounded-md border border-[#d4d0c8] bg-[#fffaf2] p-5">
-          <div className="flex items-center justify-between gap-3">
+      <section className="mx-auto mt-5 grid max-w-7xl gap-4 md:grid-cols-2">
+        <article className={`rounded-lg border p-5 ${planIsManaged ? 'border-[#1f8f4a]/45 bg-[#eef9f0]' : 'border-[#d4d0c8] bg-[#fffaf2]'}`}>
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-mono text-xs font-bold uppercase text-[#77706a]">Payment link</p>
-              <h2 className="mt-2 font-mono text-xl font-bold text-[#14110f]">Razorpay checkout</h2>
+              <p className="font-mono text-xs font-bold uppercase text-[#77706a]">Chotu Managed</p>
+              <h2 className="mt-2 font-mono text-2xl font-bold text-[#14110f]">
+                Rs 1999<span className="text-sm font-normal text-[#77706a]"> / month</span>
+              </h2>
             </div>
-            <LinkIcon className="size-5 text-[#cf5a32]" />
+            <Sparkles className="size-5 text-[#cf5a32]" />
           </div>
-          <p className="mt-4 break-all font-mono text-xs leading-5 text-[#5f5a54]">{RAZORPAY_SUBSCRIPTION_LINK}</p>
+          <ul className="mt-4 space-y-2 border-t border-[#d4d0c8] pt-4 font-mono text-xs text-[#5f5a54]">
+            <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#1f8f4a]" /> Managed AI credits refreshed every month</li>
+            <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#1f8f4a]" /> No key setup — just sign in and use Chotu</li>
+            <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#1f8f4a]" /> Updates, support, and one-tap top-ups</li>
+          </ul>
           <Button
             type="button"
             onClick={() => void handleStartSubscription()}
             className="mt-5 h-10 w-full justify-center rounded-md bg-[#14110f] font-mono text-xs text-[#f8ead8] hover:bg-[#2a2521]"
           >
-            Open payment link
+            {planIsManaged ? 'Manage subscription' : 'Subscribe with Razorpay'}
             <ArrowUpRight className="size-4" />
           </Button>
         </article>
 
-        <article className="rounded-md border border-[#d4d0c8] bg-[#fffaf2] p-5">
-          <div className="flex items-center justify-between gap-3">
+        <article className={`rounded-lg border p-5 ${planIsByok ? 'border-[#1f8f4a]/45 bg-[#eef9f0]' : 'border-[#d4d0c8] bg-[#fffaf2]'}`}>
+          <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-mono text-xs font-bold uppercase text-[#77706a]">Upcoming payment</p>
-              <h2 className="mt-2 font-mono text-xl font-bold text-[#14110f]">{nextPaymentDate}</h2>
+              <p className="font-mono text-xs font-bold uppercase text-[#77706a]">Bring your own key</p>
+              <h2 className="mt-2 font-mono text-2xl font-bold text-[#14110f]">Free</h2>
             </div>
-            <CreditCard className="size-5 text-[#cf5a32]" />
+            <KeyRound className="size-5 text-[#cf5a32]" />
           </div>
-          <dl className="mt-5 space-y-3 border-t border-[#d4d0c8] pt-4 font-mono text-xs">
-            <div className="flex justify-between gap-4">
-              <dt className="text-[#77706a]">Amount</dt>
-              <dd className="font-bold text-[#14110f]">Rs 1999</dd>
-            </div>
-            <div className="flex justify-between gap-4">
-              <dt className="text-[#77706a]">Collection</dt>
-              <dd className="text-right font-bold text-[#14110f]">Razorpay hosted</dd>
-            </div>
-          </dl>
-        </article>
-
-        <article className="rounded-md border border-[#d4d0c8] bg-[#fffaf2] p-5">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="font-mono text-xs font-bold uppercase text-[#77706a]">Invoice</p>
-              <h2 className="mt-2 font-mono text-xl font-bold text-[#14110f]">No invoices yet</h2>
-            </div>
-            <FileText className="size-5 text-[#cf5a32]" />
-          </div>
-          <p className="mt-4 text-sm leading-6 text-[#5f5a54]">
-            Razorpay emails receipts after successful payments. Synced invoices will show up here.
-          </p>
-          <Button type="button" variant="outline" onClick={handleInvoiceMessage} className="mt-5 h-10 w-full rounded-md font-mono text-xs">
-            View invoice status
+          <ul className="mt-4 space-y-2 border-t border-[#d4d0c8] pt-4 font-mono text-xs text-[#5f5a54]">
+            <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#1f8f4a]" /> Use your own OpenRouter or provider key</li>
+            <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#1f8f4a]" /> Full local Chotu app, updates, and support</li>
+            <li className="flex items-start gap-2"><Check className="mt-0.5 size-4 shrink-0 text-[#1f8f4a]" /> You pay your model provider directly</li>
+          </ul>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => void handleSelectByok()}
+            disabled={planBusy || !user || planIsByok}
+            className="mt-5 h-10 w-full justify-center rounded-md font-mono text-xs"
+          >
+            {planIsByok ? 'Free plan active' : planBusy ? 'Activating' : 'Use the free plan'}
           </Button>
         </article>
       </section>
+
+      {planIsManaged && (
+        <section id="top-up" className="mx-auto mt-5 max-w-7xl scroll-mt-24 rounded-lg border border-[#d4d0c8] bg-[#fffaf2] p-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="font-mono text-xs font-bold uppercase text-[#77706a]">Managed credits</p>
+              <h2 className="mt-2 font-mono text-xl font-bold text-[#14110f]">
+                {keyStatus === 'active' ? `Up to $${creditLimit} of credits this month` : 'Setting up your credits'}
+              </h2>
+            </div>
+            <CreditCard className="size-5 text-[#cf5a32]" />
+          </div>
+          <p className="mt-3 border-t border-[#d4d0c8] pt-4 font-mono text-xs leading-5 text-[#5f5a54]">
+            {keyStatus === 'active'
+              ? 'Live usage shows in Chotu → Settings → Model & usage. Need more before the monthly reset? Top up below.'
+              : 'Your managed key is being prepared — this usually takes under a minute after payment.'}
+          </p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-3">
+            {TOPUP_PACKS.map((pack) => (
+              <Button
+                key={pack.usd}
+                type="button"
+                variant="outline"
+                onClick={() => handleTopUp(pack.usd)}
+                disabled={!user || keyStatus !== 'active'}
+                className="h-12 flex-col gap-0 rounded-md font-mono text-xs"
+              >
+                <span className="flex items-center gap-1 font-bold">
+                  <Plus className="size-3" />${pack.usd} credits
+                </span>
+                <span className="text-[10px] text-[#77706a]">Rs {pack.inr}</span>
+              </Button>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto mt-5 max-w-7xl overflow-hidden rounded-lg border border-[#14110f] bg-[#14110f] p-5 text-[#f8ead8]">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

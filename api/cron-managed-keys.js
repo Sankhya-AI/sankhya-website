@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import { admin, getAdminDb, requireEnv } from './_firebase-admin.js';
-import { createProvisionedKey, disableKey } from './_openrouter.js';
+import { createProvisionedKey, disableKey, updateKeyLimit } from './_openrouter.js';
 
 const STALE_LOCK_MS = 5 * 60 * 1000;
 const BATCH_LIMIT = 5;
@@ -159,6 +159,36 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error('[cron] revoke query failed:', err);
+  }
+
+  // 3b. Sync managed key credit limits (top-ups + monthly resets). Flag-driven so
+  // it stays cheap; converges even if the webhook's immediate PATCH failed.
+  try {
+    const syncSnap = await db.collectionGroup('subscriptions')
+      .where('managedApiKey.limitSyncPending', '==', true)
+      .limit(BATCH_LIMIT)
+      .get();
+
+    for (const doc of syncSnap.docs) {
+      const uid = doc.ref.parent.parent.id;
+      const key = doc.data()?.managedApiKey || {};
+      try {
+        if (key.status !== 'active' || !key.openrouterKeyHash) {
+          await doc.ref.set({ managedApiKey: { limitSyncPending: false } }, { merge: true });
+          continue;
+        }
+        const limit = Number(key.creditLimitUsd);
+        if (Number.isFinite(limit) && limit > 0) {
+          await updateKeyLimit(key.openrouterKeyHash, limit);
+        }
+        await doc.ref.set({ managedApiKey: { limitSyncPending: false } }, { merge: true });
+        processed++;
+      } catch (err) {
+        console.error(`[cron] limit-sync uid=${uid}:`, err);
+      }
+    }
+  } catch (err) {
+    console.error('[cron] limit-sync query failed:', err);
   }
 
   // 3. Reset stale provisioning locks
