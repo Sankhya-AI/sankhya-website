@@ -78,6 +78,7 @@ export function PricingPage() {
     try {
       const result = await signInWithGoogle();
       setUser(result.user);
+      window.location.href = '/account';
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Could not complete Google login.');
     } finally {

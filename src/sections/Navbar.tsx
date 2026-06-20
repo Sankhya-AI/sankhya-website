@@ -94,6 +94,7 @@ export function Navbar() {
     try {
       const result = await signInWithGoogle();
       setUser(result.user);
+      window.location.href = '/account';
     } catch {
       window.location.href = '/account';
     } finally {
