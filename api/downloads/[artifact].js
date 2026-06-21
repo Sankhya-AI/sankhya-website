@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
-import { get } from '@vercel/blob';
+import { GetObjectCommand, HeadObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { admin, getAdminDb, requireEnv } from '../_firebase-admin.js';
 
 const artifactBlobNames = new Map([
@@ -8,15 +9,91 @@ const artifactBlobNames = new Map([
   ['chotu-win32-x64.zip', 'chotu-windows-x64.zip'],
 ]);
 
-function blobPathForArtifact(artifact) {
-  const prefix = (process.env.CHOTU_BLOB_RELEASE_PREFIX || 'chotu/releases/stable/0.1.0').replace(/^\/+|\/+$/g, '');
+let cachedR2Client = null;
+let cachedR2ClientKey = '';
+
+function normalizeR2EndpointAndBucket(endpoint, bucket) {
+  let normalizedEndpoint = String(endpoint || '').replace(/\/+$/g, '');
+  let normalizedBucket = String(bucket || '').trim();
+  if (!normalizedEndpoint) return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
+
+  try {
+    const parsed = new URL(normalizedEndpoint);
+    const pathParts = parsed.pathname.split('/').filter(Boolean);
+    if (pathParts.length === 1 && (!normalizedBucket || normalizedBucket === pathParts[0])) {
+      normalizedBucket = pathParts[0];
+      parsed.pathname = '';
+      normalizedEndpoint = parsed.toString().replace(/\/+$/g, '');
+    }
+  } catch {
+    return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
+  }
+
+  return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
+}
+
+function r2Config() {
+  const accountId = String(process.env.CHOTU_R2_ACCOUNT_ID || '').trim();
+  const rawEndpoint = String(
+    process.env.CHOTU_R2_ENDPOINT || (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : '')
+  ).replace(/\/+$/g, '');
+  const normalized = normalizeR2EndpointAndBucket(rawEndpoint, process.env.CHOTU_R2_BUCKET);
+  const config = {
+    endpoint: normalized.endpoint,
+    region: String(process.env.CHOTU_R2_REGION || 'auto').trim() || 'auto',
+    bucket: normalized.bucket,
+    accessKeyId: String(process.env.CHOTU_R2_ACCESS_KEY_ID || '').trim(),
+    secretAccessKey: String(process.env.CHOTU_R2_SECRET_ACCESS_KEY || '').trim(),
+  };
+  const missing = Object.entries(config)
+    .filter(([_key, value]) => !value)
+    .map(([key]) => key);
+  if (missing.length) {
+    throw new Error(`Missing Cloudflare R2 download configuration: ${missing.join(', ')}`);
+  }
+  return config;
+}
+
+function r2Client(config) {
+  const clientKey = JSON.stringify({
+    endpoint: config.endpoint,
+    region: config.region,
+    accessKeyId: config.accessKeyId,
+  });
+  if (cachedR2Client && cachedR2ClientKey === clientKey) return cachedR2Client;
+  cachedR2ClientKey = clientKey;
+  cachedR2Client = new S3Client({
+    region: config.region,
+    endpoint: config.endpoint,
+    credentials: {
+      accessKeyId: config.accessKeyId,
+      secretAccessKey: config.secretAccessKey,
+    },
+    forcePathStyle: true,
+  });
+  return cachedR2Client;
+}
+
+function r2KeyForArtifact(artifact) {
+  const prefix = (process.env.CHOTU_R2_RELEASE_PREFIX || 'chotu/releases/stable/0.1.0').replace(/^\/+|\/+$/g, '');
   return `${prefix}/${artifactBlobNames.get(artifact)}`;
 }
 
-function blobGetOptions() {
-  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim();
-  return token ? { access: 'private', token, useCache: false } : { access: 'private', useCache: false };
+function contentTypeForArtifact(artifact) {
+  return artifact.endsWith('.dmg') ? 'application/x-apple-diskimage' : 'application/zip';
 }
+
+function signedUrlTtlSeconds() {
+  const value = Number(process.env.CHOTU_R2_SIGNED_URL_TTL_SECONDS || '300');
+  if (!Number.isFinite(value) || value < 1) return 300;
+  return Math.min(Math.floor(value), 3600);
+}
+
+export const __private = {
+  normalizeR2EndpointAndBucket,
+  r2KeyForArtifact,
+  signedUrlTtlSeconds,
+};
 
 function signPayload(payload) {
   return crypto.createHmac('sha256', requireEnv('DOWNLOAD_TOKEN_SECRET')).update(payload).digest('base64url');
@@ -99,38 +176,38 @@ export default async function handler(req, res) {
       return res.status(401).send('Invalid, used, or expired download link');
     }
 
-    const blob = await get(blobPathForArtifact(artifact), blobGetOptions());
+    const config = r2Config();
+    const key = r2KeyForArtifact(artifact);
+    const client = r2Client(config);
 
-    if (!blob) {
-      return res.status(404).send('Release artifact is not available yet');
-    }
-
-    if (!blob.stream || blob.statusCode !== 200) {
+    try {
+      await client.send(new HeadObjectCommand({ Bucket: config.bucket, Key: key }));
+    } catch (error) {
+      if (error?.$metadata?.httpStatusCode === 404 || error?.name === 'NotFound') {
+        return res.status(404).send('Release artifact is not available yet');
+      }
+      console.error(error);
       return res.status(502).send('Could not fetch release artifact');
     }
+
+    const signedUrl = await getSignedUrl(
+      client,
+      new GetObjectCommand({
+        Bucket: config.bucket,
+        Key: key,
+        ResponseContentDisposition: `attachment; filename="${artifact}"`,
+        ResponseContentType: contentTypeForArtifact(artifact),
+      }),
+      { expiresIn: signedUrlTtlSeconds() }
+    );
 
     if (!(await consumeDownloadToken(decodedToken))) {
       return res.status(401).send('Invalid, used, or expired download link');
     }
 
-    res.setHeader(
-      'Content-Type',
-      blob.blob.contentType || (artifact.endsWith('.dmg') ? 'application/x-apple-diskimage' : 'application/zip')
-    );
-    res.setHeader('Content-Disposition', `attachment; filename="${artifact}"`);
-    res.setHeader('Content-Length', String(blob.blob.size));
-    res.setHeader('ETag', blob.blob.etag);
     res.setHeader('Cache-Control', 'private, no-store, max-age=0');
     res.setHeader('Pragma', 'no-cache');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-
-    const reader = blob.stream.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(Buffer.from(value));
-    }
-    return res.end();
+    return res.redirect(302, signedUrl);
   } catch (error) {
     console.error(error);
     return res.status(500).send('Download failed');
