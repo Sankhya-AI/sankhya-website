@@ -177,7 +177,7 @@ export async function buildCheckoutUrl(user: User | null) {
   return url.toString();
 }
 
-export async function createDesktopLoginUrl(
+export async function createDesktopLoginRequest(
   user: User,
   callbackUrl = 'http://127.0.0.1:7777/v1/auth/browser-callback'
 ) {
@@ -190,11 +190,15 @@ export async function createDesktopLoginUrl(
     },
     body: JSON.stringify({ callbackUrl }),
   });
-  const body = (await response.json().catch(() => ({}))) as { error?: string; url?: string };
-  if (!response.ok || !body.url) {
+  const body = (await response.json().catch(() => ({}))) as {
+    error?: string;
+    url?: string;
+    licenseToken?: string;
+  };
+  if (!response.ok || !body.url || !body.licenseToken) {
     throw new Error(body.error ?? 'Could not start Chotu Desktop sign-in.');
   }
-  return body.url;
+  return { url: body.url, licenseToken: body.licenseToken };
 }
 
 export async function selectByokPlan(user: User): Promise<void> {
@@ -248,8 +252,41 @@ export async function triggerManagedKeyProvisioning(user: User): Promise<{ statu
     headers: { Authorization: `Bearer ${idToken}` },
   });
   const body = (await response.json().catch(() => ({}))) as { error?: string; status?: string; ok?: boolean };
+  if (response.status === 409 && body.error === 'Key provisioning already in progress') {
+    return { status: 'provisioning' };
+  }
   if (!response.ok) throw new Error(body.error ?? 'Key provisioning failed');
   return { status: body.status ?? 'active' };
+}
+
+const MANAGED_KEY_PREPARATION_TIMEOUT_MS = 60_000;
+const MANAGED_KEY_POLL_INTERVAL_MS = 1_000;
+
+function wait(milliseconds: number) {
+  return new Promise<void>((resolve) => window.setTimeout(resolve, milliseconds));
+}
+
+export async function prepareManagedDesktopLogin(
+  user: User,
+  initialSubscription: ChotuSubscription,
+): Promise<ChotuSubscription> {
+  if (!initialSubscription.access.managedKeys) return initialSubscription;
+
+  let subscription = initialSubscription;
+  const deadline = Date.now() + MANAGED_KEY_PREPARATION_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    const status = subscription.managedApiKey?.status;
+    if (status === 'active') return subscription;
+    if (status === 'pending_revocation') {
+      throw new Error('Managed cognition is being safely reset. Please try Chotu sign-in again shortly.');
+    }
+    if (status === 'pending' || status === 'disabled' || !status) {
+      await triggerManagedKeyProvisioning(user);
+    }
+    await wait(MANAGED_KEY_POLL_INTERVAL_MS);
+    subscription = await fetchChotuSubscription(user);
+  }
+  throw new Error('Secure managed cognition is taking longer than expected. Please try again shortly.');
 }
 
 export { hasFirebaseConfig };

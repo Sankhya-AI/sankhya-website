@@ -1,9 +1,11 @@
 import crypto from 'node:crypto';
 
 const SCHEMA_VERSION = 'chotu.entitlement.v1';
-const PRODUCT_ID = 'chotu-desktop';
+const ACCOUNT_PRODUCT_ID = 'chotu';
 const OFFER_ID = 'chotu-trial-monthly-2026';
 const DEFAULT_DEVICES_ALLOWED = 3;
+const DESKTOP_LOGIN_TOKEN_SCHEMA = 'chotu.desktop_login_token.v2';
+const DESKTOP_LOGIN_TOKEN_TTL_MS = 60 * 1000;
 
 function sortValue(value) {
   if (Array.isArray(value)) return value.map(sortValue);
@@ -147,7 +149,7 @@ export function desktopEntitlementFromSubscription(decodedUser, subscription) {
     license_id: stableId('lic', customerSeed),
     user_id: stableId('usr', decodedUser.uid || hash),
     email_hash: hash,
-    product_id: PRODUCT_ID,
+    product_id: ACCOUNT_PRODUCT_ID,
     offer_id: subscription?.offerId || OFFER_ID,
     status: entitlementWindow.status,
     perpetual_use: false,
@@ -167,13 +169,50 @@ export function desktopEntitlementFromSubscription(decodedUser, subscription) {
   });
 }
 
-export function encodeLicenseToken(entitlement, managedKey = null) {
-  const payload = { entitlement };
+export function desktopManagedKey(subscription, secret) {
+  if (!subscription?.access?.managedKeys) return null;
+
+  if (subscription?.managedApiKey?.status !== 'active') {
+    const error = new Error('Chotu is preparing secure managed cognition. Please wait a moment.');
+    error.statusCode = 409;
+    error.code = 'managed_key_pending';
+    throw error;
+  }
+
+  const apiKey = typeof secret?.apiKey === 'string' ? secret.apiKey.trim() : '';
+  if (!apiKey) {
+    const error = new Error('Managed cognition credential is unavailable.');
+    error.statusCode = 503;
+    error.code = 'managed_key_unavailable';
+    throw error;
+  }
+  return apiKey;
+}
+
+export function encodeLicenseToken(entitlement, managedKey = null, options = {}) {
+  const now = options.now || Date.now;
+  const nonce = options.nonce || crypto.randomBytes(24).toString('base64url');
+  const issuedAt = now();
+  const payload = {
+    schema_version: DESKTOP_LOGIN_TOKEN_SCHEMA,
+    issued_at_unix_ms: issuedAt,
+    expires_at_unix_ms: issuedAt + DESKTOP_LOGIN_TOKEN_TTL_MS,
+    nonce,
+    entitlement,
+  };
   // The per-user managed OpenRouter key rides alongside (not inside) the signed
   // entitlement so the signature stays clean. It only travels over the
   // short-lived 127.0.0.1 desktop callback.
   if (typeof managedKey === 'string' && managedKey.trim()) {
     payload.managed_key = managedKey.trim();
   }
-  return Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url');
+  const signature = crypto.sign(
+    null,
+    Buffer.from(stableStringify(payload), 'utf8'),
+    signingKey(),
+  );
+  return Buffer.from(JSON.stringify({
+    ...payload,
+    token_signature: `ed25519:${signature.toString('base64url')}`,
+  }), 'utf8').toString('base64url');
 }

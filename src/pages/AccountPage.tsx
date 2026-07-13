@@ -6,17 +6,17 @@ import { Seo } from '@/components/Seo';
 import { ensureCustomerProfile } from '@/lib/customer';
 import {
   buildCheckoutUrl,
-  createDesktopLoginUrl,
+  createDesktopLoginRequest,
   fetchChotuSubscription,
   hasFirebaseConfig,
   MANAGED_BASE_CREDIT_USD,
+  prepareManagedDesktopLogin,
   selectByokPlan,
   signInWithGoogle,
   signOutOfFirebase,
   syncSubscription,
   TOPUP_PACKS,
   topUpCheckoutUrl,
-  triggerManagedKeyProvisioning,
   watchAuthState,
   type ChotuSubscription,
   type TopUpUsd,
@@ -59,6 +59,7 @@ export function AccountPage() {
   const [planBusy, setPlanBusy] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const desktopRedirectStarted = useRef(false);
+  const managedKeyPreparationStarted = useRef(false);
   const desktopLoginRequested = useMemo(() => new URLSearchParams(window.location.search).get('desktop_login') === '1', []);
   const desktopCallbackUrl = useMemo(
     () => new URLSearchParams(window.location.search).get('callback') || 'http://127.0.0.1:7777/v1/auth/browser-callback',
@@ -77,23 +78,52 @@ export function AccountPage() {
       setMessage('Sign in with Google to finish Chotu Desktop login.');
       return;
     }
+    if (!subscription) {
+      setMessage('Loading your secure Chotu account...');
+      return;
+    }
+    if (subscription.access.managedKeys && subscription.managedApiKey?.status !== 'active') {
+      setMessage('Preparing secure managed cognition for Chotu...');
+      return;
+    }
     if (desktopRedirectStarted.current) return;
     desktopRedirectStarted.current = true;
     setMessage('Finishing Chotu Desktop login...');
-    createDesktopLoginUrl(user, desktopCallbackUrl)
-      .then((url) => {
-        window.location.href = url;
+    createDesktopLoginRequest(user, desktopCallbackUrl)
+      .then(({ url, licenseToken }) => {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = url;
+        const token = document.createElement('input');
+        token.type = 'hidden';
+        token.name = 'license_token';
+        token.value = licenseToken;
+        form.appendChild(token);
+        document.body.appendChild(form);
+        form.submit();
       })
       .catch((error) => {
         desktopRedirectStarted.current = false;
         setMessage(error instanceof Error ? error.message : 'Could not finish Chotu Desktop sign-in.');
       });
-  }, [desktopCallbackUrl, desktopLoginRequested, user]);
+  }, [desktopCallbackUrl, desktopLoginRequested, subscription, user]);
 
   useEffect(() => {
-    if (!user || subscription?.managedApiKey?.status !== 'pending') return;
-    triggerManagedKeyProvisioning(user).catch(console.error);
-  }, [user, subscription?.managedApiKey?.status]);
+    if (!user || !subscription?.access.managedKeys) return;
+    if (subscription.managedApiKey?.status === 'active') return;
+    if (managedKeyPreparationStarted.current) return;
+    managedKeyPreparationStarted.current = true;
+    if (desktopLoginRequested) setMessage('Preparing secure managed cognition for Chotu...');
+    prepareManagedDesktopLogin(user, subscription)
+      .then((next) => {
+        setSubscription(next);
+        managedKeyPreparationStarted.current = false;
+      })
+      .catch((error) => {
+        managedKeyPreparationStarted.current = false;
+        setMessage(error instanceof Error ? error.message : 'Could not prepare managed cognition.');
+      });
+  }, [desktopLoginRequested, subscription, user]);
 
   // Reliability: right after a Razorpay redirect, verify the captured payment so
   // access is granted even if the webhook was missed or delayed.
