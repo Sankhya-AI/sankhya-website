@@ -1,27 +1,15 @@
 import type { BlogPost } from '../content/blog';
+import { ROUTE_SEO, ROUTES } from '../content/site';
 
 export type JsonLd = Record<string, unknown>;
 
 export const SITE_URL = 'https://www.sankhyaailabs.com';
 export const SITE_NAME = 'Sankhya AI Labs';
-export const DEFAULT_TITLE =
-  'Sankhya AI Labs - Infrastructure for Autonomous AI Agents';
-export const DEFAULT_DESCRIPTION =
-  'Chotu is an autonomous personal AI assistant that sees your screen, uses your laptop tools, remembers what you ask it to keep, and proves what changed before risky work is accepted.';
-export const DEFAULT_IMAGE = '/assets/sankhya-memory-fabric-hero.png';
-export const DEFAULT_IMAGE_ALT =
-  'Sankhya AI Labs autonomous agent infrastructure';
-export const DEFAULT_KEYWORDS = [
-  'Chotu AI',
-  'Sankhya AI Labs',
-  'autonomous AI assistant',
-  'personal AI assistant',
-  'AI agent for laptop',
-  'AI coding assistant',
-  'agent memory',
-  'Dhee memory',
-  'Claude Codex assistant',
-];
+export const DEFAULT_TITLE = ROUTE_SEO.home.title;
+export const DEFAULT_DESCRIPTION = ROUTE_SEO.home.description;
+export const DEFAULT_IMAGE = ROUTE_SEO.home.image;
+export const DEFAULT_IMAGE_ALT = ROUTE_SEO.home.imageAlt;
+export const DEFAULT_KEYWORDS = ROUTE_SEO.home.keywords;
 
 export function absoluteUrl(pathOrUrl: string) {
   if (/^https?:\/\//i.test(pathOrUrl)) {
@@ -36,13 +24,7 @@ export function postUrl(post: BlogPost) {
 }
 
 export function postDateIso(post: BlogPost) {
-  const parsed = new Date(post.date);
-
-  if (Number.isNaN(parsed.getTime())) {
-    return post.date;
-  }
-
-  return parsed.toISOString().slice(0, 10);
+  return post.publishedOn;
 }
 
 export function articleBody(post: BlogPost) {
@@ -58,7 +40,7 @@ export function organizationJsonLd(): JsonLd {
     name: SITE_NAME,
     url: SITE_URL,
     logo: absoluteUrl('/favicon.png'),
-    sameAs: ['https://github.com/Sankhya-AI/Dhee', 'https://x.com/ashish_dwi'],
+    sameAs: ['https://github.com/Sankhya-AI'],
   };
 }
 
@@ -75,17 +57,17 @@ export function websiteJsonLd(): JsonLd {
   };
 }
 
-export function softwareApplicationJsonLd(): JsonLd {
+export function chotuSoftwareApplicationJsonLd(): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
     name: 'Chotu',
     alternateName: 'Chotu AI Assistant',
     applicationCategory: 'ProductivityApplication',
-    operatingSystem: 'macOS, Windows',
-    url: SITE_URL,
-    image: absoluteUrl(DEFAULT_IMAGE),
-    description: DEFAULT_DESCRIPTION,
+    operatingSystem: 'macOS (Apple silicon)',
+    url: absoluteUrl(ROUTES.chotu),
+    image: absoluteUrl(ROUTE_SEO.chotu.image),
+    description: ROUTE_SEO.chotu.description,
     creator: {
       '@type': 'Organization',
       name: SITE_NAME,
@@ -93,18 +75,17 @@ export function softwareApplicationJsonLd(): JsonLd {
     },
     offers: {
       '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'INR',
-      description: 'Launch access starts with a free first month.',
-      availability: 'https://schema.org/InStock',
+      description: 'Early access for Apple silicon Macs.',
+      availability: 'https://schema.org/LimitedAvailability',
       url: absoluteUrl('/pricing'),
     },
     featureList: [
-      'Sees the active screen and app context',
-      'Uses browser, terminal, Claude, Codex, and local tools',
-      'Remembers preferences and decisions through Dhee memory',
-      'Asks approval before risky actions',
-      'Shows diffs, checks, screenshots, and proof',
+      'Research',
+      'Workspace-bound coding',
+      'Current-screen actions',
+      'Dhee memory',
+      'Proactive notifications',
+      'Permission gates for sensitive actions',
     ],
   };
 }
@@ -113,7 +94,7 @@ export function blogIndexJsonLd(posts: BlogPost[]): JsonLd {
   return {
     '@context': 'https://schema.org',
     '@type': 'Blog',
-    name: 'Sankhya AI Labs Blog',
+    name: 'Sankhya AI Labs Research & Notes',
     description:
       'Essays from Sankhya AI Labs on Dhee, agent memory, context routing, portable cognition, and self-evolving AI systems.',
     url: absoluteUrl('/blog'),

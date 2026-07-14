@@ -4,19 +4,26 @@ const BASE_URL = 'https://openrouter.ai/api/v1';
 
 function authHeaders() {
   return {
-    Authorization: `Bearer ${requireEnv('OPENROUTER_API_KEY')}`,
+    Authorization: `Bearer ${requireEnv('OPENROUTER_MANAGEMENT_API_KEY')}`,
     'Content-Type': 'application/json',
   };
 }
 
-export async function createProvisionedKey(name, limitUsd) {
+export async function createProvisionedKey(name, limitUsd, expiresAt) {
   const limit = parseFloat(limitUsd);
-  if (!Number.isFinite(limit)) throw new Error(`Invalid OPENROUTER_CREDIT_LIMIT_USD: ${limitUsd}`);
+  if (!Number.isFinite(limit) || limit <= 0) throw new Error(`Invalid OPENROUTER_CREDIT_LIMIT_USD: ${limitUsd}`);
+  if (!Number.isFinite(Date.parse(expiresAt))) throw new Error(`Invalid OpenRouter key expiry: ${expiresAt}`);
 
   const res = await fetch(`${BASE_URL}/keys`, {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ name, limit, limit_reset: 'monthly' }),
+    body: JSON.stringify({
+      name,
+      expires_at: expiresAt,
+      include_byok_in_limit: false,
+      limit,
+      limit_reset: 'monthly',
+    }),
   });
 
   if (!res.ok) {

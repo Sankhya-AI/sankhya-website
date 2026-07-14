@@ -1,47 +1,70 @@
+import { ChevronDown, Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { LayoutDashboard, LogIn, Menu, X } from 'lucide-react';
-import type { User } from 'firebase/auth';
-import { hasFirebaseConfig, signInWithGoogle, watchAuthState } from '@/lib/firebase';
+import { Link, useLocation } from 'react-router';
+import {
+  PRIMARY_NAV,
+  PRODUCTS,
+  PRODUCT_STATUS_LABELS,
+  ROUTES,
+  type ProductDefinition,
+} from '@/content/site';
 
-const navItems = [
-  { label: 'See', href: '/#home', id: 'home' },
-  { label: 'Do', href: '/#stack', id: 'stack' },
-  { label: 'Remember', href: '/#memory', id: 'memory' },
-  { label: 'Use Cases', href: '/#systems', id: 'systems' },
-  { label: 'Notes', href: '/#blog', id: 'blog' },
-];
+function ProductMenuItem({
+  product,
+  onSelect,
+}: {
+  product: ProductDefinition;
+  onSelect: () => void;
+}) {
+  const content = (
+    <>
+      <span>
+        <span className="block font-bit text-xl leading-none">{product.name}</span>
+        <span className="mt-2 block font-mono text-[10px] uppercase tracking-[0.08em] text-[#70685f]">
+          {product.role} · {product.qualifier}
+        </span>
+      </span>
+      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-[#9b3e22]">
+        {PRODUCT_STATUS_LABELS[product.status]}
+      </span>
+    </>
+  );
+  const className =
+    'flex min-h-20 items-center justify-between gap-5 border-b border-[#c8bfb3] px-5 py-4 text-left text-[#171411] transition-colors last:border-b-0 hover:bg-[#cf5a32]/10 focus-visible:bg-[#cf5a32]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9b3e22]';
 
-const offerMessages = [
-  'Chotu sees your screen, uses your tools, and asks before it changes anything',
-];
+  if (product.external) {
+    return (
+      <a href={product.href} target="_blank" rel="noopener noreferrer" className={className} onClick={onSelect}>
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={product.href} className={className} onClick={onSelect}>
+      {content}
+    </Link>
+  );
+}
 
 export function Navbar() {
   const [inverted, setInverted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeId, setActiveId] = useState('');
-  const [user, setUser] = useState<User | null>(null);
-  const [authBusy, setAuthBusy] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
   const frameRef = useRef(0);
-
-  useEffect(() => watchAuthState(setUser), []);
+  const productsRef = useRef<HTMLDivElement>(null);
+  const productsButtonRef = useRef<HTMLButtonElement>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const updateNavState = () => {
       const inverseSections = Array.from(document.querySelectorAll('[data-navbar-inverse]'));
-      const shouldInvert = inverseSections.some((section) => {
-        const rect = section.getBoundingClientRect();
-        return rect.top < 92 && rect.bottom > 0;
-      });
-      setInverted(shouldInvert);
-
-      const current = navItems.find((item) => {
-        const section = document.getElementById(item.id);
-        if (!section) return false;
-
-        const rect = section.getBoundingClientRect();
-        return rect.top <= 120 && rect.bottom >= 120;
-      });
-      setActiveId(current?.id ?? '');
+      setInverted(
+        inverseSections.some((section) => {
+          const rect = section.getBoundingClientRect();
+          return rect.top < 92 && rect.bottom > 0;
+        }),
+      );
     };
 
     const schedule = () => {
@@ -50,206 +73,172 @@ export function Navbar() {
     };
 
     updateNavState();
+    const routeContentObserver = new MutationObserver(schedule);
+    routeContentObserver.observe(document.body, { childList: true, subtree: true });
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
 
     return () => {
+      routeContentObserver.disconnect();
       cancelAnimationFrame(frameRef.current);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const closeOnOutsidePointer = (event: PointerEvent) => {
+      if (productsRef.current?.contains(event.target as Node)) return;
+      setProductsOpen(false);
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setProductsOpen(false);
+      productsButtonRef.current?.focus();
+    };
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsidePointer);
+      document.removeEventListener('keydown', closeOnEscape);
     };
   }, []);
 
   const navSurface = inverted
     ? 'border-white/12 bg-[#080706]/88 text-[#f8ead8] shadow-lg'
-    : 'border-[#d4d0c8]/70 bg-[#f0ede6]/82 text-[#1a1a1a] shadow-lg';
-
+    : 'border-[#d4d0c8]/80 bg-[#f0ede6]/90 text-[#1a1a1a] shadow-lg';
   const linkClass = inverted
-    ? 'text-[#f8ead8]/78 hover:text-white'
-    : 'text-[#6b6b6b] hover:text-[#1a1a1a]';
-
-  const activeLinkClass = inverted ? 'text-white' : 'text-[#1a1a1a]';
-
-  const ctaClass = inverted
-    ? 'border-[#f8ead8]/70 bg-transparent text-[#f8ead8] shadow-sm hover:bg-white/10 hover:text-white'
-    : 'border-[#1a1a1a]/70 bg-transparent text-[#45413d] shadow-sm hover:bg-[#e8e4dc] hover:text-[#1a1a1a]';
-
-  const currentPath = window.location.pathname;
-  const accountLabel = user ? 'Dashboard' : 'Login';
-  const offerActionLabel = user ? 'Dashboard' : 'Sign up';
-  const AccountIcon = user ? LayoutDashboard : LogIn;
-
-  const handleAccountAction = async () => {
-    if (user) {
-      window.location.href = '/account';
-      return;
-    }
-
-    if (!hasFirebaseConfig) {
-      window.location.href = '/account';
-      return;
-    }
-
-    setAuthBusy(true);
-    try {
-      const result = await signInWithGoogle();
-      setUser(result.user);
-      window.location.href = '/account';
-    } catch {
-      window.location.href = '/account';
-    } finally {
-      setAuthBusy(false);
-    }
-  };
+    ? 'text-[#f8ead8]/68 hover:text-white'
+    : 'text-[#5e5953] hover:text-[#171411]';
+  const menuSurface =
+    'border-[#b9b0a4] bg-[#f6efe5] text-[#171411] shadow-[0_24px_80px_rgba(20,16,13,0.3)]';
+  const productRouteActive = location.pathname === ROUTES.chotu || location.pathname === ROUTES.models;
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50">
+    <header className="fixed inset-x-0 top-0 z-50">
       <div className="h-8 overflow-hidden border-b border-white/10 bg-[#080706] text-[#f8ead8]">
-        <div className="flex h-full items-center whitespace-nowrap">
+        <div className="flex h-full w-max animate-offer-ticker whitespace-nowrap">
           {[0, 1].map((copy) => (
             <div
               key={copy}
               aria-hidden={copy === 1}
-              className="flex min-w-full animate-offer-ticker items-center gap-8 pr-8 font-mono text-[10px] font-bold uppercase tracking-[0.08em] md:text-[11px]"
+              className="flex min-w-[100vw] shrink-0 items-center justify-around gap-8 px-5 font-mono text-[9px] font-bold uppercase tracking-[0.09em] md:text-[10px]"
             >
-              {offerMessages.map((message) => (
-                <span key={`${copy}-${message}`} className="inline-flex items-center gap-8">
-                  <span>{message}</span>
-                  <button
-                    type="button"
-                    onClick={() => void handleAccountAction()}
-                    disabled={authBusy}
-                    tabIndex={copy === 1 ? -1 : 0}
-                    className="hidden h-5 items-center gap-1 rounded-sm border border-[#f8ead8]/24 px-2 font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-[#f8ead8] transition-colors hover:border-[#f8ead8]/55 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:inline-flex md:text-[11px]"
-                  >
-                    {offerActionLabel}
-                    <AccountIcon size={12} />
-                  </button>
-                  <span className="h-1 w-1 rounded-full bg-[#cf5a32]" />
+              {PRODUCTS.map((product) => (
+                <span key={product.id} className="inline-flex items-center gap-4">
+                  {product.tickerLabel}
+                  <span className="size-1 bg-[#cf5a32]" />
                 </span>
               ))}
             </div>
           ))}
         </div>
       </div>
-      <nav className={`h-16 border-y backdrop-blur-2xl transition-colors duration-300 md:h-14 ${navSurface}`}>
-        <div className="mx-auto flex h-full w-full items-center justify-between">
-          <a href="/#home" className="flex shrink-0 items-center gap-3 px-3 md:px-4" aria-label="Sankhya AI Labs home">
-            <img src="/assets/sankhya-logo.png" alt="Sankhya AI Labs" className="h-[29px] w-[29px] shrink-0 self-center" />
+
+      <nav className={`h-16 border-b backdrop-blur-2xl transition-colors duration-300 md:h-14 ${navSurface}`} aria-label="Primary navigation">
+        <div className="mx-auto flex h-full max-w-[1540px] items-center justify-between">
+          <Link to={ROUTES.home} className="flex shrink-0 items-center gap-3 px-4" aria-label="Sankhya AI Labs home">
+            <img src="/assets/sankhya-logo.png" alt="" className="size-[29px] shrink-0" width="29" height="29" />
             <span className="flex items-baseline gap-2.5 leading-none">
-              <span className={`font-bit text-[25px] font-normal leading-none tracking-normal md:text-[26px] ${inverted ? 'text-[#f8ead8]' : 'text-[#050505]'}`}>
+              <span className={`font-bit text-[24px] leading-none md:text-[26px] ${inverted ? 'text-[#f8ead8]' : 'text-[#050505]'}`}>
                 Sankhya
               </span>
-              <span className={`font-bit text-[10px] font-bold leading-none tracking-normal md:text-[11px] ${inverted ? 'text-[#f8ead8]/72' : 'text-[#050505]'}`}>
+              <span className={`font-bit text-[9px] font-bold leading-none md:text-[10px] ${inverted ? 'text-[#f8ead8]/64' : 'text-[#050505]/68'}`}>
                 AI LABS
               </span>
             </span>
-          </a>
+          </Link>
 
-          <div className="ml-auto mr-4 hidden items-center gap-1 md:flex">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className={`group relative inline-flex h-8 w-max items-center justify-center rounded-md bg-transparent px-3 py-1 font-sans text-sm font-medium transition-colors ${
-                  activeId === item.id ? activeLinkClass : linkClass
-                }`}
+          <div className="ml-auto hidden h-full items-center gap-1 pr-3 md:flex">
+            <div
+              ref={productsRef}
+              className="relative flex h-full items-center"
+            >
+              <button
+                ref={productsButtonRef}
+                type="button"
+                aria-expanded={productsOpen}
+                aria-controls="products-navigation"
+                onClick={() => setProductsOpen((open) => !open)}
+                className={`inline-flex h-9 items-center gap-1.5 px-3 text-sm font-medium transition-colors ${productRouteActive ? (inverted ? 'text-white' : 'text-[#171411]') : linkClass}`}
               >
-                {item.label}
-                {activeId === item.id && (
-                  <span
-                    aria-hidden="true"
-                    className={`absolute bottom-0 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${
-                      inverted ? 'bg-[#f8ead8]' : 'bg-[#cf5a32]'
-                    }`}
-                  />
-                )}
-              </a>
-            ))}
+                Products
+                <ChevronDown size={13} className={`transition-transform ${productsOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-            <a
-              href="/pricing"
-              className={`group relative inline-flex h-8 w-max items-center justify-center rounded-md bg-transparent px-3 py-1 font-sans text-sm font-medium transition-colors ${
-                currentPath === '/pricing' ? activeLinkClass : linkClass
+              {productsOpen ? (
+                <div id="products-navigation" className={`absolute top-[calc(100%-1px)] right-0 z-[60] w-[410px] max-w-[calc(100vw-2rem)] border ${menuSurface}`}>
+                  {PRODUCTS.map((product) => (
+                    <ProductMenuItem key={product.id} product={product} onSelect={() => setProductsOpen(false)} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+
+            {PRIMARY_NAV.filter((item) => item.kind === 'link').map((item) => {
+              const active = item.href === location.pathname;
+              const className = `inline-flex h-9 items-center px-3 text-sm font-medium transition-colors ${active ? (inverted ? 'text-white' : 'text-[#171411]') : linkClass}`;
+
+              return item.href.includes('#') ? (
+                <a key={item.label} href={item.href} className={className}>{item.label}</a>
+              ) : (
+                <Link key={item.label} to={item.href} className={className}>{item.label}</Link>
+              );
+            })}
+
+            <Link
+              to={`${ROUTES.account}?intent=get-chotu`}
+              className={`ml-2 inline-flex h-9 items-center border px-4 font-mono text-[11px] font-bold uppercase tracking-[0.06em] transition-colors ${
+                inverted
+                  ? 'border-[#f8ead8]/50 text-[#f8ead8] hover:bg-white/10'
+                  : 'border-[#171411] bg-[#171411] text-[#f8ead8] hover:bg-[#302a25]'
               }`}
             >
-              Pricing
-              {currentPath === '/pricing' && (
-                <span
-                  aria-hidden="true"
-                  className={`absolute bottom-0 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full ${
-                    inverted ? 'bg-[#f8ead8]' : 'bg-[#cf5a32]'
-                  }`}
-                />
-              )}
-            </a>
-            <button
-              type="button"
-              onClick={() => void handleAccountAction()}
-              disabled={authBusy}
-              className={`hidden h-8 items-center justify-center gap-2 rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 md:inline-flex ${ctaClass}`}
-            >
-              <AccountIcon size={14} />
-              {authBusy ? 'Opening...' : accountLabel}
-            </button>
+              Get Chotu
+            </Link>
           </div>
 
           <button
-            onClick={() => setMenuOpen((open) => !open)}
-            className={`mr-4 rounded-md border p-2 md:hidden ${
-              inverted
-                ? 'border-white/50 bg-transparent text-white'
-                : 'border-[#1a1a1a]/40 bg-transparent text-[#1a1a1a]'
-            }`}
             type="button"
-            aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+            onClick={() => setMenuOpen((open) => !open)}
+            className={`mr-4 inline-flex size-9 items-center justify-center border md:hidden ${inverted ? 'border-white/32 text-white' : 'border-[#171411]/35 text-[#171411]'}`}
           >
             {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
 
-        {menuOpen && (
-          <div className={`border-t px-4 py-4 backdrop-blur-2xl md:hidden ${navSurface}`}>
-            <div className="space-y-1">
-              {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`flex items-center justify-between rounded-md px-2 py-2 font-mono text-sm ${
-                    activeId === item.id ? activeLinkClass : linkClass
-                  }`}
-                >
-                  {item.label}
-                  {activeId === item.id && <span className="h-1 w-1 rounded-full bg-[#cf5a32]" />}
-                </a>
+        {menuOpen ? (
+          <div id="mobile-navigation" className={`max-h-[calc(100svh-96px)] overflow-y-auto border-t p-4 md:hidden ${menuSurface}`}>
+            <p className="px-2 pb-2 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-[#70685f]">Products</p>
+            <div className="border border-[#c8bfb3]">
+              {PRODUCTS.map((product) => (
+                <ProductMenuItem key={product.id} product={product} onSelect={() => setMenuOpen(false)} />
               ))}
-
-              <a
-                href="/pricing"
+            </div>
+            <div className="mt-4 grid">
+              {PRIMARY_NAV.filter((item) => item.kind === 'link').map((item) => {
+                const className =
+                  'border-b border-[#c8bfb3] px-2 py-3 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[#5e5953] transition-colors hover:bg-[#cf5a32]/10 hover:text-[#171411] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#9b3e22]';
+                return item.href.includes('#') ? (
+                  <a key={item.label} href={item.href} onClick={() => setMenuOpen(false)} className={className}>{item.label}</a>
+                ) : (
+                  <Link key={item.label} to={item.href} onClick={() => setMenuOpen(false)} className={className}>{item.label}</Link>
+                );
+              })}
+              <Link
+                to={`${ROUTES.account}?intent=get-chotu`}
                 onClick={() => setMenuOpen(false)}
-                className={`flex items-center justify-between rounded-md px-2 py-2 font-mono text-sm ${
-                  currentPath === '/pricing' ? activeLinkClass : linkClass
-                }`}
+                className="mt-4 inline-flex h-11 items-center justify-center bg-[#cf5a32] px-5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-white"
               >
-                Pricing
-                {currentPath === '/pricing' && <span className="h-1 w-1 rounded-full bg-[#cf5a32]" />}
-              </a>
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false);
-                  void handleAccountAction();
-                }}
-                disabled={authBusy}
-                className={`mt-3 inline-flex h-9 items-center justify-center gap-2 rounded-md border px-3 py-0.5 font-mono text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${ctaClass}`}
-              >
-                <AccountIcon size={14} />
-                {authBusy ? 'Opening...' : accountLabel}
-              </button>
+                Get Chotu
+              </Link>
             </div>
           </div>
-        )}
+        ) : null}
       </nav>
     </header>
   );

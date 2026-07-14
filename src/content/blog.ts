@@ -1,9 +1,6 @@
-export type BlogVisual = 'dheefs-architecture' | 'portable-cognition-sequence';
+import { BLOG_PREVIEWS, type BlogPostPreview } from './blog-manifest';
 
-export type BlogLink = {
-  label: string;
-  url: string;
-};
+export type BlogVisual = 'dheefs-architecture' | 'portable-cognition-sequence';
 
 export type BlogSection = {
   id: string;
@@ -12,34 +9,13 @@ export type BlogSection = {
   visual?: BlogVisual;
 };
 
-export type BlogPost = {
-  slug: string;
-  category: string;
-  title: string;
-  excerpt: string;
-  date: string;
-  readTime: string;
-  author: string;
-  tags: string[];
-  xUrl?: string;
-  links?: BlogLink[];
-  heroLabel: string;
+export type BlogPost = BlogPostPreview & {
   sections: BlogSection[];
 };
 
 export const blogPosts: BlogPost[] = [
   {
-    slug: 'thin-harness-fat-skills-context-hell',
-    category: 'Agent Infrastructure',
-    title: 'Thin Harness, Fat Skills, and the Coming Context Hell',
-    excerpt:
-      'Fat skills compound, but unmanaged context becomes baggage. Dhee turns repo memory into a portable cognition layer that routes, compresses, forgets, and learns from use.',
-    date: 'April 20, 2026',
-    readTime: '14 min read',
-    author: 'Ashish Dwivedi',
-    tags: ['Dhee', 'DheeFS', 'context routing', 'agent memory'],
-    xUrl: 'https://x.com/ashish_dwi/status/2046213227898687678',
-    heroLabel: 'DHEEFS',
+    ...BLOG_PREVIEWS.thinHarness,
     sections: [
       {
         id: 'thin-harness-fat-skills-and-the-hidden-tax',
@@ -147,17 +123,7 @@ export const blogPosts: BlogPost[] = [
     ],
   },
   {
-    slug: 'cognition-layer-turns-any-ai-agent-into-hyperagent',
-    category: 'Agent Cognition',
-    title: 'I Built a Cognition Layer That Turns Any AI Agent Into a HyperAgent. Here\'s How',
-    excerpt:
-      'Memory is not enough if every session still feels new. Dhee adds Buddhi: insights, intentions, performance trends, warnings, and four simple API calls for continuity.',
-    date: 'March 27, 2026',
-    readTime: '12 min read',
-    author: 'Ashish Dwivedi',
-    tags: ['Buddhi', 'HyperAgent', 'Dhee', 'agent cognition'],
-    xUrl: 'https://x.com/ashish_dwi/status/2037460448405336147',
-    heroLabel: 'BUDDHI',
+    ...BLOG_PREVIEWS.hyperAgent,
     sections: [
       {
         id: 'the-agent-had-memory-but-no-experience',
@@ -289,20 +255,7 @@ export const blogPosts: BlogPost[] = [
     ],
   },
   {
-    slug: 'every-ai-agent-has-amnesia-i-fixed-it',
-    category: 'Memory Systems',
-    title: 'Every AI Agent You Use Has Amnesia. I Have Fixed It.',
-    excerpt:
-      'The origin story of Engram: shared handoffs, decay, staged memory writes, episodic scenes, EchoMem, and local-first memory for agents that stop starting from zero.',
-    date: 'February 10, 2026',
-    readTime: '13 min read',
-    author: 'Ashish Dwivedi',
-    tags: ['Engram', 'agent memory', 'handoffs', 'episodic memory'],
-    heroLabel: 'ENGRAM',
-    links: [
-      { label: 'Engram GitHub', url: 'https://github.com/Ashish-dwi99/Engram' },
-      { label: 'Engram website', url: 'https://engram.sensai.co.in/' },
-    ],
+    ...BLOG_PREVIEWS.amnesia,
     sections: [
       {
         id: 'the-cold-start-that-broke-the-workflow',

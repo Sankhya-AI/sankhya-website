@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-type DitherDirection =
+export type DitherDirection =
   | 'bottom-up'
   | 'top-down'
   | 'left-right'
@@ -9,9 +9,9 @@ type DitherDirection =
   | 'bottom-right'
   | 'radial';
 
-type DitherPattern = 'noise' | 'bayer' | 'bayer-inverted' | 'checker';
+export type DitherPattern = 'noise' | 'bayer' | 'bayer-inverted' | 'checker';
 
-type PixelDitherProps = {
+export type PixelDitherProps = {
   fillColor?: string;
   direction?: DitherDirection;
   pattern?: DitherPattern;

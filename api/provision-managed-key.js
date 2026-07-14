@@ -65,7 +65,13 @@ export default async function handler(req, res) {
       const uid = decoded.uid;
       const name = `chotu_${uid.slice(0, 8)}_${Math.floor(Date.now() / 1000)}`;
       const limitUsd = requireEnv('OPENROUTER_CREDIT_LIMIT_USD');
-      const { key, hash } = await createProvisionedKey(name, limitUsd);
+      const subscriptionExpiry = new Date(sub.currentPeriodEnd || sub.updateUntil || 0).getTime();
+      const expiresAt = new Date(
+        Number.isFinite(subscriptionExpiry) && subscriptionExpiry > Date.now()
+          ? subscriptionExpiry
+          : Date.now() + 31 * 24 * 60 * 60 * 1000
+      ).toISOString();
+      const { key, hash } = await createProvisionedKey(name, limitUsd, expiresAt);
       createdHash = hash;
 
       const secretRef = db.collection('users').doc(uid).collection('secrets').doc('openrouter');

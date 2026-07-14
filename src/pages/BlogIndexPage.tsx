@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { BlogPoster } from '../components/BlogPoster';
 import { Seo } from '../components/Seo';
 import { blogPosts } from '../content/blog';
+import { ROUTE_SEO } from '../content/site';
 import { blogIndexJsonLd } from '../lib/seo';
 
 export function BlogIndexPage() {
@@ -15,22 +16,12 @@ export function BlogIndexPage() {
   return (
     <main className="bg-cream pt-20 text-[#14110f]">
       <Seo
-        title="Notes - Sankhya AI Labs"
-        description="First-party notes from Sankhya AI Labs on Dhee, agent memory, context routing, portable cognition, approval gates, and self-evolving AI systems."
-        path="/blog"
-        keywords={[
-          'Sankhya AI Labs notes',
-          'Dhee memory',
-          'agent memory',
-          'context routing',
-          'portable cognition',
-          'self-evolving AI systems',
-        ]}
+        {...ROUTE_SEO.research}
         jsonLd={blogIndexJsonLd(blogPosts)}
       />
       <section className="border-b border-[#bdb6ae] px-5 pt-16 pb-16 md:px-8 md:pt-24 md:pb-24">
         <h1 className="max-w-[1480px] font-bit text-[clamp(4.2rem,8vw,9rem)] font-normal leading-[0.92] tracking-normal">
-          Latest from the blog.
+          Research &amp; Notes
         </h1>
       </section>
 
@@ -53,7 +44,7 @@ export function BlogIndexPage() {
               <h2 className="mt-5 max-w-[960px] font-bit text-[32px] font-normal leading-[1.1] tracking-normal text-[#14110f] md:text-[42px]">
                 {featured.title}
               </h2>
-              <p className="mt-5 max-w-[980px] font-mono text-base leading-[1.3] tracking-normal text-[#7d7771] md:text-lg">
+              <p className="mt-5 line-clamp-2 max-w-[980px] font-mono text-base leading-[1.3] tracking-normal text-[#7d7771] md:text-lg">
                 {featured.excerpt}
               </p>
               <div className="mt-8 font-mono text-sm uppercase tracking-normal text-[#8d8781]">
@@ -75,7 +66,7 @@ export function BlogIndexPage() {
                 <h2 className="mt-5 font-bit text-[28px] font-normal leading-[1.16] tracking-normal text-[#14110f] md:text-[34px]">
                   {post.title}
                 </h2>
-                <p className="mt-5 line-clamp-3 font-mono text-base leading-[1.28] tracking-normal text-[#817b75] md:text-lg">
+                <p className="mt-5 line-clamp-2 font-mono text-base leading-[1.28] tracking-normal text-[#817b75] md:text-lg">
                   {post.excerpt}
                 </p>
                 <div className="mt-8 font-mono text-sm uppercase tracking-normal text-[#8d8781]">

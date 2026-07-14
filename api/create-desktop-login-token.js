@@ -1,8 +1,11 @@
 import {
   desktopEntitlementFromSubscription,
+  desktopManagedKey,
   encodeLicenseToken,
 } from './_desktop-license.js';
 import { getAdminAuth, getAdminDb } from './_firebase-admin.js';
+
+const DESKTOP_CALLBACK_URL = 'http://127.0.0.1:7777/v1/auth/browser-callback';
 
 async function readJson(req) {
   const chunks = [];
@@ -18,11 +21,9 @@ async function verifyBearer(req) {
   return getAdminAuth().verifyIdToken(token);
 }
 
-function validateLoopbackCallback(value) {
-  const url = new URL(String(value || 'http://127.0.0.1:7777/v1/auth/browser-callback'));
-  const host = url.hostname.toLowerCase();
-  const isLoopback = host === '127.0.0.1' || host === 'localhost' || host === '::1';
-  if (url.protocol !== 'http:' || !isLoopback || url.pathname !== '/v1/auth/browser-callback') {
+export function validateLoopbackCallback(value) {
+  const url = new URL(String(value || DESKTOP_CALLBACK_URL));
+  if (url.toString() !== DESKTOP_CALLBACK_URL) {
     const error = new Error('Invalid Chotu Desktop callback URL');
     error.statusCode = 400;
     throw error;
@@ -52,20 +53,24 @@ export default async function handler(req, res) {
     // short-lived loopback token, but only when managed AI is active. The key
     // is never readable by the browser (firestore.rules denies the secrets
     // subcollection); only this admin-side handler can read it.
-    let managedKey = null;
+    let managedSecret = null;
     if (subscription?.access?.managedKeys && subscription?.managedApiKey?.status === 'active') {
       const secretSnap = await userRef.collection('secrets').doc('openrouter').get();
-      const secret = secretSnap.data();
-      if (secret?.apiKey) managedKey = secret.apiKey;
+      managedSecret = secretSnap.data();
     }
+    const managedKey = desktopManagedKey(subscription, managedSecret);
 
-    callbackUrl.searchParams.set('license_token', encodeLicenseToken(entitlement, managedKey));
+    const licenseToken = encodeLicenseToken(entitlement, managedKey);
     return res.status(200).json({
       url: callbackUrl.toString(),
+      licenseToken,
       expiresInSeconds: 60,
     });
   } catch (error) {
     console.error(error);
-    return res.status(error.statusCode || 500).json({ error: error.statusCode ? error.message : 'Could not start Chotu Desktop sign-in' });
+    return res.status(error.statusCode || 500).json({
+      error: error.statusCode ? error.message : 'Could not start Chotu Desktop sign-in',
+      ...(error.code ? { code: error.code } : {}),
+    });
   }
 }

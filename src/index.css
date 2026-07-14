@@ -70,11 +70,34 @@
 }
 
 @layer components {
+  .chotu-dashboard {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .chotu-dashboard h1,
+  .chotu-dashboard h2,
+  .chotu-dashboard h3,
+  .chotu-dashboard h4 {
+    font-family: inherit;
+  }
+
+  .chotu-dashboard .chotu-dashboard__title {
+    font-family: var(--font-dot-gothic);
+    font-weight: 500;
+  }
+
   .grid-pattern {
     background-image: 
       linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
     background-size: 40px 40px;
+  }
+
+  .lab-grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
   }
 
   .btn-outline {
@@ -169,7 +192,17 @@
 
 @keyframes offer-ticker {
   from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes system-signal {
+  from { transform: translateX(-6rem); }
+  to { transform: translateX(calc(100vw + 6rem)); }
+}
+
+@keyframes benchmark-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1); }
 }
 
 .animate-marquee-left {
@@ -193,10 +226,24 @@
   animation-play-state: paused;
 }
 
+.system-signal {
+  animation: system-signal 5.5s linear infinite;
+  box-shadow: 0 0 18px rgba(240, 106, 61, 0.65);
+}
+
+.benchmark-pulse {
+  animation: benchmark-pulse 1.8s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-left,
   .animate-marquee-right,
   .animate-offer-ticker {
+    animation: none;
+  }
+
+  .system-signal,
+  .benchmark-pulse {
     animation: none;
   }
 }

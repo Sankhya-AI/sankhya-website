@@ -30,3 +30,4 @@ info.md
 *.sln
 *.sw?
 .env*.local
+.env*

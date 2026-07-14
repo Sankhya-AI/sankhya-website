@@ -16,7 +16,7 @@ type SeoProps = {
   path?: string;
   image?: string;
   imageAlt?: string;
-  keywords?: string[] | string;
+  keywords?: readonly string[] | string;
   robots?: string;
   type?: 'website' | 'article';
   jsonLd?: JsonLd | JsonLd[];
@@ -98,7 +98,7 @@ export function Seo({
   useEffect(() => {
     const canonical = absoluteUrl(path);
     const imageUrl = absoluteUrl(image);
-    const keywordContent = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+    const keywordContent = typeof keywords === 'string' ? keywords : keywords.join(', ');
 
     document.title = title;
     upsertCanonical(canonical);
