@@ -1,0 +1,6 @@
+# Test files must not be deployed as Serverless Functions.
+# Vercel turns every non-underscore file in api/ into a function,
+# which counts against the Hobby plan's 12-function limit.
+api/*.test.mjs
+api/_test-firestore.mjs
+tests
