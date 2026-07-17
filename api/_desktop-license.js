@@ -18,7 +18,7 @@ function sortValue(value) {
     }, {});
 }
 
-function stableStringify(value) {
+export function stableStringify(value) {
   return JSON.stringify(sortValue(value));
 }
 

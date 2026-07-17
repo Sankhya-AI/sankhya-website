@@ -47,6 +47,13 @@ DOWNLOAD_TOKEN_SECRET, GITHUB_RELEASE_TOKEN, GITHUB_RELEASE_ASSET_* …
 # Cron
 CRON_SECRET
 
+# Web search/read proxy (server-held provider keys; desktop authenticates with
+# its signed entitlement — see "Web proxy" section)
+JINA_API_KEYS                  # one or more Jina keys, comma-separated; each is a failover rung
+FIRECRAWL_API_KEY              # Firecrawl v2 search fallback (optional until provisioned)
+SCRAPE_DO_TOKEN                # scrape.do markdown-read fallback (optional)
+# optional overrides: CHOTU_WEB_SEARCH_DAILY_LIMIT (default 400), CHOTU_WEB_READ_DAILY_LIMIT (default 800)
+
 # Frontend top-up links (Vite, build-time; code defaults are listed below)
 VITE_RAZORPAY_TOPUP_LINK_3USD   # ₹499  -> $3 credits
 VITE_RAZORPAY_TOPUP_LINK_6USD   # ₹999  -> $6 credits
@@ -93,6 +100,22 @@ VITE_RAZORPAY_TOPUP_LINK_12USD  # ₹1999 -> $12 credits
   returns it separately from the exact fixed callback URL for POST delivery.
 - Desktop hub `auth_browser_callback` — verifies the signed v2 envelope, consumes its nonce once,
   and persists the delivered scoped key in platform secure storage.
+
+## Web proxy (search + read for every install, no user key needed)
+
+- `POST /api/web-search` — `{query, limit}` → `{provider, results: [{title, url, snippet}]}`.
+  Provider order: each `JINA_API_KEYS` entry in turn (s.jina.ai) → `FIRECRAWL_API_KEY` (v2 search).
+- `POST /api/web-read` — `{url}` → `{provider, url, content, truncated}` (markdown).
+  Provider order: each Jina key against r.jina.ai → `SCRAPE_DO_TOKEN` (scrape.do markdown).
+- **Auth**: `Authorization: Bearer <base64url(signed entitlement)>`. The desktop replays the
+  entitlement persisted at sign-in (`license.json`); the server verifies its own Ed25519
+  signature (`CHOTU_LICENSE_PRIVATE_KEY_PEM`) plus `status` ∈ {trialing, active} and the
+  `updates_until` window. No new secret is ever provisioned for search.
+- **Budget**: per-license daily counters in Firestore `webProxyUsage/{licenseId}_{YYYY-MM-DD}`;
+  429 with `code=budget_exhausted` when over. Defaults 400 searches / 800 reads per day.
+- **Key rotation**: change the Vercel env (`JINA_API_KEYS` is comma-separated, order = priority)
+  and redeploy — no desktop update needed. Client-side, an owner-pasted
+  `CHOTU_JINA_API_KEY`/`CHOTU_FIRECRAWL_API_KEY` always wins before the proxy is tried.
 
 ## End-to-end test (Razorpay TEST mode — no real money)
 
