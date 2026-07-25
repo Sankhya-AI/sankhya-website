@@ -24,7 +24,7 @@ function KitchenPanel() {
           <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#ff8255]">
             Sankhya Models
           </p>
-          <h3 className="mt-2 font-bit text-3xl">The model kitchen</h3>
+          <h3 className="mt-2 font-bit text-3xl">Model Kitchen</h3>
         </div>
         <span className="inline-flex items-center gap-2 font-mono text-[9px] font-bold uppercase tracking-[0.08em] text-white/60">
           <span className="benchmark-pulse size-2 bg-[#ff7548]" />
@@ -33,9 +33,10 @@ function KitchenPanel() {
       </div>
 
       <p className="border-b border-white/14 py-6 text-base leading-7 text-white/66">
-        Pick the brains, hand them powers, set a budget. Sankhya decides how they cooperate and returns one model id —
-        callable like <span className="font-mono text-[13px] text-[#ff9b78]">{MODEL_RUNTIME.exampleId}</span> from anything
-        that already speaks to a model.
+        Model Kitchen combines open-model APIs with a stronger agent harness — reasoning, routing, and verification — so
+        they punch above their weight. Pick the brains, hand them powers, set a budget, and it returns one model id,
+        callable like <span className="font-mono text-[13px] text-[#ff9b78]">{MODEL_RUNTIME.exampleId}</span> from
+        anything that already speaks to a model.
       </p>
 
       <dl className="grid sm:grid-cols-2">
@@ -66,10 +67,10 @@ export function ModelsResearch() {
       <div className="mx-auto max-w-[1540px] px-5 py-20 md:px-8 md:py-28 lg:px-10">
         <div className="grid gap-8 border-b border-[#bcb5aa] pb-10 md:grid-cols-[220px_minmax(0,840px)] md:items-end">
           <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#8a4a32]">
-            03 / Models &amp; research
+            03 / Model Kitchen &amp; research
           </p>
           <h2 className="text-balance font-bit text-[clamp(2.7rem,5vw,5.25rem)] leading-[0.94] tracking-[-0.02em]">
-            The best model for the work is one you assembled.
+            A better harness beats a bigger model.
           </h2>
         </div>
 

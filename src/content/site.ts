@@ -70,16 +70,20 @@ export const PRODUCTS = [
   },
   {
     id: 'models',
-    name: 'Sankhya Models',
-    role: 'Model kitchen',
+    // Named, not described: people arrive from a post that says "Model Kitchen"
+    // and need to see that exact phrase to know they are in the right place.
+    // "Sankhya Models" rides alongside as the family, so both names resolve.
+    name: 'Model Kitchen',
+    role: 'Sankhya Models',
     systemAction: 'Reason',
     status: 'early-access',
     qualifier: 'Build your own',
-    summary: 'Cook a model from the brains and powers you choose, then call it like any other model.',
+    summary:
+      'Open-model APIs plus a stronger agent harness — reasoning, routing, and verification — so they punch above their weight.',
     href: ROUTES.models,
     external: false,
-    actionLabel: 'Cook a model',
-    tickerLabel: 'Sankhya Models · Build your own',
+    actionLabel: 'Open the kitchen',
+    tickerLabel: 'Model Kitchen · Build your own',
   },
 ] as const satisfies readonly ProductDefinition[];
 
@@ -316,7 +320,7 @@ export const ROUTE_SEO = {
   home: {
     title: 'Sankhya AI Labs — AI systems that remember, act, and reason',
     description:
-      'Sankhya AI Labs builds Dhee memory, the Chotu personal agent, and the model kitchen where you cook your own model out of the ones that already exist.',
+      'Sankhya AI Labs builds Dhee memory, the Chotu personal agent, and Model Kitchen — open-model APIs with a stronger agent harness, so they punch above their weight.',
     path: ROUTES.home,
     image: '/assets/sankhya-ghats-hero.png',
     imageAlt: 'Sankhya AI Labs building connected memory, agent, and model systems',
@@ -332,9 +336,9 @@ export const ROUTE_SEO = {
     keywords: ['Chotu', 'personal AI for Mac', 'local-first AI assistant', 'Dhee memory', 'desktop agent'],
   },
   models: {
-    title: 'Sankhya Models — Cook your own model, call it like any other',
+    title: 'Model Kitchen — Open-model APIs with a stronger agent harness',
     description:
-      'Pick the brains, hand them powers, set a budget. Sankhya compiles the architecture and gives you one model id on an OpenAI-compatible endpoint that runs on your own machine — testable inside Chotu.',
+      'Model Kitchen combines open-model APIs with reasoning, routing, and verification so they punch above their weight. Your recipe compiles into one model id on an OpenAI-compatible endpoint that runs on your own machine — testable inside Chotu.',
     path: ROUTES.models,
     image: '/assets/sankhya-memory-fabric-hero.png',
     imageAlt: 'Sankhya Models — building a custom model from chosen models and capabilities',
@@ -399,7 +403,7 @@ export const FOOTER_GROUPS = [
     links: [
       { label: 'Dhee', href: EXTERNAL_ROUTES.dhee },
       { label: 'Chotu', href: ROUTES.chotu },
-      { label: 'Sankhya Models', href: ROUTES.models },
+      { label: 'Model Kitchen', href: ROUTES.models },
     ],
   },
   {

@@ -130,7 +130,7 @@ export function ChotuPage() {
           </div>
           <div>
             <p className="max-w-xl text-base leading-7 text-white/62">
-              Chotu carries the model kitchen. Choose the brains, hand them powers, set a budget — your model shows up in
+              Chotu carries Model Kitchen. Choose the brains, hand them powers, set a budget — your model shows up in
               the composer beside every other one, and serves on your machine for whatever else you point at it.
             </p>
             <Link

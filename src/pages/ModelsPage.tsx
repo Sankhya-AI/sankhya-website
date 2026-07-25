@@ -93,13 +93,14 @@ export function ModelsPage() {
 
         <div className="mx-auto grid max-w-[1540px] gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(330px,0.55fr)] lg:items-end">
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#ff8a5c]">Sankhya Models · Model kitchen</p>
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#ff8a5c]">Sankhya Models · Model Kitchen</p>
             <h1 className="mt-7 max-w-6xl text-balance font-bit text-[clamp(3.8rem,7.8vw,8.4rem)] leading-[0.88] tracking-[-0.03em]">
               Stop picking a model. Cook your own.
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-[#f8ead8]/62">
-              Choose the brains. Hand them powers. Set a budget. Sankhya works out how they cooperate and hands back one
-              model id — no orchestration to write, no infrastructure to stand up, running on your own machine.
+              Model Kitchen combines open-model APIs with a stronger agent harness — reasoning, routing, and
+              verification — so they punch above their weight. Choose the brains, hand them powers, set a budget, and it
+              hands back one model id. No orchestration to write, no infrastructure to stand up.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <a href="#kitchen" className="inline-flex h-11 items-center gap-2 border border-[#fff8f0] bg-[#fff8f0] px-5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[#17110d] hover:bg-white">
