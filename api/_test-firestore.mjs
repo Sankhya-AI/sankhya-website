@@ -1,17 +1,31 @@
 // Minimal in-memory Firestore fake for deterministic webhook/sync tests.
 // Supports the exact surface the handlers use: collection/doc, subcollections,
 // where().limit().get(), get/set(merge)/update(dotted paths), runTransaction,
-// collectionGroup().where().limit().get(), and FieldValue.serverTimestamp().
+// collectionGroup().where().limit().get(), FieldValue.serverTimestamp(), and
+// FieldValue.delete().
 
 const SERVER_TS = { __sentinel: 'serverTimestamp' };
+const DELETE_FIELD = { __sentinel: 'delete' };
 
 function isPlainObject(value) {
-  return value && typeof value === 'object' && !Array.isArray(value) && value !== SERVER_TS;
+  return (
+    value
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && value !== SERVER_TS
+    && value !== DELETE_FIELD
+  );
 }
 
 function deepMerge(target, source) {
   const out = isPlainObject(target) ? { ...target } : {};
   for (const [key, value] of Object.entries(source)) {
+    // FieldValue.delete() removes the field instead of storing a sentinel —
+    // the margin scrub depends on legacy USD fields actually disappearing.
+    if (value === DELETE_FIELD) {
+      delete out[key];
+      continue;
+    }
     out[key] = isPlainObject(value) ? deepMerge(out[key], value) : value;
   }
   return out;
@@ -124,5 +138,5 @@ export function createFakeFirestore() {
 }
 
 export const fakeAdmin = {
-  firestore: { FieldValue: { serverTimestamp: () => SERVER_TS } },
+  firestore: { FieldValue: { serverTimestamp: () => SERVER_TS, delete: () => DELETE_FIELD } },
 };

@@ -64,12 +64,28 @@ function sub(uid) {
   return fs.store.get(`users/${uid}/subscriptions/chotu`);
 }
 
+// Dollars live in the server-only billing doc; the client-readable subscription
+// carries credits. Tests assert both so the margin cannot leak back.
+function privateBilling(uid) {
+  return fs.store.get(`users/${uid}/secrets/billing`);
+}
+
+function assertNoUsdLeak(uid) {
+  const doc = sub(uid);
+  assert.equal(doc.managedApiKey?.creditLimitUsd, undefined);
+  assert.equal(doc.usage?.apiSpendUsd, undefined);
+}
+
 function seedManaged(uid, managedApiKey) {
+  const { creditLimitUsd, ...publicKey } = managedApiKey;
   fs.store.set(`users/${uid}/subscriptions/chotu`, {
     status: 'active',
     access: { localApp: true, managedKeys: true },
-    managedApiKey,
+    managedApiKey: publicKey,
   });
+  if (creditLimitUsd != null) {
+    fs.store.set(`users/${uid}/secrets/billing`, { creditLimitUsd });
+  }
 }
 
 function planPayment(uid, email = 'u@x.com') {
@@ -102,7 +118,9 @@ test('plan payment activates entitlement and queues key provisioning', async () 
   assert.equal(s.status, 'active');
   assert.equal(s.access.managedKeys, true);
   assert.equal(s.managedApiKey.status, 'pending');
-  assert.equal(s.managedApiKey.creditLimitUsd, 12);
+  assert.equal(privateBilling('u1').creditLimitUsd, 12);
+  assert.equal(s.managedApiKey.grantedCredits, 2_000);
+  assertNoUsdLeak('u1');
 });
 
 test('invalid signature is rejected', async () => {
@@ -115,7 +133,9 @@ test('top-up adds credits and raises the key limit immediately', async () => {
   seedManaged('u2', { status: 'active', openrouterKeyHash: 'hashA', creditLimitUsd: 12 });
   const res = await invoke(topUp('u2', 3));
   assert.equal(res.statusCode, 200);
-  assert.equal(sub('u2').managedApiKey.creditLimitUsd, 15);
+  assert.equal(privateBilling('u2').creditLimitUsd, 15);
+  assert.equal(sub('u2').managedApiKey.grantedCredits, 2_500);
+  assertNoUsdLeak('u2');
   assert.deepEqual(limitCalls, [{ hash: 'hashA', limit: 15 }]);
   // entitlement/access untouched by a top-up
   assert.equal(sub('u2').status, 'active');
@@ -126,7 +146,8 @@ test('duplicate top-up event id never double-charges credits', async () => {
   await invoke(topUp('u3', 6), { eventId: 'evt_top' });
   const second = await invoke(topUp('u3', 6), { eventId: 'evt_top' });
   assert.equal(second.body.duplicate, true);
-  assert.equal(sub('u3').managedApiKey.creditLimitUsd, 18); // applied once, not twice
+  assert.equal(privateBilling('u3').creditLimitUsd, 18); // applied once, not twice
+  assert.equal(sub('u3').managedApiKey.grantedCredits, 3_000);
   assert.equal(limitCalls.length, 1);
 });
 
@@ -135,7 +156,8 @@ test('duplicate top-up payment id never double-charges credits', async () => {
   await invoke(topUp('u6', 3, 'pay_same'), { eventId: 'evt_top_a' });
   const second = await invoke(topUp('u6', 3, 'pay_same'), { eventId: 'evt_top_b' });
   assert.equal(second.body.duplicate, true);
-  assert.equal(sub('u6').managedApiKey.creditLimitUsd, 15);
+  assert.equal(privateBilling('u6').creditLimitUsd, 15);
+  assert.equal(sub('u6').managedApiKey.grantedCredits, 2_500);
   assert.equal(limitCalls.length, 1);
 });
 
@@ -143,7 +165,9 @@ test('monthly renewal resets the credit limit to base', async () => {
   seedManaged('u4', { status: 'active', openrouterKeyHash: 'hashA', creditLimitUsd: 18 });
   const res = await invoke(renewal('u4'));
   assert.equal(res.statusCode, 200);
-  assert.equal(sub('u4').managedApiKey.creditLimitUsd, 12);
+  assert.equal(privateBilling('u4').creditLimitUsd, 12);
+  assert.equal(sub('u4').managedApiKey.grantedCredits, 2_000);
+  assertNoUsdLeak('u4');
   assert.deepEqual(limitCalls, [{ hash: 'hashA', limit: 12 }]);
 });
 
@@ -152,5 +176,5 @@ test('top-up is ignored for non-managed accounts', async () => {
   const res = await invoke(topUp('u5', 3));
   assert.equal(res.statusCode, 200);
   assert.equal(limitCalls.length, 0);
-  assert.equal(sub('u5').managedApiKey?.creditLimitUsd, undefined);
+  assert.equal(privateBilling('u5'), undefined);
 });

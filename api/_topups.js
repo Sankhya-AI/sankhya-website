@@ -1,3 +1,9 @@
+import {
+  creditsToUpstreamUsd,
+  privateBillingRef,
+  upstreamLimitUsd,
+  upstreamUsdToCredits,
+} from './_credits.js';
 import { admin } from './_firebase-admin.js';
 import { updateKeyLimit } from './_openrouter.js';
 
@@ -8,8 +14,19 @@ export function managedBaseCreditUsd() {
 
 export function topUpUsdFromNotes(notes = {}) {
   const kind = String(notes.kind || '').trim().toLowerCase();
+  if (kind !== 'topup') return null;
+
+  // Razorpay's dashboard-configured notes still carry topup_usd; the site now
+  // identifies a pack by credits so no dollar figure reaches the browser. Accept
+  // either and resolve to the USD we provision upstream.
+  const credits = parseFloat(notes.topup_credits ?? notes.topupCredits ?? '');
+  if (Number.isFinite(credits) && credits > 0) {
+    const usdForCredits = creditsToUpstreamUsd(credits);
+    if (usdForCredits > 0) return usdForCredits;
+  }
+
   const usd = parseFloat(notes.topup_usd ?? notes.topupUsd ?? '');
-  return kind === 'topup' && Number.isFinite(usd) && usd > 0 ? usd : null;
+  return Number.isFinite(usd) && usd > 0 ? usd : null;
 }
 
 function paymentClaimId(paymentId) {
@@ -48,16 +65,30 @@ export async function applyManagedTopUp({
 
   let newLimit = null;
   let hash = null;
+  const uid = subRef.parent.parent.id;
+  const privateRef = privateBillingRef(db, uid);
   await db.runTransaction(async (t) => {
-    const snap = await t.get(subRef);
+    const [snap, privateSnap] = await Promise.all([t.get(subRef), t.get(privateRef)]);
     const data = snap.data() || {};
     if (!data.access?.managedKeys) return;
-    const current = Number(data.managedApiKey?.creditLimitUsd ?? managedBaseCreditUsd());
+    const current = upstreamLimitUsd({
+      privateData: privateSnap.data(),
+      subscriptionData: data,
+      fallbackUsd: managedBaseCreditUsd(),
+    });
     newLimit = current + amount;
     hash = data.managedApiKey?.openrouterKeyHash || null;
+
+    // Dollars go to the server-only document; the client-readable one carries
+    // credits and sheds any legacy USD field it still has.
+    t.set(privateRef, {
+      creditLimitUsd: newLimit,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
     t.set(subRef, {
       managedApiKey: {
-        creditLimitUsd: newLimit,
+        grantedCredits: upstreamUsdToCredits(newLimit),
+        creditLimitUsd: admin.firestore.FieldValue.delete(),
         lastTopUpPaymentId: paymentId || null,
         limitSyncPending: true,
       },

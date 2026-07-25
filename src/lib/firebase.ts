@@ -11,7 +11,7 @@ import {
 import { doc, getDoc, getFirestore, type Firestore } from 'firebase/firestore';
 import {
   CHOTU_LAUNCH_TRIAL_DAYS,
-  CHOTU_MANAGED_MONTHLY_CREDIT_USD,
+  CHOTU_MANAGED_MONTHLY_CREDITS,
   CHOTU_MANAGED_PRICE_INR,
 } from '@/config/chotu';
 
@@ -32,29 +32,30 @@ export type ChotuSubscription = {
   razorpaySubscriptionId?: string | null;
   currentPeriodEnd?: string | null;
   usage: {
-    apiSpendUsd: number;
+    // Credits only. What a credit costs us upstream is a server fact; this type
+    // describes a public bundle, so a USD field here would publish the margin.
+    creditsUsed: number;
     requests: number;
     tokens: number;
   };
   managedApiKey?: {
     status: 'pending' | 'provisioning' | 'active' | 'pending_revocation' | 'disabled';
-    openrouterKeyHash: string | null;
     provisionedAt: string | null;
-    creditLimitUsd?: number | null;
+    grantedCredits?: number | null;
   } | null;
 };
 
-// Base monthly managed-credit grant (USD). Top-ups stack on top within a month.
-export const MANAGED_BASE_CREDIT_USD = CHOTU_MANAGED_MONTHLY_CREDIT_USD;
+// Base monthly credit grant. Top-ups stack on top within a month.
+export const MANAGED_BASE_CREDITS = CHOTU_MANAGED_MONTHLY_CREDITS;
 
-// Top-up packs: ₹ price → USD credits added to the current month's limit.
+// Top-up packs: ₹ price → credits added to the current month's grant.
 export const TOPUP_PACKS = [
-  { usd: 3, inr: 499, envName: 'VITE_RAZORPAY_TOPUP_LINK_3USD', link: 'https://rzp.io/rzp/MrUioHC' },
-  { usd: 6, inr: 999, envName: 'VITE_RAZORPAY_TOPUP_LINK_6USD', link: 'https://rzp.io/rzp/f1e43wc0' },
-  { usd: 12, inr: 1999, envName: 'VITE_RAZORPAY_TOPUP_LINK_12USD', link: 'https://rzp.io/rzp/tMc5XGg' },
+  { credits: 500, inr: 499, envName: 'VITE_RAZORPAY_TOPUP_LINK_3USD', link: 'https://rzp.io/rzp/MrUioHC' },
+  { credits: 1_000, inr: 999, envName: 'VITE_RAZORPAY_TOPUP_LINK_6USD', link: 'https://rzp.io/rzp/f1e43wc0' },
+  { credits: 2_000, inr: 1999, envName: 'VITE_RAZORPAY_TOPUP_LINK_12USD', link: 'https://rzp.io/rzp/tMc5XGg' },
 ] as const;
 
-export type TopUpUsd = (typeof TOPUP_PACKS)[number]['usd'];
+export type TopUpCredits = (typeof TOPUP_PACKS)[number]['credits'];
 
 export type FirebaseServices = {
   app: FirebaseApp;
@@ -108,7 +109,7 @@ const demoSubscription: ChotuSubscription = {
   },
   billingMode: 'demo',
   usage: {
-    apiSpendUsd: 0,
+    creditsUsed: 0,
     requests: 0,
     tokens: 0,
   },
@@ -233,19 +234,20 @@ export async function syncSubscription(
   return fetchChotuSubscription(user);
 }
 
-export function topUpCheckoutUrl(user: User | null, usd: TopUpUsd): string {
-  const pack = TOPUP_PACKS.find((entry) => entry.usd === usd);
+export function topUpCheckoutUrl(user: User | null, credits: TopUpCredits): string {
+  const pack = TOPUP_PACKS.find((entry) => entry.credits === credits);
   const link = pack ? (import.meta.env[pack.envName] as string | undefined) || pack.link : undefined;
   if (!link) throw new Error('Top-up is not configured yet. Try again soon.');
 
   const url = new URL(link);
   // rzp.io short links carry their notes (kind=topup, topup_usd) server-side and
   // ignore query params; full checkout URLs can take buyer hints for matching.
+  // The pack is identified by credits here — the note's USD stays server-side.
   if (url.hostname !== 'rzp.io' && user) {
     url.searchParams.set('firebase_uid', user.uid);
     if (user.email) url.searchParams.set('email', user.email);
     url.searchParams.set('kind', 'topup');
-    url.searchParams.set('topup_usd', String(usd));
+    url.searchParams.set('topup_credits', String(credits));
   }
   return url.toString();
 }

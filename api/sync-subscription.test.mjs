@@ -49,12 +49,22 @@ function sub(uid = decoded.uid) {
   return fs.store.get(`users/${uid}/subscriptions/chotu`);
 }
 
+// Dollars live in the server-only billing doc; the client-readable
+// subscription carries credits only.
+function privateBilling(uid = decoded.uid) {
+  return fs.store.get(`users/${uid}/secrets/billing`);
+}
+
 function seedManaged(uid, managedApiKey) {
+  const { creditLimitUsd, ...publicKey } = managedApiKey;
   fs.store.set(`users/${uid}/subscriptions/chotu`, {
     status: 'active',
     access: { localApp: true, managedKeys: true },
-    managedApiKey,
+    managedApiKey: publicKey,
   });
+  if (creditLimitUsd != null) {
+    fs.store.set(`users/${uid}/secrets/billing`, { creditLimitUsd });
+  }
 }
 
 async function invoke(body = {}) {
@@ -111,7 +121,9 @@ test('captured top-up payment recovery raises managed key limit once', async () 
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.recovered, 'topup');
   assert.equal(res.body.limit, 15);
-  assert.equal(sub().managedApiKey.creditLimitUsd, 15);
+  assert.equal(privateBilling().creditLimitUsd, 15);
+  assert.equal(sub().managedApiKey.grantedCredits, 2_500);
+  assert.equal(sub().managedApiKey.creditLimitUsd, undefined);
   assert.deepEqual(limitCalls, [{ hash: 'hashA', limit: 15 }]);
 });
 
@@ -128,7 +140,8 @@ test('captured top-up payment recovery is idempotent by Razorpay payment id', as
   const second = await invoke({ paymentId: 'pay_top' });
 
   assert.equal(second.body.recovered, 'topup_duplicate');
-  assert.equal(sub().managedApiKey.creditLimitUsd, 18);
+  assert.equal(privateBilling().creditLimitUsd, 18);
+  assert.equal(sub().managedApiKey.grantedCredits, 3_000);
   assert.equal(limitCalls.length, 1);
 });
 
@@ -144,6 +157,6 @@ test('captured top-up payment for non-managed account is ignored', async () => {
   const res = await invoke({ paymentId: 'pay_top' });
 
   assert.equal(res.body.recovered, 'topup_ignored');
-  assert.equal(sub().managedApiKey?.creditLimitUsd, undefined);
+  assert.equal(privateBilling(), undefined);
   assert.equal(limitCalls.length, 0);
 });

@@ -1,7 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { User } from 'firebase/auth';
-import { useLocation } from 'react-router';
-import { AccountDashboard } from '@/components/account/AccountDashboard';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
+import { AccountShell } from '@/components/account/AccountShell';
+import { AuthLoading, SignedOutAuth } from '@/components/account/AuthGate';
+import { getDashboardMode } from '@/components/account/shared/mode';
+import { BillingSection } from '@/components/account/sections/BillingSection';
+import { DesktopSection } from '@/components/account/sections/DesktopSection';
+import { ModelsSection } from '@/components/account/sections/ModelsSection';
+import { OverviewSection } from '@/components/account/sections/OverviewSection';
+import { PersonalInfoSection } from '@/components/account/sections/PersonalInfoSection';
+import { SankhyaKeySection } from '@/components/account/sections/SankhyaKeySection';
 import { Seo } from '@/components/Seo';
 import { ROUTE_SEO } from '@/content/site';
 import { CHOTU_SUPPORTED_PLATFORM } from '@/config/chotu';
@@ -19,7 +27,7 @@ import {
   topUpCheckoutUrl,
   watchAuthState,
   type ChotuSubscription,
-  type TopUpUsd,
+  type TopUpCredits,
 } from '@/lib/firebase';
 
 export function AccountPage() {
@@ -209,13 +217,13 @@ export function AccountPage() {
     }
   };
 
-  const handleTopUp = (usd: TopUpUsd) => {
+  const handleTopUp = (credits: TopUpCredits) => {
     if (!user) {
       setMessage('Sign in first to top up credits.');
       return;
     }
     try {
-      window.location.href = topUpCheckoutUrl(user, usd);
+      window.location.href = topUpCheckoutUrl(user, credits);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Top-up is not available yet.');
     }
@@ -269,29 +277,63 @@ export function AccountPage() {
     }
   };
 
+  const mode = getDashboardMode(authResolved, user, subscription);
+
   return (
     <main className="min-h-screen bg-[#fbfcfd] pt-24 text-[#1f2933]">
       <Seo {...ROUTE_SEO.account} />
-      <AccountDashboard
-        authResolved={authResolved}
-        user={user}
-        subscription={subscription}
-        message={message}
-        hasAccountServices={hasFirebaseConfig}
-        signInBusy={busy}
-        planBusy={planBusy}
-        downloadBusy={downloadBusy}
-        profileName={profileName}
-        profileBusy={profileBusy}
-        onSignIn={() => void handleGoogleAuth()}
-        onSignOut={() => void signOutOfFirebase()}
-        onDownload={() => void handleDownload()}
-        onSelectByok={() => void handleSelectByok()}
-        onOpenManagedCheckout={() => void handleStartSubscription()}
-        onTopUp={handleTopUp}
-        onProfileNameChange={setProfileName}
-        onSaveProfile={() => void handleSaveProfile()}
-      />
+      {mode === 'loading' && <AuthLoading />}
+      {mode === 'signed-out' && (
+        <SignedOutAuth
+          message={message}
+          hasAccountServices={hasFirebaseConfig}
+          signInBusy={busy}
+          onSignIn={() => void handleGoogleAuth()}
+        />
+      )}
+      {user && subscription && mode !== 'loading' && mode !== 'signed-out' && (
+        <AccountShell user={user} mode={mode} profileName={profileName} message={message}>
+          <Routes>
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<OverviewSection subscription={subscription} mode={mode} />} />
+            <Route
+              path="desktop"
+              element={<DesktopSection downloadBusy={downloadBusy} onDownload={() => void handleDownload()} />}
+            />
+            <Route path="models" element={<ModelsSection mode={mode} />} />
+            <Route
+              path="sankhya-key"
+              element={<SankhyaKeySection subscription={subscription} mode={mode} onTopUp={handleTopUp} />}
+            />
+            <Route
+              path="billing"
+              element={
+                <BillingSection
+                  mode={mode}
+                  subscription={subscription}
+                  planBusy={planBusy}
+                  onOpenManagedCheckout={() => void handleStartSubscription()}
+                  onSelectByok={() => void handleSelectByok()}
+                />
+              }
+            />
+            <Route
+              path="profile"
+              element={
+                <PersonalInfoSection
+                  user={user}
+                  profileName={profileName}
+                  profileBusy={profileBusy}
+                  onProfileNameChange={setProfileName}
+                  onSaveProfile={() => void handleSaveProfile()}
+                  onSignOut={() => void signOutOfFirebase()}
+                />
+              }
+            />
+            <Route path="*" element={<Navigate to="overview" replace />} />
+          </Routes>
+        </AccountShell>
+      )}
     </main>
   );
 }

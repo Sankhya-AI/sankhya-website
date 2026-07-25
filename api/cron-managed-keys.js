@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { privateBillingRef, upstreamLimitUsd } from './_credits.js';
 import { admin, getAdminDb, requireEnv } from './_firebase-admin.js';
 import { createProvisionedKey, disableKey, updateKeyLimit } from './_openrouter.js';
 
@@ -184,7 +185,14 @@ export default async function handler(req, res) {
           await doc.ref.set({ managedApiKey: { limitSyncPending: false } }, { merge: true });
           continue;
         }
-        const limit = Number(key.creditLimitUsd);
+        // The dollar limit lives in the server-only billing doc now; legacy
+        // subscription documents still carry it until their next write.
+        const privateSnap = await privateBillingRef(db, uid).get();
+        const limit = upstreamLimitUsd({
+          privateData: privateSnap.data(),
+          subscriptionData: doc.data(),
+          fallbackUsd: 0,
+        });
         if (Number.isFinite(limit) && limit > 0) {
           await updateKeyLimit(key.openrouterKeyHash, limit);
         }

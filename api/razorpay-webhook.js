@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { MANAGED_MONTHLY_CREDITS, privateBillingRef } from './_credits.js';
 import { admin, getAdminDb, requireEnv } from './_firebase-admin.js';
 import { updateKeyLimit } from './_openrouter.js';
 import { applyManagedTopUp, managedBaseCreditUsd, topUpUsdFromNotes } from './_topups.js';
@@ -124,7 +125,10 @@ function buildSubscriptionPatch(eventName, payload) {
       chotuApi: active,
     },
     usage: {
-      apiSpendUsd: 0,
+      // Credits only: this document is client-readable, so upstream spend in USD
+      // would publish the margin regardless of what the dashboard renders.
+      creditsUsed: 0,
+      apiSpendUsd: admin.firestore.FieldValue.delete(),
       requests: 0,
       tokens: 0,
     },
@@ -224,8 +228,19 @@ export default async function handler(req, res) {
         const data = snap.data() || {};
         if (!data.access?.managedKeys) return;
         hash = data.managedApiKey?.openrouterKeyHash || null;
+        // A renewal resets the month: dollars to the private doc, credits to the
+        // client-readable one, and the legacy USD fields dropped on the way past.
+        t.set(privateBillingRef(db, subRef.parent.parent.id), {
+          creditLimitUsd: managedBaseCreditUsd(),
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true });
         t.set(subRef, {
-          managedApiKey: { creditLimitUsd: managedBaseCreditUsd(), limitSyncPending: true },
+          managedApiKey: {
+            grantedCredits: MANAGED_MONTHLY_CREDITS,
+            creditLimitUsd: admin.firestore.FieldValue.delete(),
+            limitSyncPending: true,
+          },
+          usage: { creditsUsed: 0, apiSpendUsd: admin.firestore.FieldValue.delete() },
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         }, { merge: true });
       });

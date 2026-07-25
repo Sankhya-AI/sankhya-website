@@ -87,7 +87,7 @@ function App() {
         <Route path={ROUTES.chotu} element={<Deferred><PageWithFooter><ChotuPage /></PageWithFooter></Deferred>} />
         <Route path={ROUTES.models} element={<Deferred><PageWithFooter><ModelsPage /></PageWithFooter></Deferred>} />
         <Route path={ROUTES.pricing} element={<Deferred><PageWithFooter><PricingPage /></PageWithFooter></Deferred>} />
-        <Route path={ROUTES.account} element={<Deferred><AccountPage /></Deferred>} />
+        <Route path={`${ROUTES.account}/*`} element={<Deferred><AccountPage /></Deferred>} />
         <Route path={ROUTES.privacy} element={<Deferred><PageWithFooter><PrivacyPage /></PageWithFooter></Deferred>} />
         <Route path={ROUTES.research} element={<Deferred><PageWithFooter><BlogIndexPage /></PageWithFooter></Deferred>} />
         <Route path="/blog/:slug" element={<Deferred><PageWithFooter><BlogArticlePage /></PageWithFooter></Deferred>} />
