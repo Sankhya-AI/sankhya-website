@@ -22,7 +22,7 @@ export const BLOG_PREVIEWS = {
   thinHarness: {
     slug: 'thin-harness-fat-skills-context-hell',
     category: 'Agent Infrastructure',
-    title: 'Thin Harness, Fat Skills, and the Coming Context Hell',
+    title: 'Keeping Agent Context Thin as Skills Grow',
     excerpt:
       'Fat skills compound, but unmanaged context becomes baggage. Dhee turns repo memory into a portable cognition layer that routes, compresses, forgets, and learns from use.',
     date: 'April 20, 2026',
@@ -36,7 +36,7 @@ export const BLOG_PREVIEWS = {
   hyperAgent: {
     slug: 'cognition-layer-turns-any-ai-agent-into-hyperagent',
     category: 'Agent Cognition',
-    title: "I Built a Cognition Layer That Turns Any AI Agent Into a HyperAgent. Here's How",
+    title: 'Turning Agent Memory Into Experience',
     excerpt:
       'Memory is not enough if every session still feels new. Dhee adds Buddhi: insights, intentions, performance trends, warnings, and four simple API calls for continuity.',
     date: 'March 27, 2026',
@@ -50,7 +50,7 @@ export const BLOG_PREVIEWS = {
   amnesia: {
     slug: 'every-ai-agent-has-amnesia-i-fixed-it',
     category: 'Memory Systems',
-    title: 'Every AI Agent You Use Has Amnesia. I Have Fixed It.',
+    title: 'A Local-First Memory Kernel for Agents',
     excerpt:
       'The origin story of Engram: shared handoffs, decay, staged memory writes, episodic scenes, EchoMem, and local-first memory for agents that stop starting from zero.',
     date: 'February 10, 2026',

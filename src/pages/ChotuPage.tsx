@@ -105,7 +105,7 @@ export function ChotuPage() {
       <section className="border-b border-[#c9c2b8] px-5 py-20 md:px-8 md:py-28 lg:px-10">
         <div className="mx-auto max-w-[1540px]">
           <div className="grid gap-8 border-b border-[#bcb5aa] pb-10 md:grid-cols-[220px_minmax(0,820px)] md:items-end">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#8a4a32]">Demonstrated today</p>
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#8a4a32]">What Chotu does</p>
             <h2 className="text-balance font-bit text-[clamp(2.7rem,5vw,5.3rem)] leading-[0.94]">Useful because it stays grounded.</h2>
           </div>
           <div className="grid border-x border-[#c9c2b8] md:grid-cols-2 lg:grid-cols-3">
@@ -116,6 +116,29 @@ export function ChotuPage() {
                 <p className="mt-4 max-w-sm text-[15px] leading-7 text-[#6e675f]">{detail}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section data-navbar-inverse="true" className="bg-[#151311] px-5 py-20 text-[#f8ead8] md:px-8 md:py-28 lg:px-10">
+        <div className="mx-auto grid max-w-[1540px] gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:items-end">
+          <div>
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#ff8255]">Sankhya Models · inside Chotu</p>
+            <h2 className="mt-6 text-balance font-bit text-[clamp(2.7rem,5vw,5.3rem)] leading-[0.94]">
+              The model doing the work is yours to build.
+            </h2>
+          </div>
+          <div>
+            <p className="max-w-xl text-base leading-7 text-white/62">
+              Chotu carries the model kitchen. Choose the brains, hand them powers, set a budget — your model shows up in
+              the composer beside every other one, and serves on your machine for whatever else you point at it.
+            </p>
+            <Link
+              to={ROUTES.models}
+              className="mt-7 inline-flex h-11 items-center gap-2 border border-white/28 px-5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-[#f8ead8] hover:border-white/60"
+            >
+              Cook a model <ArrowUpRight size={14} />
+            </Link>
           </div>
         </div>
       </section>

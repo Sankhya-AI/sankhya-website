@@ -39,7 +39,8 @@ export function Hero() {
 
           <div className="mt-8 max-w-[760px]">
             <p className="max-w-[720px] text-base font-medium leading-7 text-[#f6e6d6]/72 md:text-xl md:leading-8">
-              We build the memory layer, personal agent, and mixture-of-agents models that make intelligence compound.
+              We build the memory layer, the personal agent, and the kitchen where you cook your own model out of the
+              ones that already exist.
             </p>
 
             <div className="mt-7 flex flex-wrap gap-3">

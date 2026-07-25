@@ -48,7 +48,7 @@ export function Footer() {
               Remember.<br />Act.<br />Reason.
             </p>
             <p className="mt-5 max-w-[310px] text-sm leading-6 text-white/48">
-              Memory, personal agents, and collective-intelligence models from Sankhya AI Labs.
+              Memory, personal agents, and models you build yourself — from Sankhya AI Labs.
             </p>
           </div>
         </div>

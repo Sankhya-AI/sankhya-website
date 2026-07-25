@@ -11,9 +11,10 @@ import { ChotuOrb } from '@/components/ChotuOrb';
 import { Seo } from '@/components/Seo';
 import {
   CHOTU_LAUNCH_TRIAL_DAYS,
-  CHOTU_MANAGED_MONTHLY_CREDIT_USD,
+  CHOTU_MANAGED_MONTHLY_CREDITS,
   CHOTU_MANAGED_PRICE_INR,
   CHOTU_SUPPORTED_PLATFORM,
+  formatCredits,
 } from '@/config/chotu';
 import { ROUTE_SEO, ROUTES } from '@/content/site';
 
@@ -24,16 +25,16 @@ type PlanFeature = {
 };
 
 const MANAGED_FEATURES = [
-  `$${CHOTU_MANAGED_MONTHLY_CREDIT_USD} managed model credits each month`,
-  'Sankhya Key with usage, token, and request visibility',
-  'Top-ups when the monthly managed limit runs low',
-  'Credits reset with each paid period',
+  `${formatCredits(CHOTU_MANAGED_MONTHLY_CREDITS)} model credits each month`,
+  'Sankhya Key: the full model catalogue and the models you build, on one key',
+  'Track remaining credits, requests, and tokens in your account',
+  'Top-ups when a month runs low; credits reset each paid period',
 ] as const;
 
 const BYOK_FEATURES = [
-  'Connect your own OpenRouter or provider key',
+  'Connect your own OpenRouter key',
   'Pay your model provider directly',
-  'No Sankhya Key credit or usage billing',
+  'Build your own models; the brains inside them bill to your key',
   'Change the provider inside Chotu Settings',
 ] as const;
 
@@ -42,7 +43,12 @@ const PLAN_COMPARISON: readonly PlanFeature[] = [
   { label: 'Dhee memory', managed: 'Included', byok: 'Included' },
   { label: 'Updates & support', managed: 'Included', byok: 'Included' },
   { label: 'Model connection', managed: 'Sankhya Key', byok: 'Your provider key' },
-  { label: 'Managed monthly credits', managed: `$${CHOTU_MANAGED_MONTHLY_CREDIT_USD}`, byok: '—' },
+  { label: 'Build your own models', managed: 'Included', byok: 'Included · billed to your key' },
+  {
+    label: 'Monthly credits',
+    managed: `${formatCredits(CHOTU_MANAGED_MONTHLY_CREDITS)} credits`,
+    byok: '—',
+  },
   { label: 'Usage dashboard & top-ups', managed: 'Included', byok: 'Provider managed' },
 ];
 
@@ -216,7 +222,8 @@ export function PricingPage() {
         <div className="mt-8 flex items-start gap-3 rounded-lg border border-[#e1e6ea] bg-white p-4">
           <Laptop className="mt-0.5 size-4 shrink-0 text-[#c46a36]" />
           <p className="text-[12px] leading-5 text-[#6b7782]">
-            Sankhya Models are coming soon and are separate from the model access available inside Chotu today.
+            A model you build in Chotu runs on your own machine and can call several models per turn, so a single request
+            can draw more than one model's worth of usage. <Link to={ROUTES.models} className="font-medium text-[#9b5a34] underline decoration-[#e0cbbd] underline-offset-2">See how model building works</Link>.
           </p>
         </div>
       </section>

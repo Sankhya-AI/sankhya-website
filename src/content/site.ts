@@ -71,15 +71,15 @@ export const PRODUCTS = [
   {
     id: 'models',
     name: 'Sankhya Models',
-    role: 'Mixture of agents',
+    role: 'Model kitchen',
     systemAction: 'Reason',
-    status: 'coming-soon',
-    qualifier: 'Thinking + Deep',
-    summary: 'Collective intelligence behind one model API.',
+    status: 'early-access',
+    qualifier: 'Build your own',
+    summary: 'Cook a model from the brains and powers you choose, then call it like any other model.',
     href: ROUTES.models,
     external: false,
-    actionLabel: 'See the methodology',
-    tickerLabel: 'Sankhya Models · Coming soon',
+    actionLabel: 'Cook a model',
+    tickerLabel: 'Sankhya Models · Build your own',
   },
 ] as const satisfies readonly ProductDefinition[];
 
@@ -115,8 +115,12 @@ export type DemoFilm =
       };
     });
 
-const demoAsset = (name: string, extension: 'mp4' | 'webp') =>
-  `/assets/chotu-demo/${name}.${extension}`;
+// Scenes are cut from the finished Chotu launch film (ChotuAI repo,
+// `videos/chotu-premium-demo`, delivery render), one clip per beat — not raw screen
+// captures. Timings come from that project's scene-manifest.json, so re-cutting after
+// a re-render means reading the manifest, never eyeballing the timeline.
+const filmAsset = (name: string, extension: 'mp4' | 'jpg') =>
+  `/assets/chotu-demo/film/${name}.${extension}`;
 
 export const CHOTU_DEMO_FILM = {
   status: 'in-production',
@@ -125,64 +129,144 @@ export const CHOTU_DEMO_FILM = {
     {
       id: 'ask',
       labels: { home: 'Ask', product: 'Ask' },
-      eyebrow: 'Research',
+      eyebrow: 'The request',
       title: 'Ask from the work in front of you.',
-      description: 'Chotu can investigate a question and return a useful answer inside the same desktop flow.',
-      videoSrc: demoAsset('ask', 'mp4'),
-      posterSrc: demoAsset('ask', 'webp'),
+      description: 'One line in the composer — improve this homepage, make it feel like Chotu, run it locally.',
+      videoSrc: filmAsset('ask', 'mp4'),
+      posterSrc: filmAsset('ask', 'jpg'),
     },
     {
       id: 'build',
       labels: { home: 'Build', product: 'Build' },
       eyebrow: 'Workspace-bound coding',
       title: 'Build inside a workspace you choose.',
-      description: 'Scope Chotu to a repo, ask for a change, and keep the run attached to the files that matter.',
-      videoSrc: demoAsset('build', 'mp4'),
-      posterSrc: demoAsset('build', 'webp'),
+      description: 'Chotu maps what the local project is made of before it touches a single file.',
+      videoSrc: filmAsset('workspace', 'mp4'),
+      posterSrc: filmAsset('workspace', 'jpg'),
     },
     {
       id: 'act',
       labels: { home: 'Use the screen', product: 'Act' },
       eyebrow: 'Current-screen actions',
       title: 'Work with the interface already open.',
-      description: 'Chotu can understand the current screen and operate visible tools for the task you requested.',
-      videoSrc: demoAsset('screen', 'mp4'),
-      posterSrc: demoAsset('screen', 'webp'),
+      description: 'Chotu takes its turn on the canvas you had open, in the app you were already using.',
+      videoSrc: filmAsset('act', 'mp4'),
+      posterSrc: filmAsset('act', 'jpg'),
     },
     {
       id: 'remember',
       labels: { home: 'Remember', product: 'Remember' },
       eyebrow: 'Dhee memory',
       title: 'Bring the right context forward.',
-      description: 'Dhee keeps durable decisions and preferences available without replaying every old conversation.',
-      videoSrc: demoAsset('remember', 'mp4'),
-      posterSrc: demoAsset('remember', 'webp'),
+      description: 'Preferences, decisions, and proof stay available for the next task, held on your own Mac.',
+      videoSrc: filmAsset('remember', 'mp4'),
+      posterSrc: filmAsset('remember', 'jpg'),
     },
     {
       id: 'control',
       labels: { home: 'Stay in control', product: 'Stay in control' },
       eyebrow: 'Permission gates',
       title: 'Keep consequential actions visible.',
-      description: 'Notifications and approval gates keep you present when a task reaches a sensitive boundary.',
-      videoSrc: demoAsset('control', 'mp4'),
-      posterSrc: demoAsset('control', 'webp'),
+      description: 'Chotu asks before it points and draws on your screen, and stays inside the window you allow.',
+      videoSrc: filmAsset('control', 'mp4'),
+      posterSrc: filmAsset('control', 'jpg'),
     },
     {
       id: 'result',
       labels: { home: 'Result', product: 'Result' },
       eyebrow: 'Completed work',
       title: 'End with an inspectable result.',
-      description: 'The completed task returns to the same workspace so you can review what happened.',
-      videoSrc: demoAsset('result', 'mp4'),
-      posterSrc: demoAsset('result', 'webp'),
+      description: 'The page before and after, from one request — a real result you can open and check.',
+      videoSrc: filmAsset('result', 'mp4'),
+      posterSrc: filmAsset('result', 'jpg'),
     },
   ],
 } as const satisfies DemoFilm;
 
 export const HOME_DEMO_SCENE_IDS = ['build', 'act', 'remember'] as const satisfies readonly DemoScene['id'][];
 
+// What a Sankhya model is made of. These four shapes, the powers, and the budget
+// presets mirror the builder inside Chotu exactly — if the app gains a shape, it
+// belongs here too, because this page is the promise the app has to keep.
+export type ModelArchitecture = {
+  id: 'think' | 'verify' | 'council' | 'adaptive';
+  name: string;
+  tagline: string;
+  brains: string;
+  bestFor: string;
+  /** Rendered as a badge next to the name; null keeps the card clean. */
+  badge: 'Default' | 'Sankhya edge' | null;
+};
+
+export const MODEL_ARCHITECTURES = [
+  {
+    id: 'think',
+    name: 'Think',
+    tagline: 'One strong brain, with lookup when the question needs it.',
+    brains: 'Main',
+    bestFor: 'Chat, teaching, everyday reasoning',
+    badge: null,
+  },
+  {
+    id: 'verify',
+    name: 'Verify',
+    tagline: 'Draft, then check and refine — only when checking earns it.',
+    brains: 'Main + verifier',
+    bestFor: 'Coding, math, fact-sensitive work',
+    badge: 'Default',
+  },
+  {
+    id: 'council',
+    name: 'Council',
+    tagline: 'Independent candidates, judged, then synthesised into one answer.',
+    brains: 'Main + second opinion + final',
+    bestFor: 'Hard reasoning and ideation',
+    badge: null,
+  },
+  {
+    id: 'adaptive',
+    name: 'Adaptive',
+    tagline: 'Propose, refine the best, select a winner — inside your budget.',
+    brains: 'Main + challengers + critic + final',
+    bestFor: 'Long-horizon and demanding work',
+    badge: 'Sankhya edge',
+  },
+] as const satisfies readonly ModelArchitecture[];
+
+export const MODEL_KITCHEN_STEPS = [
+  ['01', 'Pick the brains', 'Choose models from the live catalogue for each role, or leave a role on auto and let the resolver fill it.'],
+  ['02', 'Hand them powers', 'Attach the capabilities the work needs. Each one is a typed contract, not a prompt.'],
+  ['03', 'Set the budget', 'Fast, Balanced, or Best. The policy caps calls, parallelism, spend, and deadline per turn.'],
+  ['04', 'Get one model', 'Sankhya compiles a plan and gives you a single model id, versioned every time you change it.'],
+] as const;
+
+export const MODEL_POWERS = [
+  ['Web', 'Search the live web mid-answer'],
+  ['Web read', 'Fetch and read a specific page'],
+  ['Documentation', 'Look up official docs before answering'],
+  ['GitHub', 'Read repositories, issues, and code'],
+  ['Stack Overflow', 'Pull known-good answers and caveats'],
+  ['Run code', 'Execute code to check the claim'],
+  ['Browser', 'Drive a page when reading is not enough'],
+  ['Memory', 'Carry durable context in with Dhee'],
+  ['Custom API', 'Bring an endpoint of your own'],
+] as const;
+
+export const MODEL_BUDGETS = [
+  ['Fast', 'Tight caps. Answer first.'],
+  ['Balanced', 'The default trade.'],
+  ['Best', 'Spend where it pays.'],
+] as const;
+
+export const MODEL_RUNTIME = {
+  baseUrl: 'http://127.0.0.1:8000/v1',
+  idPrefix: 'mom/',
+  exampleId: 'mom/deep-review',
+  exampleVersionedId: 'mom/deep-review@7',
+} as const;
+
 type ModelProofContract = {
-  competitors: readonly ['Fugu', 'Fable'];
+  comparison: 'The strongest single model on the same tasks';
   taskPolicy: 'Identical frozen tasks';
   minimumSampleSize: 50;
   primaryMetric: 'Cost per solved task';
@@ -211,7 +295,7 @@ export type ModelProof =
 
 export const SANKHYA_MODEL_PROOF = {
   status: 'benchmarking',
-  competitors: ['Fugu', 'Fable'],
+  comparison: 'The strongest single model on the same tasks',
   taskPolicy: 'Identical frozen tasks',
   minimumSampleSize: 50,
   primaryMetric: 'Cost per solved task',
@@ -232,11 +316,11 @@ export const ROUTE_SEO = {
   home: {
     title: 'Sankhya AI Labs — AI systems that remember, act, and reason',
     description:
-      'Sankhya AI Labs builds Dhee memory, the Chotu personal agent, and upcoming mixture-of-agents models that make intelligence compound.',
+      'Sankhya AI Labs builds Dhee memory, the Chotu personal agent, and the model kitchen where you cook your own model out of the ones that already exist.',
     path: ROUTES.home,
     image: '/assets/sankhya-ghats-hero.png',
     imageAlt: 'Sankhya AI Labs building connected memory, agent, and model systems',
-    keywords: ['Sankhya AI Labs', 'Dhee memory', 'Chotu AI', 'mixture of agents', 'collective intelligence'],
+    keywords: ['Sankhya AI Labs', 'Dhee memory', 'Chotu AI', 'build your own AI model', 'model orchestration'],
   },
   chotu: {
     title: 'Chotu — Your computer, finally personal',
@@ -248,13 +332,20 @@ export const ROUTE_SEO = {
     keywords: ['Chotu', 'personal AI for Mac', 'local-first AI assistant', 'Dhee memory', 'desktop agent'],
   },
   models: {
-    title: 'Sankhya Models — Collective intelligence, exposed as a model',
+    title: 'Sankhya Models — Cook your own model, call it like any other',
     description:
-      'Sankhya Thinking and Deep are upcoming mixture-of-agents models, evaluated on frozen paired tasks with cost per solved task.',
+      'Pick the brains, hand them powers, set a budget. Sankhya compiles the architecture and gives you one model id on an OpenAI-compatible endpoint that runs on your own machine — testable inside Chotu.',
     path: ROUTES.models,
     image: '/assets/sankhya-memory-fabric-hero.png',
-    imageAlt: 'Sankhya Models collective intelligence system',
-    keywords: ['Sankhya Models', 'mixture of agents', 'collective intelligence', 'AI model API'],
+    imageAlt: 'Sankhya Models — building a custom model from chosen models and capabilities',
+    keywords: [
+      'Sankhya Models',
+      'build your own AI model',
+      'custom model API',
+      'model orchestration',
+      'OpenAI-compatible endpoint',
+      'local AI runtime',
+    ],
   },
   pricing: {
     title: 'Chotu Early Access for Mac — Sankhya AI Labs',
@@ -268,11 +359,11 @@ export const ROUTE_SEO = {
   research: {
     title: 'Research & Notes — Sankhya AI Labs',
     description:
-      'Research and first-party notes from Sankhya AI Labs on memory, agents, collective intelligence, and the systems behind our products.',
+      'Research and first-party notes from Sankhya AI Labs on memory, agents, model orchestration, and the systems behind our products.',
     path: ROUTES.research,
     image: '/assets/sankhya-memory-fabric-hero.png',
     imageAlt: 'Research and technical notes from Sankhya AI Labs',
-    keywords: ['Sankhya AI Labs research', 'Dhee memory', 'agent memory', 'collective intelligence'],
+    keywords: ['Sankhya AI Labs research', 'Dhee memory', 'agent memory', 'model orchestration'],
   },
   privacy: {
     title: 'Privacy Policy — Sankhya AI Labs',

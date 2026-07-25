@@ -16,14 +16,14 @@ export function ChotuProof() {
       <div className="mx-auto max-w-[1540px] px-5 py-20 md:px-8 md:py-28 lg:px-10">
         <div className="grid gap-8 border-b border-white/14 pb-10 lg:grid-cols-[220px_minmax(0,790px)_auto] lg:items-end">
           <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#ff8255]">
-            02 / Chotu proof reel
+            02 / Chotu in action
           </p>
           <div>
             <h2 className="text-balance font-bit text-[clamp(2.7rem,5vw,5.25rem)] leading-[0.94] tracking-[-0.02em]">
               A personal AI, shown doing the work.
             </h2>
             <p className="mt-5 max-w-2xl text-base leading-7 text-[#f8ead8]/58">
-              Real product captures. No capability theatre.
+              One request, carried through to a result you can open and check.
             </p>
           </div>
           <Link

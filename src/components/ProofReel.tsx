@@ -13,6 +13,7 @@ type ProofReelProps = {
 export function ProofReel({ film, scenes, surface, className = '' }: ProofReelProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [progress, setProgress] = useState(0);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const reelId = useId();
@@ -22,6 +23,7 @@ export function ProofReel({ film, scenes, surface, className = '' }: ProofReelPr
   const activateScene = (index: number, moveFocus = false) => {
     setActiveIndex(index);
     setPaused(false);
+    setProgress(0);
     if (moveFocus) tabRefs.current[index]?.focus();
   };
 
@@ -113,22 +115,36 @@ export function ProofReel({ film, scenes, surface, className = '' }: ProofReelPr
               autoPlay
               muted
               playsInline
-              preload="metadata"
+              preload="auto"
               onPlay={() => setPaused(false)}
               onPause={() => setPaused(true)}
+              onTimeUpdate={(event) => {
+                const { currentTime, duration } = event.currentTarget;
+                if (duration > 0) setProgress(Math.min(currentTime / duration, 1));
+              }}
               onEnded={() => activateScene((activeIndex + 1) % scenes.length)}
               className="h-full w-full object-cover"
               aria-label={`${activeScene.labels[surface]} demonstration`}
             />
           )}
 
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/65 to-transparent" />
+          {/* No scrim over the frame: film scenes are mostly light product surfaces, and
+              a black gradient reads as a grey smear on them. The controls carry their
+              own contrast instead. */}
+
+          {/* Scene progress: the reel auto-advances on end, so the bar is what tells
+              you a cut is coming rather than the video having stalled. The track is dark
+              so it survives the light scenes; on the dark ones the fill carries it. */}
+          {reducedMotion ? null : (
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[3px] bg-black/20">
+              <div
+                className="h-full bg-[#e4673e] transition-[width] duration-150 ease-linear"
+                style={{ width: `${progress * 100}%` }}
+              />
+            </div>
+          )}
           <div className="absolute right-4 bottom-4 flex items-center gap-3">
-            {reducedMotion ? (
-              <span className="border border-white/20 bg-black/65 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.08em] text-white/66 backdrop-blur">
-                Motion reduced · Poster shown
-              </span>
-            ) : (
+            {reducedMotion ? null : (
               <button
                 type="button"
                 onClick={togglePlayback}
@@ -141,23 +157,18 @@ export function ProofReel({ film, scenes, surface, className = '' }: ProofReelPr
           </div>
         </figure>
 
-        <div className="flex flex-col justify-between border-t border-white/12 p-6 text-[#f8ead8] lg:border-t-0 lg:border-l lg:p-8">
-          <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#ff8a4c]">
-              {activeScene.eyebrow}
-            </p>
-            <h3 className="mt-5 max-w-md font-bit text-[32px] leading-[1.04] md:text-[40px]">
-              {activeScene.title}
-            </h3>
-            <p className="mt-5 max-w-md text-[15px] leading-7 text-[#f8ead8]/62">
-              {activeScene.description}
-            </p>
-          </div>
-
-          <div className="mt-10 flex items-center justify-between border-t border-white/12 pt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-white/38">
-            <span>Rendered product capture</span>
-            <span>{String(activeIndex + 1).padStart(2, '0')} / {String(scenes.length).padStart(2, '0')}</span>
-          </div>
+        {/* No production metadata in the rail — the tabs already say which scene is
+            playing, and labelling the footage reads as a demo page, not a product. */}
+        <div className="border-t border-white/12 p-6 text-[#f8ead8] lg:border-t-0 lg:border-l lg:p-8">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-[#ff8a4c]">
+            {activeScene.eyebrow}
+          </p>
+          <h3 className="mt-5 max-w-md font-bit text-[32px] leading-[1.04] md:text-[40px]">
+            {activeScene.title}
+          </h3>
+          <p className="mt-5 max-w-md text-[15px] leading-7 text-[#f8ead8]/62">
+            {activeScene.description}
+          </p>
         </div>
       </div>
 
