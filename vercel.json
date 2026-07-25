@@ -30,6 +30,10 @@
       "destination": "/api/downloads/:artifact"
     },
     {
+      "source": "/api/updates/:channel/:platform",
+      "destination": "/api/updates-feed?channel=:channel&platform=:platform"
+    },
+    {
       "source": "/api/web-search",
       "destination": "/api/web?op=search"
     },

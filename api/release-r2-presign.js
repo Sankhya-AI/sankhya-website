@@ -4,6 +4,9 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 const allowedArtifacts = new Map([
   ['chotu-darwin-arm64.dmg', 'application/x-apple-diskimage'],
   ['chotu-darwin-arm64.zip', 'application/zip'],
+  // The signed update manifest ships with the artifacts it describes, so the
+  // public feed can serve a release without a redeploy.
+  ['chotu-darwin-arm64.update.json', 'application/json'],
 ]);
 
 const signedUrlTtlSeconds = 900;
