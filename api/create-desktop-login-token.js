@@ -5,7 +5,19 @@ import {
 } from './_desktop-license.js';
 import { getAdminAuth, getAdminDb } from './_firebase-admin.js';
 
-const DESKTOP_CALLBACK_URL = 'http://127.0.0.1:7777/v1/auth/browser-callback';
+// One account, two desktop apps. Each build runs its hub on its own loopback port —
+// Chotu on 7777, Manu on 8787 — so the callback the app asks us to post the licence
+// back to is how we know which app is signing in.
+//
+// This stays an exact-match allowlist rather than "any loopback port": the licence
+// token, and the account's managed key with it, is delivered to whatever URL is named
+// here, so a port this table does not know is a port we do not hand secrets to.
+const DESKTOP_CALLBACK_URLS = {
+  chotu: 'http://127.0.0.1:7777/v1/auth/browser-callback',
+  manu: 'http://127.0.0.1:8787/v1/auth/browser-callback',
+};
+
+const DEFAULT_DESKTOP_CALLBACK_URL = DESKTOP_CALLBACK_URLS.chotu;
 
 async function readJson(req) {
   const chunks = [];
@@ -22,13 +34,17 @@ async function verifyBearer(req) {
 }
 
 export function validateLoopbackCallback(value) {
-  const url = new URL(String(value || DESKTOP_CALLBACK_URL));
-  if (url.toString() !== DESKTOP_CALLBACK_URL) {
-    const error = new Error('Invalid Chotu Desktop callback URL');
+  const requested = String(value || DEFAULT_DESKTOP_CALLBACK_URL);
+  const url = new URL(requested);
+  const product = Object.keys(DESKTOP_CALLBACK_URLS).find(
+    (name) => DESKTOP_CALLBACK_URLS[name] === url.toString(),
+  );
+  if (!product) {
+    const error = new Error('Invalid desktop callback URL');
     error.statusCode = 400;
     throw error;
   }
-  return url;
+  return { url, product };
 }
 
 export default async function handler(req, res) {
@@ -42,7 +58,7 @@ export default async function handler(req, res) {
     if (!decoded?.uid) return res.status(401).json({ error: 'Sign in required' });
 
     const body = await readJson(req);
-    const callbackUrl = validateLoopbackCallback(body.callbackUrl);
+    const { url: callbackUrl } = validateLoopbackCallback(body.callbackUrl);
     const db = getAdminDb();
     const userRef = db.collection('users').doc(decoded.uid);
     const snapshot = await userRef.collection('subscriptions').doc('chotu').get();

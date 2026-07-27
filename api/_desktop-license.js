@@ -2,6 +2,13 @@ import crypto from 'node:crypto';
 
 const SCHEMA_VERSION = 'chotu.entitlement.v1';
 const ACCOUNT_PRODUCT_ID = 'chotu';
+
+// One account entitles both desktop apps. `product_id` stays singular and stays
+// 'chotu' because every licence ever issued carries it and older builds read only
+// that field; `products` is the list newer builds read, and a Manu build accepts a
+// licence only if it finds itself in here. Selling Manu separately later means
+// deriving this list from the subscription instead of stating it.
+const ACCOUNT_PRODUCT_IDS = ['chotu', 'manu'];
 const OFFER_ID = 'chotu-trial-monthly-2026';
 const DEFAULT_DEVICES_ALLOWED = 3;
 const DESKTOP_LOGIN_TOKEN_SCHEMA = 'chotu.desktop_login_token.v2';
@@ -150,6 +157,7 @@ export function desktopEntitlementFromSubscription(decodedUser, subscription) {
     user_id: stableId('usr', decodedUser.uid || hash),
     email_hash: hash,
     product_id: ACCOUNT_PRODUCT_ID,
+    products: ACCOUNT_PRODUCT_IDS,
     offer_id: subscription?.offerId || OFFER_ID,
     status: entitlementWindow.status,
     perpetual_use: false,
