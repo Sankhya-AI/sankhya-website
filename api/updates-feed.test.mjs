@@ -24,3 +24,24 @@ test('unknown platforms and channels are refused, not guessed', () => {
   assert.equal(parseTarget({ channel: '', platform: 'darwin-arm64' }), null);
   assert.equal(parseTarget({ channel: '../secrets', platform: 'darwin-arm64' }), null);
 });
+
+test('a URL with no product still means Chotu, so shipped installs are unaffected', () => {
+  // Chotu 0.1.x bakes a two-segment path. If the product segment became required,
+  // every install already in customers' hands would stop seeing updates.
+  assert.equal(parseTarget({ channel: 'stable', platform: 'darwin-arm64.json' }).product, 'chotu');
+});
+
+test('Manu is served its own manifest, never Chotu s', () => {
+  // Manu and Chotu are sold separately. Serving Chotu's manifest here would offer
+  // an advocate a build that replaces their app with a different product.
+  const target = parseTarget({ product: 'manu', channel: 'stable', platform: 'darwin-arm64' });
+  assert.equal(target.product, 'manu');
+  assert.equal(target.manifest, 'manu-darwin-arm64.update.json');
+  assert.equal(target.pkg, 'manu-darwin-arm64.zip');
+  assert.equal(target.installer, 'manu-darwin-arm64.dmg');
+});
+
+test('an unknown product is refused rather than falling back to Chotu', () => {
+  assert.equal(parseTarget({ product: 'evil', channel: 'stable', platform: 'darwin-arm64' }), null);
+  assert.equal(parseTarget({ product: '../chotu', channel: 'stable', platform: 'darwin-arm64' }), null);
+});

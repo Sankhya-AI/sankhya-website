@@ -10,6 +10,18 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export const DEFAULT_RELEASE_PREFIX = 'chotu/releases/stable/0.1.0';
 
+// Chotu and Manu are sold separately and their releases live in separate prefixes.
+// The product is derived from the artifact name rather than passed in, so an upload
+// and a later read cannot disagree about where a release lives — the failure this
+// module exists to prevent.
+export const PRODUCTS = ['chotu', 'manu'];
+export const DEFAULT_PRODUCT = 'chotu';
+
+export function productForArtifact(artifact) {
+  const name = String(artifact || '').trim().toLowerCase();
+  return PRODUCTS.find((product) => name.startsWith(`${product}-`)) || DEFAULT_PRODUCT;
+}
+
 export function requireEnv(name) {
   const value = process.env[name]?.trim();
   if (!value) throw new Error(`Missing ${name}`);
@@ -60,12 +72,20 @@ export function r2Client(config) {
   });
 }
 
-export function releasePrefix() {
-  return (process.env.CHOTU_R2_RELEASE_PREFIX || DEFAULT_RELEASE_PREFIX).replace(/^\/+|\/+$/g, '');
+export function releasePrefix(product = DEFAULT_PRODUCT) {
+  // Chotu keeps reading CHOTU_R2_RELEASE_PREFIX, which is already set in the
+  // deployment and is where every shipped 0.1.x install looks.
+  const configured =
+    product === DEFAULT_PRODUCT
+      ? process.env.CHOTU_R2_RELEASE_PREFIX
+      : process.env[`${product.toUpperCase()}_R2_RELEASE_PREFIX`];
+  const fallback =
+    product === DEFAULT_PRODUCT ? DEFAULT_RELEASE_PREFIX : `${product}/releases/stable/0.1.0`;
+  return (configured || fallback).replace(/^\/+|\/+$/g, '');
 }
 
 export function r2KeyForArtifact(artifact) {
-  return `${releasePrefix()}/${artifact}`;
+  return `${releasePrefix(productForArtifact(artifact))}/${artifact}`;
 }
 
 export async function readR2Text(client, config, key) {

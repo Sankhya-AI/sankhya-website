@@ -10,6 +10,8 @@
 // invalidate it.
 
 import {
+  DEFAULT_PRODUCT,
+  PRODUCTS,
   presignArtifactUrl,
   r2Client,
   r2Config,
@@ -20,31 +22,42 @@ import {
 const MANIFEST_SCHEMA = 'chotu.update_manifest.v1';
 const DOWNLOAD_TTL_SECONDS = 3600;
 
-// One manifest per platform, stored next to the artifacts it describes.
-const PLATFORMS = new Map([
-  [
-    'darwin-arm64',
-    { manifest: 'chotu-darwin-arm64.update.json', pkg: 'chotu-darwin-arm64.zip', installer: 'chotu-darwin-arm64.dmg' },
-  ],
-]);
+const PLATFORMS = new Set(['darwin-arm64']);
 
-export function parseTarget({ channel, platform }) {
-  // `/api/updates/stable/darwin-arm64.json` is baked into shipped apps and cannot
-  // be corrected later, so vercel.json rewrites it here explicitly rather than
-  // relying on catch-all params and on a dotted final segment not being treated
-  // as a static file.
+// One manifest per product per platform, stored next to the artifacts it describes.
+// Artifact names carry the product, which is what routes them to the right prefix.
+function artifactsFor(product, platform) {
+  return {
+    manifest: `${product}-${platform}.update.json`,
+    pkg: `${product}-${platform}.zip`,
+    installer: `${product}-${platform}.dmg`,
+  };
+}
+
+export function parseTarget({ product, channel, platform }) {
+  // `/api/updates/stable/darwin-arm64.json` is baked into shipped Chotu apps and
+  // cannot be corrected later, so it keeps working with no product segment and
+  // means Chotu. vercel.json rewrites these explicitly rather than relying on
+  // catch-all params and on a dotted final segment not being treated as a static
+  // file.
+  const productName = String(product || DEFAULT_PRODUCT).trim().toLowerCase();
   const channelName = String(channel || '').trim();
   const platformName = String(platform || '').trim().replace(/\.json$/i, '');
+  if (!PRODUCTS.includes(productName)) return null;
   if (!/^[a-z0-9-]+$/i.test(channelName)) return null;
-  const target = PLATFORMS.get(platformName);
-  if (!target) return null;
-  return { channel: channelName, platform: platformName, ...target };
+  if (!PLATFORMS.has(platformName)) return null;
+  return {
+    product: productName,
+    channel: channelName,
+    platform: platformName,
+    ...artifactsFor(productName, platformName),
+  };
 }
 
 function targetFromRequest(req) {
   const query = req.query || {};
   if (query.channel && query.platform) {
-    return parseTarget({ channel: query.channel, platform: query.platform });
+    return parseTarget({ product: query.product, channel: query.channel, platform: query.platform });
   }
   // Direct hit without the rewrite (or a local run): read the path itself.
   const path = String(req.url || '').split('?')[0];
@@ -52,8 +65,10 @@ function targetFromRequest(req) {
   const index = path.indexOf(marker);
   if (index === -1) return null;
   const parts = path.slice(index + marker.length).split('/').filter(Boolean);
-  if (parts.length !== 2) return null;
-  return parseTarget({ channel: parts[0], platform: parts[1] });
+  // Two segments is the legacy Chotu shape; three names the product explicitly.
+  if (parts.length === 2) return parseTarget({ channel: parts[0], platform: parts[1] });
+  if (parts.length === 3) return parseTarget({ product: parts[0], channel: parts[1], platform: parts[2] });
+  return null;
 }
 
 export default async function handler(req, res) {

@@ -1,70 +1,33 @@
-import { HeadObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-const allowedArtifacts = new Map([
-  ['chotu-darwin-arm64.dmg', 'application/x-apple-diskimage'],
-  ['chotu-darwin-arm64.zip', 'application/zip'],
+// Bucket access, endpoint normalisation and key layout all come from ./_r2.js, the
+// same module the public update feed reads through. They were duplicated here, which
+// meant a Manu upload would have gone to Chotu's prefix while the feed looked for it
+// under Manu's — a release uploaded to one place and read from another.
+import { PRODUCTS, r2Client, r2Config, r2KeyForArtifact, requireEnv } from './_r2.js';
+
+// One entry per product per platform. The names carry the product because the R2
+// prefix is derived from them, which is what keeps Chotu's and Manu's releases from
+// landing on each other.
+const artifactContentTypes = new Map([
+  ['dmg', 'application/x-apple-diskimage'],
+  ['zip', 'application/zip'],
   // The signed update manifest ships with the artifacts it describes, so the
   // public feed can serve a release without a redeploy.
-  ['chotu-darwin-arm64.update.json', 'application/json'],
+  ['update.json', 'application/json'],
 ]);
 
+const allowedArtifacts = new Map(
+  PRODUCTS.flatMap((product) =>
+    [...artifactContentTypes].map(([suffix, contentType]) => [
+      `${product}-darwin-arm64.${suffix}`,
+      contentType,
+    ]),
+  ),
+);
+
 const signedUrlTtlSeconds = 900;
-
-function requireEnv(name) {
-  const value = process.env[name]?.trim();
-  if (!value) throw new Error(`Missing ${name}`);
-  return value;
-}
-
-function normalizeR2EndpointAndBucket(endpoint, bucket) {
-  let normalizedEndpoint = String(endpoint || '').replace(/\/+$/g, '');
-  let normalizedBucket = String(bucket || '').trim();
-  if (!normalizedEndpoint) return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
-
-  const parsed = new URL(normalizedEndpoint);
-  const pathParts = parsed.pathname.split('/').filter(Boolean);
-  if (pathParts.length === 1 && (!normalizedBucket || normalizedBucket === pathParts[0])) {
-    normalizedBucket = pathParts[0];
-    parsed.pathname = '';
-    normalizedEndpoint = parsed.toString().replace(/\/+$/g, '');
-  }
-
-  return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
-}
-
-function r2Config() {
-  const accountId = process.env.CHOTU_R2_ACCOUNT_ID?.trim() || '';
-  const rawEndpoint = (
-    process.env.CHOTU_R2_ENDPOINT?.trim() || (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : '')
-  ).replace(/\/+$/g, '');
-  const normalized = normalizeR2EndpointAndBucket(rawEndpoint, process.env.CHOTU_R2_BUCKET);
-
-  return {
-    endpoint: normalized.endpoint || requireEnv('CHOTU_R2_ENDPOINT'),
-    region: process.env.CHOTU_R2_REGION?.trim() || 'auto',
-    bucket: normalized.bucket || requireEnv('CHOTU_R2_BUCKET'),
-    accessKeyId: requireEnv('CHOTU_R2_ACCESS_KEY_ID'),
-    secretAccessKey: requireEnv('CHOTU_R2_SECRET_ACCESS_KEY'),
-  };
-}
-
-function r2Client(config) {
-  return new S3Client({
-    region: config.region,
-    endpoint: config.endpoint,
-    credentials: {
-      accessKeyId: config.accessKeyId,
-      secretAccessKey: config.secretAccessKey,
-    },
-    forcePathStyle: true,
-  });
-}
-
-function r2KeyForArtifact(artifact) {
-  const prefix = (process.env.CHOTU_R2_RELEASE_PREFIX || 'chotu/releases/stable/0.1.0').replace(/^\/+|\/+$/g, '');
-  return `${prefix}/${artifact}`;
-}
 
 async function readJson(req) {
   const chunks = [];
