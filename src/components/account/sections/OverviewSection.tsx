@@ -26,7 +26,7 @@ export function OverviewSection({ subscription, mode }: { subscription: ChotuSub
       </article>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <AccessTile enabled={subscription.access.localApp} label="Chotu Desktop" value={subscription.access.localApp ? 'Download available' : 'Not included'} />
+        <AccessTile enabled={subscription.access.localApp} label="Desktop apps" value={subscription.access.localApp ? 'Plank + Chotu available' : 'Not included'} />
         <AccessTile enabled={subscription.access.updates} label="Updates" value={subscription.access.updates ? `Included through ${formatDate(subscription.updateUntil)}` : 'Not included'} />
         <AccessTile enabled={subscription.access.support} label="Support" value={subscription.access.support ? 'Included' : 'Not included'} />
         <AccessTile enabled={mode === 'managed' || mode === 'byok'} label="Model connection" value={modelValue} />

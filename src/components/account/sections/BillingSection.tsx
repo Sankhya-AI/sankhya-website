@@ -62,7 +62,7 @@ export function BillingSection({
         <PlanCard active={managed} name="Paid Chotu" description="Includes managed Sankhya Key" price={`₹${CHOTU_MANAGED_PRICE_INR.toLocaleString('en-IN')} / month`}>
           <ul className="mt-5 space-y-1.5 border-t border-[#e1e6ea] pt-4">
             <Feature>Managed monthly model credits</Feature>
-            <Feature>Chotu Desktop, updates, and support</Feature>
+            <Feature>Plank and Chotu Desktop, updates, and support</Feature>
             <Feature>Sankhya Key usage, limits, and top-ups</Feature>
           </ul>
           <Button type="button" onClick={onOpenManagedCheckout} className={`mt-auto w-full justify-center ${managed ? SECONDARY_BUTTON : PRIMARY_BUTTON}`}>
@@ -72,8 +72,8 @@ export function BillingSection({
 
         <PlanCard active={byok} name="Bring your own key" description="Model billing stays with your provider" price="Free">
           <ul className="mt-5 space-y-1.5 border-t border-[#e1e6ea] pt-4">
-            <Feature>Add your provider key inside Chotu</Feature>
-            <Feature>Chotu Desktop, updates, and support</Feature>
+            <Feature>Add your OpenRouter key inside the desktop app</Feature>
+            <Feature>Plank and Chotu Desktop, updates, and support</Feature>
             <Feature>No managed usage or Sankhya Key credits</Feature>
           </ul>
           <Button type="button" variant="outline" onClick={onSelectByok} disabled={planBusy || byok} className={`mt-auto w-full justify-center ${SECONDARY_BUTTON}`}>

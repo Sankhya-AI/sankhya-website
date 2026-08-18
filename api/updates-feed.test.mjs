@@ -41,6 +41,14 @@ test('Manu is served its own manifest, never Chotu s', () => {
   assert.equal(target.installer, 'manu-darwin-arm64.dmg');
 });
 
+test('Plank is served its own release channel, never Chotu s', () => {
+  const target = parseTarget({ product: 'plank', channel: 'stable', platform: 'darwin-arm64' });
+  assert.equal(target.product, 'plank');
+  assert.equal(target.manifest, 'plank-darwin-arm64.update.json');
+  assert.equal(target.pkg, 'plank-darwin-arm64.zip');
+  assert.equal(target.installer, 'plank-darwin-arm64.dmg');
+});
+
 test('an unknown product is refused rather than falling back to Chotu', () => {
   assert.equal(parseTarget({ product: 'evil', channel: 'stable', platform: 'darwin-arm64' }), null);
   assert.equal(parseTarget({ product: '../chotu', channel: 'stable', platform: 'darwin-arm64' }), null);

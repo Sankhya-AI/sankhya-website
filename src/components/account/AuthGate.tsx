@@ -41,7 +41,7 @@ export function SignedOutAuth({
         <div className="text-center">
           <img src="/assets/sankhya-logo.png" alt="" className="mx-auto size-11" />
           <h1 className="chotu-dashboard__title mt-6 text-[34px] leading-none text-[#17202a]">Sign in to Sankhya</h1>
-          <p className="mx-auto mt-3 max-w-sm text-[13.5px] leading-5 text-[#65727d]">Continue with Google to access your Chotu dashboard.</p>
+          <p className="mx-auto mt-3 max-w-sm text-[13.5px] leading-5 text-[#65727d]">Continue with Google to download Plank and manage your Sankhya apps.</p>
         </div>
 
         <section className={`${CARD_CLASS} mt-7`}>

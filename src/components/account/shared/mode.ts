@@ -22,7 +22,7 @@ export type NavigationItem = {
 
 export const ACCOUNT_NAVIGATION: NavigationItem[] = [
   { path: 'overview', label: 'Overview', icon: Gauge },
-  { path: 'desktop', label: 'Chotu Desktop', icon: Laptop },
+  { path: 'desktop', label: 'Desktop apps', icon: Laptop },
   { path: 'models', label: 'Your models', icon: Boxes },
   { path: 'sankhya-key', label: 'Sankhya Key', icon: KeyRound },
   { path: 'billing', label: 'Plan & billing', icon: ReceiptText },
@@ -32,8 +32,8 @@ export const ACCOUNT_NAVIGATION: NavigationItem[] = [
 export const MODE_COPY: Record<ReadyMode, { label: string; title: string; detail: string; tone: 'ready' | 'attention' | 'neutral' }> = {
   'choose-plan': {
     label: 'Choose access',
-    title: 'Choose how Chotu connects to models',
-    detail: 'Use managed Sankhya Key access or connect your own provider key inside Chotu.',
+    title: 'Choose how your apps connect to models',
+    detail: 'Use managed Sankhya Key access or connect your own OpenRouter key inside the desktop app.',
     tone: 'attention',
   },
   pending: {
@@ -44,19 +44,19 @@ export const MODE_COPY: Record<ReadyMode, { label: string; title: string; detail
   },
   local: {
     label: 'Desktop access',
-    title: 'Chotu Desktop is available',
-    detail: 'Your current entitlement includes the local app. Choose a model connection when you are ready.',
+    title: 'Your desktop apps are available',
+    detail: 'Your current entitlement includes Plank and Chotu. Choose a model connection when you are ready.',
     tone: 'neutral',
   },
   byok: {
     label: 'Own key active',
-    title: 'Chotu is ready for your provider key',
-    detail: 'Desktop access, updates, and support are active. Add your provider key in Chotu Settings.',
+    title: 'Plank is ready for your OpenRouter key',
+    detail: 'Desktop access and updates are active. Add your OpenRouter key in Plank Settings.',
     tone: 'ready',
   },
   managed: {
     label: 'Paid Chotu active',
-    title: 'Chotu and Sankhya Key are ready',
+    title: 'Your desktop apps and Sankhya Key are ready',
     detail: 'Managed model access, monthly credits, updates, and support follow this account.',
     tone: 'ready',
   },

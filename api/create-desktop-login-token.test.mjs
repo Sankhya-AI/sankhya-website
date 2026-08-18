@@ -15,6 +15,10 @@ test('each desktop app is recognised by the loopback port its hub listens on', (
   const manu = validateLoopbackCallback('http://127.0.0.1:8787/v1/auth/browser-callback');
   assert.equal(manu.url.toString(), 'http://127.0.0.1:8787/v1/auth/browser-callback');
   assert.equal(manu.product, 'manu');
+
+  const plank = validateLoopbackCallback('http://127.0.0.1:9797/v1/auth/browser-callback');
+  assert.equal(plank.url.toString(), 'http://127.0.0.1:9797/v1/auth/browser-callback');
+  assert.equal(plank.product, 'plank');
 });
 
 
@@ -26,8 +30,10 @@ test('an app that names no callback is Chotu, as every shipped build has been', 
 for (const callback of [
   'http://127.0.0.1:7778/v1/auth/browser-callback',
   'http://127.0.0.1:8788/v1/auth/browser-callback',
+  'http://127.0.0.1:9798/v1/auth/browser-callback',
   'http://localhost:7777/v1/auth/browser-callback',
   'http://localhost:8787/v1/auth/browser-callback',
+  'http://localhost:9797/v1/auth/browser-callback',
   'http://127.0.0.1:7777/v1/auth/browser-callback?license_token=secret',
   'http://127.0.0.1:8787/v1/auth/browser-callback?license_token=secret',
   'http://127.0.0.1:7777/v1/auth/browser-callback#secret',

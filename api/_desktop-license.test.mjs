@@ -83,6 +83,7 @@ test('desktop sign-in entitlement targets the Chotu account product', () => {
     undefined,
   );
   assert.equal(entitlement.product_id, 'chotu');
+  assert.deepEqual(entitlement.products, ['chotu', 'manu', 'plank']);
 });
 
 test('managed desktop login fails closed until its scoped key is active', () => {

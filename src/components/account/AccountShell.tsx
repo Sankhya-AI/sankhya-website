@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import type { User } from 'firebase/auth';
 import { NavLink } from 'react-router';
 import { UserRound } from 'lucide-react';
-import { ChotuOrb } from '@/components/ChotuOrb';
 import { ROUTES } from '@/content/site';
 import { ACCOUNT_NAVIGATION, MODE_COPY, type ReadyMode } from './shared/mode';
 import { AccountNotice } from './shared/primitives';
@@ -13,10 +12,10 @@ function DashboardNavigation() {
       <div className="hidden border-b border-[#e1e6ea] px-5 py-6 lg:block">
         <p className="text-[12px] font-semibold text-[#111820]">Account</p>
         <div className="mt-3 flex items-center gap-3">
-          <ChotuOrb size="sm" />
+          <img src="/assets/plank-icon.svg" alt="" className="size-9" width="36" height="36" />
           <div>
-            <p className="text-[13px] font-semibold text-[#1f2933]">Chotu</p>
-            <p className="mt-0.5 text-[11px] text-[#6b7782]">Control center</p>
+            <p className="text-[13px] font-semibold text-[#1f2933]">Sankhya</p>
+            <p className="mt-0.5 text-[11px] text-[#6b7782]">Product control center</p>
           </div>
         </div>
       </div>
@@ -52,7 +51,7 @@ function PageHeader({ user, mode, profileName }: { user: User; mode: ReadyMode; 
     <header className="flex flex-col justify-between gap-5 border-b border-[#e1e6ea] pb-[18px] sm:flex-row sm:items-end">
       <div>
         <h1 className="chotu-dashboard__title text-[clamp(28px,3vw,36px)] leading-none text-[#17202a]">Account</h1>
-        <p className="mt-2 text-[13.5px] leading-5 text-[#65727d]">Manage Chotu Desktop, Sankhya Key usage, billing, and personal information.</p>
+        <p className="mt-2 text-[13.5px] leading-5 text-[#65727d]">Download Plank and Chotu, manage model access, and review your account.</p>
       </div>
       <div className="flex items-center gap-3">
         {user.photoURL ? (

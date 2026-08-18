@@ -10,11 +10,12 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export const DEFAULT_RELEASE_PREFIX = 'chotu/releases/stable/0.1.0';
 
-// Chotu and Manu are sold separately and their releases live in separate prefixes.
+// Chotu, Manu and Plank are sold separately and their releases live in separate
+// prefixes. `plank-darwin-arm64.dmg` resolves by its `plank-` prefix.
 // The product is derived from the artifact name rather than passed in, so an upload
 // and a later read cannot disagree about where a release lives — the failure this
 // module exists to prevent.
-export const PRODUCTS = ['chotu', 'manu'];
+export const PRODUCTS = ['chotu', 'manu', 'plank'];
 export const DEFAULT_PRODUCT = 'chotu';
 
 export function productForArtifact(artifact) {

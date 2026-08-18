@@ -1,83 +1,20 @@
 import crypto from 'node:crypto';
-import { GetObjectCommand, HeadObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { admin, getAdminDb, requireEnv } from '../_firebase-admin.js';
+import {
+  normalizeR2EndpointAndBucket,
+  r2Client,
+  r2Config,
+  r2KeyForArtifact,
+} from '../_r2.js';
 
 const artifactBlobNames = new Map([
   ['chotu-darwin-arm64.dmg', 'chotu-darwin-arm64.dmg'],
+  ['plank-darwin-arm64.dmg', 'plank-darwin-arm64.dmg'],
   ['chotu-windows-x64.zip', 'chotu-windows-x64.zip'],
   ['chotu-win32-x64.zip', 'chotu-windows-x64.zip'],
 ]);
-
-let cachedR2Client = null;
-let cachedR2ClientKey = '';
-
-function normalizeR2EndpointAndBucket(endpoint, bucket) {
-  let normalizedEndpoint = String(endpoint || '').replace(/\/+$/g, '');
-  let normalizedBucket = String(bucket || '').trim();
-  if (!normalizedEndpoint) return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
-
-  try {
-    const parsed = new URL(normalizedEndpoint);
-    const pathParts = parsed.pathname.split('/').filter(Boolean);
-    if (pathParts.length === 1 && (!normalizedBucket || normalizedBucket === pathParts[0])) {
-      normalizedBucket = pathParts[0];
-      parsed.pathname = '';
-      normalizedEndpoint = parsed.toString().replace(/\/+$/g, '');
-    }
-  } catch {
-    return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
-  }
-
-  return { endpoint: normalizedEndpoint, bucket: normalizedBucket };
-}
-
-function r2Config() {
-  const accountId = String(process.env.CHOTU_R2_ACCOUNT_ID || '').trim();
-  const rawEndpoint = String(
-    process.env.CHOTU_R2_ENDPOINT || (accountId ? `https://${accountId}.r2.cloudflarestorage.com` : '')
-  ).replace(/\/+$/g, '');
-  const normalized = normalizeR2EndpointAndBucket(rawEndpoint, process.env.CHOTU_R2_BUCKET);
-  const config = {
-    endpoint: normalized.endpoint,
-    region: String(process.env.CHOTU_R2_REGION || 'auto').trim() || 'auto',
-    bucket: normalized.bucket,
-    accessKeyId: String(process.env.CHOTU_R2_ACCESS_KEY_ID || '').trim(),
-    secretAccessKey: String(process.env.CHOTU_R2_SECRET_ACCESS_KEY || '').trim(),
-  };
-  const missing = Object.entries(config)
-    .filter(([_key, value]) => !value)
-    .map(([key]) => key);
-  if (missing.length) {
-    throw new Error(`Missing Cloudflare R2 download configuration: ${missing.join(', ')}`);
-  }
-  return config;
-}
-
-function r2Client(config) {
-  const clientKey = JSON.stringify({
-    endpoint: config.endpoint,
-    region: config.region,
-    accessKeyId: config.accessKeyId,
-  });
-  if (cachedR2Client && cachedR2ClientKey === clientKey) return cachedR2Client;
-  cachedR2ClientKey = clientKey;
-  cachedR2Client = new S3Client({
-    region: config.region,
-    endpoint: config.endpoint,
-    credentials: {
-      accessKeyId: config.accessKeyId,
-      secretAccessKey: config.secretAccessKey,
-    },
-    forcePathStyle: true,
-  });
-  return cachedR2Client;
-}
-
-function r2KeyForArtifact(artifact) {
-  const prefix = (process.env.CHOTU_R2_RELEASE_PREFIX || 'chotu/releases/stable/0.1.0').replace(/^\/+|\/+$/g, '');
-  return `${prefix}/${artifactBlobNames.get(artifact)}`;
-}
 
 function contentTypeForArtifact(artifact) {
   return artifact.endsWith('.dmg') ? 'application/x-apple-diskimage' : 'application/zip';
@@ -91,7 +28,7 @@ function signedUrlTtlSeconds() {
 
 export const __private = {
   normalizeR2EndpointAndBucket,
-  r2KeyForArtifact,
+  r2KeyForArtifact: (artifact) => r2KeyForArtifact(artifactBlobNames.get(artifact)),
   signedUrlTtlSeconds,
 };
 
@@ -177,7 +114,7 @@ export default async function handler(req, res) {
     }
 
     const config = r2Config();
-    const key = r2KeyForArtifact(artifact);
+    const key = r2KeyForArtifact(artifactBlobNames.get(artifact));
     const client = r2Client(config);
 
     try {

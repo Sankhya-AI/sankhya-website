@@ -3,12 +3,18 @@ import crypto from 'node:crypto';
 const SCHEMA_VERSION = 'chotu.entitlement.v1';
 const ACCOUNT_PRODUCT_ID = 'chotu';
 
-// One account entitles both desktop apps. `product_id` stays singular and stays
+// One account entitles the desktop apps. `product_id` stays singular and stays
 // 'chotu' because every licence ever issued carries it and older builds read only
-// that field; `products` is the list newer builds read, and a Manu build accepts a
-// licence only if it finds itself in here. Selling Manu separately later means
-// deriving this list from the subscription instead of stating it.
-const ACCOUNT_PRODUCT_IDS = ['chotu', 'manu'];
+// that field; `products` is the list newer builds read, and a Manu or Plank build
+// accepts a licence only if it finds itself in here.
+//
+// PRICING NOTE, deliberately loud: adding 'plank' here entitles **every existing
+// subscriber** to the student tutor, because this list is stated rather than
+// derived. That is right for today — it is what makes a Plank build sign in at
+// all — and wrong the day Plank is sold on its own, which is the stated plan.
+// Selling it separately means deriving this list from the subscription, exactly
+// as the original note said about Manu. Until then, one purchase opens all three.
+const ACCOUNT_PRODUCT_IDS = ['chotu', 'manu', 'plank'];
 const OFFER_ID = 'chotu-trial-monthly-2026';
 const DEFAULT_DEVICES_ALLOWED = 3;
 const DESKTOP_LOGIN_TOKEN_SCHEMA = 'chotu.desktop_login_token.v2';

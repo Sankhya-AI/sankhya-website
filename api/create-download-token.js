@@ -4,6 +4,7 @@ import { admin, getAdminAuth, getAdminDb, requireEnv } from './_firebase-admin.j
 
 const allowedArtifacts = new Set([
   'chotu-darwin-arm64.dmg',
+  'plank-darwin-arm64.dmg',
   'chotu-windows-x64.zip',
   'chotu-win32-x64.zip',
 ]);
@@ -45,7 +46,7 @@ export default async function handler(req, res) {
     const subscription = snapshot.data();
     const entitlementWindow = desktopEntitlementWindow(subscription);
     if (!entitlementWindow?.downloadEnabled) {
-      return res.status(403).json({ error: 'Active Chotu plan or launch trial required for downloads' });
+      return res.status(403).json({ error: 'Choose the free Bring-your-own-key plan before downloading' });
     }
 
     const jti = crypto.randomUUID();

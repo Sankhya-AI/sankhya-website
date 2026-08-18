@@ -45,17 +45,17 @@ export function Footer() {
 
           <div className="border-t border-white/14 pt-5 sm:col-span-2 lg:col-span-1 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
             <p className="font-bit text-3xl leading-[1.05] text-[#f8ead8]">
-              Remember.<br />Act.<br />Reason.
+              Learn.<br />Remember.<br />Build.
             </p>
             <p className="mt-5 max-w-[310px] text-sm leading-6 text-white/48">
-              Memory, personal agents, and models you build yourself — from Sankhya AI Labs.
+              Plank, Dhee, and the local agent infrastructure behind personalised learning — from Sankhya AI Labs.
             </p>
           </div>
         </div>
 
         <div className="mt-auto flex flex-col gap-3 border-t border-white/10 pt-6 font-mono text-[10px] uppercase tracking-[0.08em] text-white/38 md:flex-row md:items-center md:justify-between">
           <span>© 2026 Sankhya AI Labs</span>
-          <span>Remember. Act. Reason.</span>
+          <span>AI infrastructure for personalised learning.</span>
         </div>
       </div>
     </footer>

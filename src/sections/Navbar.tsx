@@ -113,7 +113,11 @@ export function Navbar() {
     : 'text-[#5e5953] hover:text-[#171411]';
   const menuSurface =
     'border-[#b9b0a4] bg-[#f6efe5] text-[#171411] shadow-[0_24px_80px_rgba(20,16,13,0.3)]';
-  const productRouteActive = location.pathname === ROUTES.chotu || location.pathname === ROUTES.models;
+  const productRouteActive =
+    location.pathname === ROUTES.chotu ||
+    location.pathname === ROUTES.models ||
+    (location.pathname === ROUTES.home && location.hash === '#plank');
+  const plankDownloadRoute = `${ROUTES.account}/desktop?intent=get-plank`;
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
@@ -188,14 +192,14 @@ export function Navbar() {
             })}
 
             <Link
-              to={`${ROUTES.account}?intent=get-chotu`}
+              to={plankDownloadRoute}
               className={`ml-2 inline-flex h-9 items-center border px-4 font-mono text-[11px] font-bold uppercase tracking-[0.06em] transition-colors ${
                 inverted
                   ? 'border-[#f8ead8]/50 text-[#f8ead8] hover:bg-white/10'
                   : 'border-[#171411] bg-[#171411] text-[#f8ead8] hover:bg-[#302a25]'
               }`}
             >
-              Get Chotu
+              Download Plank
             </Link>
           </div>
 
@@ -230,11 +234,11 @@ export function Navbar() {
                 );
               })}
               <Link
-                to={`${ROUTES.account}?intent=get-chotu`}
+                to={plankDownloadRoute}
                 onClick={() => setMenuOpen(false)}
                 className="mt-4 inline-flex h-11 items-center justify-center bg-[#cf5a32] px-5 font-mono text-xs font-bold uppercase tracking-[0.06em] text-white"
               >
-                Get Chotu
+                Download Plank · Free
               </Link>
             </div>
           </div>

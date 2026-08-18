@@ -5,9 +5,9 @@ import {
 } from './_desktop-license.js';
 import { getAdminAuth, getAdminDb } from './_firebase-admin.js';
 
-// One account, two desktop apps. Each build runs its hub on its own loopback port —
-// Chotu on 7777, Manu on 8787 — so the callback the app asks us to post the licence
-// back to is how we know which app is signing in.
+// One account, three desktop apps. Each build runs its hub on its own loopback
+// port — Chotu on 7777, Manu on 8787, Plank on 9797 — so the callback the app
+// asks us to post the licence back to is how we know which app is signing in.
 //
 // This stays an exact-match allowlist rather than "any loopback port": the licence
 // token, and the account's managed key with it, is delivered to whatever URL is named
@@ -15,6 +15,12 @@ import { getAdminAuth, getAdminDb } from './_firebase-admin.js';
 const DESKTOP_CALLBACK_URLS = {
   chotu: 'http://127.0.0.1:7777/v1/auth/browser-callback',
   manu: 'http://127.0.0.1:8787/v1/auth/browser-callback',
+  // Plank is Chotu's runtime sold to students, with the tutor on top. Its port
+  // must be listed here or sign-in fails with "Invalid desktop callback URL" —
+  // which is exactly what a fresh Plank install did, because the allowlist is
+  // deliberately exact-match: a port this table does not know is a port we do
+  // not hand a licence and a managed key to.
+  plank: 'http://127.0.0.1:9797/v1/auth/browser-callback',
 };
 
 const DEFAULT_DESKTOP_CALLBACK_URL = DESKTOP_CALLBACK_URLS.chotu;

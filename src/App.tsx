@@ -5,7 +5,7 @@ import { PixelDither } from '@/components/PixelDither';
 import { Seo } from '@/components/Seo';
 import { DITHER_PRESETS, ROUTE_SEO, ROUTES } from '@/content/site';
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo';
-import { ChotuProof } from '@/sections/ChotuProof';
+import { PlankProof } from '@/sections/PlankProof';
 import { CompanyClose } from '@/sections/CompanyClose';
 import { Footer } from '@/sections/Footer';
 import { Hero } from '@/sections/Hero';
@@ -43,7 +43,7 @@ function HomePage() {
       <Seo {...ROUTE_SEO.home} jsonLd={[organizationJsonLd(), websiteJsonLd()]} />
       <Hero />
       <Systems />
-      <ChotuProof />
+      <PlankProof />
       <ModelsResearch />
       <CompanyClose />
       <div aria-hidden="true" className="pointer-events-none relative -mb-px h-32 overflow-hidden bg-[#e6dfd5] md:h-52">

@@ -40,10 +40,10 @@ export function Systems() {
       <div className="mx-auto max-w-[1540px] px-5 py-20 md:px-8 md:py-28 lg:px-10">
         <div className="grid gap-8 border-b border-[#bcb5aa] pb-10 md:grid-cols-[220px_minmax(0,840px)] md:items-end md:justify-between">
           <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-[#8a4a32]">
-            01 / Systems by Sankhya
+            01 / The learning stack
           </p>
           <h2 className="text-balance font-bit text-[clamp(2.7rem,5vw,5.5rem)] leading-[0.94] tracking-[-0.02em]">
-            Three layers. One compounding system.
+            One learning agent. Two layers underneath.
           </h2>
         </div>
 
@@ -93,6 +93,10 @@ export function Systems() {
           ))}
           <span aria-hidden="true" className="system-signal absolute bottom-0 h-0.5 w-24 bg-[#f06a3d]" />
         </div>
+        <p className="mt-6 max-w-4xl text-[15px] leading-7 text-[#6e675f]">
+          Plank is the product students use. Dhee is its memory of the learner. Chotu is the local personal and coding
+          agent infrastructure that lets Plank see, read, and build safely on the student&apos;s computer.
+        </p>
       </div>
     </section>
   );

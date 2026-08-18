@@ -12,7 +12,7 @@ import { PersonalInfoSection } from '@/components/account/sections/PersonalInfoS
 import { SankhyaKeySection } from '@/components/account/sections/SankhyaKeySection';
 import { Seo } from '@/components/Seo';
 import { ROUTE_SEO } from '@/content/site';
-import { CHOTU_SUPPORTED_PLATFORM } from '@/config/chotu';
+import { type DesktopProduct, type DesktopProductId } from '@/config/chotu';
 import { ensureCustomerProfile, updateCustomerDisplayName } from '@/lib/customer';
 import {
   buildCheckoutUrl,
@@ -38,13 +38,14 @@ export function AccountPage() {
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [planBusy, setPlanBusy] = useState(false);
-  const [downloadBusy, setDownloadBusy] = useState(false);
+  const [downloadBusy, setDownloadBusy] = useState<DesktopProductId | null>(null);
   const [profileName, setProfileName] = useState('');
   const [profileBusy, setProfileBusy] = useState(false);
   const desktopRedirectStarted = useRef(false);
   const managedKeyPreparationStarted = useRef(false);
   const getChotuAuthStarted = useRef(false);
-  const getChotuIntent = new URLSearchParams(location.search).get('intent') === 'get-chotu';
+  const productIntent = new URLSearchParams(location.search).get('intent');
+  const getDesktopProductIntent = productIntent === 'get-chotu' || productIntent === 'get-plank';
   const desktopLoginRequested = useMemo(() => new URLSearchParams(window.location.search).get('desktop_login') === '1', []);
   const desktopCallbackUrl = useMemo(
     () => new URLSearchParams(window.location.search).get('callback') || 'http://127.0.0.1:7777/v1/auth/browser-callback',
@@ -185,10 +186,10 @@ export function AccountPage() {
   }, []);
 
   useEffect(() => {
-    if (!authResolved || user || !getChotuIntent || getChotuAuthStarted.current) return;
+    if (!authResolved || user || !getDesktopProductIntent || getChotuAuthStarted.current) return;
     getChotuAuthStarted.current = true;
     void handleGoogleAuth();
-  }, [authResolved, getChotuIntent, handleGoogleAuth, user]);
+  }, [authResolved, getDesktopProductIntent, handleGoogleAuth, user]);
 
   const handleStartSubscription = async () => {
     try {
@@ -209,7 +210,7 @@ export function AccountPage() {
     try {
       await selectByokPlan(user);
       setSubscription(await fetchChotuSubscription(user));
-      setMessage('Free Bring-your-own-key plan is active. Download Chotu, then add your own model key in Settings.');
+      setMessage('Free Bring-your-own-key plan is active. Download Plank, then add your OpenRouter key in Settings.');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Could not select the free plan.');
     } finally {
@@ -229,13 +230,13 @@ export function AccountPage() {
     }
   };
 
-  const handleDownload = async () => {
+  const handleDownload = async (product: DesktopProduct) => {
     if (!user) {
-      setMessage('Sign in first, then Chotu can create a private one-use download link.');
+      setMessage(`Sign in first, then ${product.name} can create a private one-use download link.`);
       return;
     }
 
-    setDownloadBusy(true);
+    setDownloadBusy(product.id);
     setMessage('');
 
     try {
@@ -246,19 +247,19 @@ export function AccountPage() {
           Authorization: `Bearer ${idToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ artifact: CHOTU_SUPPORTED_PLATFORM.artifact }),
+        body: JSON.stringify({ artifact: product.artifact }),
       });
       const body = (await response.json().catch(() => ({}))) as { error?: string; url?: string };
       if (!response.ok || !body.url) {
-        throw new Error(body.error ?? 'Active plan or launch trial required before downloading Chotu.');
+        throw new Error(body.error ?? `Active plan or launch trial required before downloading ${product.name}.`);
       }
 
       setMessage('Opening a one-use download link. If it expires before the download starts, click Download again.');
       window.location.href = body.url;
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : 'Could not create the download link.');
+      setMessage(error instanceof Error ? error.message : `Could not create the ${product.name} download link.`);
     } finally {
-      setDownloadBusy(false);
+      setDownloadBusy(null);
     }
   };
 
@@ -298,7 +299,7 @@ export function AccountPage() {
             <Route path="overview" element={<OverviewSection subscription={subscription} mode={mode} />} />
             <Route
               path="desktop"
-              element={<DesktopSection downloadBusy={downloadBusy} onDownload={() => void handleDownload()} />}
+              element={<DesktopSection downloadBusy={downloadBusy} onDownload={(product) => void handleDownload(product)} />}
             />
             <Route path="models" element={<ModelsSection mode={mode} />} />
             <Route

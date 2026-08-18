@@ -58,7 +58,7 @@ export default async function handler(req, res) {
       const patch = {
         status: 'active',
         plan: 'byok',
-        entitlement: 'Bring your own key: local Chotu app, updates, and support. No managed credits.',
+        entitlement: 'Bring your own key: local Plank and Chotu apps, updates, and support. No managed credits.',
         billingMode: 'byok',
         updateUntil: addDaysIso(3650),
         currentPeriodEnd: null,

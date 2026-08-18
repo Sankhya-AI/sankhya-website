@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Plank">
+  <defs>
+    <linearGradient id="silver" x1="206" y1="229" x2="788" y2="803" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fdf1e6"/>
+      <stop offset="0.42" stop-color="#f3d3b4"/>
+      <stop offset="0.78" stop-color="#e3a473"/>
+      <stop offset="1" stop-color="#c9743d"/>
+    </linearGradient>
+    <radialGradient id="silverLift" cx="454" cy="366" r="426" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.92"/>
+      <stop offset="0.48" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="maskFill" x1="302" y1="377" x2="702" y2="598" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#070808"/>
+      <stop offset="0.48" stop-color="#171412"/>
+      <stop offset="1" stop-color="#040303"/>
+    </linearGradient>
+    <radialGradient id="maskLift" cx="512" cy="511" r="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="0.43" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="eye" cx="52%" cy="48%" r="70%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.98"/>
+      <stop offset="0.56" stop-color="#fbeadb" stop-opacity="0.96"/>
+      <stop offset="1" stop-color="#e0b48c" stop-opacity="0.92"/>
+    </radialGradient>
+    <filter id="orbShadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="48" stdDeviation="52" flood-color="#18202e" flood-opacity="0.26"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="28" flood-color="#96aac8" flood-opacity="0.18"/>
+    </filter>
+    <filter id="maskShadow" x="-18%" y="-22%" width="136%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#000000" flood-opacity="0.38"/>
+    </filter>
+    <filter id="eyeGlow" x="-40%" y="-50%" width="180%" height="200%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#ffffff" flood-opacity="0.18"/>
+    </filter>
+    <clipPath id="orbClip">
+      <path d="M262 232H782L872 372L822 712L692 792L252 752L152 632V332Z"/>
+    </clipPath>
+  </defs>
+  <g filter="url(#orbShadow)">
+    <g clip-path="url(#orbClip)">
+      <path d="M262 232H782L872 372L822 712L692 792L252 752L152 632V332Z" fill="url(#silver)"/>
+      <path d="M152 232H872V792H152Z" fill="url(#silverLift)"/>
+      <path d="M152 620H872V792H152Z" fill="#788494" opacity="0.28"/>
+    </g>
+    <path d="M262 232H782L872 372L822 712L692 792L252 752L152 632V332Z" fill="none" stroke="#ffffff" stroke-opacity="0.72" stroke-width="12" stroke-linejoin="round"/>
+    <path d="M262 232H782L872 372L822 712L692 792L252 752L152 632V332Z" fill="none" stroke="#788494" stroke-opacity="0.36" stroke-width="4" stroke-linejoin="round"/>
+    <rect x="202" y="302" width="620" height="420" rx="180" fill="#070909" fill-opacity="0.42" stroke="#ffffff" stroke-opacity="0.16" stroke-width="12"/>
+    <path d="M202 512c0-116 112-190 310-190s310 74 310 190c0 128-102 210-310 210s-310-82-310-210Z" fill="#070909" fill-opacity="0.1"/>
+    <g filter="url(#maskShadow)">
+      <path d="M222 519L292 420L437 377L512 420L587 377L732 420L802 519L698 598L547 585L512 538L477 585L326 598Z" fill="url(#maskFill)"/>
+      <path d="M222 519L292 420L437 377L512 420L587 377L732 420L802 519L698 598L547 585L512 538L477 585L326 598Z" fill="url(#maskLift)"/>
+      <path d="M222 519L292 420L437 377L512 420L587 377L732 420L802 519L698 598L547 585L512 538L477 585L326 598Z" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="10" stroke-linejoin="round"/>
+      <path d="M360 427H664" fill="none" stroke="#ffffff" stroke-opacity="0.24" stroke-width="8" stroke-linecap="round"/>
+      <path d="M342 529L396 482L522 499L490 556L385 567Z" fill="url(#eye)" filter="url(#eyeGlow)"/>
+      <path d="M502 499L628 482L682 529L639 567L534 556Z" fill="url(#eye)" filter="url(#eyeGlow)"/>
+    </g>
+  </g>
+</svg>

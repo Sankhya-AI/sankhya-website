@@ -2,6 +2,7 @@ import type { PixelDitherProps } from '@/components/PixelDither';
 
 export const ROUTES = {
   home: '/',
+  plank: '/#plank',
   chotu: '/chotu',
   models: '/models',
   pricing: '/pricing',
@@ -10,6 +11,7 @@ export const ROUTES = {
   privacy: '/privacy',
   company: '/#company',
   systems: '/#systems',
+  learning: '/#learning',
 } as const;
 
 export const EXTERNAL_ROUTES = {
@@ -27,10 +29,10 @@ export const PRODUCT_STATUS_LABELS = {
 } as const satisfies Record<ProductStatus, string>;
 
 export type ProductDefinition = {
-  id: 'dhee' | 'chotu' | 'models';
+  id: 'plank' | 'dhee' | 'chotu';
   name: string;
   role: string;
-  systemAction: 'Remember' | 'Act' | 'Reason';
+  systemAction: 'Learn' | 'Remember' | 'Act';
   status: ProductStatus;
   qualifier: string;
   summary: string;
@@ -42,6 +44,20 @@ export type ProductDefinition = {
 
 export const PRODUCTS = [
   {
+    id: 'plank',
+    name: 'Plank',
+    role: 'Learning agent',
+    systemAction: 'Learn',
+    status: 'available',
+    qualifier: 'Free for Mac',
+    summary:
+      'A tutor that learns your course, sees where you are stuck, and turns every session into understanding you can prove.',
+    href: `${ROUTES.account}/desktop?intent=get-plank`,
+    external: false,
+    actionLabel: 'Download Plank',
+    tickerLabel: 'Plank · Free with your OpenRouter key',
+  },
+  {
     id: 'dhee',
     name: 'Dhee',
     role: 'Memory layer',
@@ -49,7 +65,7 @@ export const PRODUCTS = [
     status: 'available',
     qualifier: 'Open source',
     summary:
-      'The memory runtime that gives agents the right context before, during, and after work.',
+      'The learning memory that keeps track of what a student understands, where they struggle, and what should come next.',
     href: EXTERNAL_ROUTES.dhee,
     external: true,
     actionLabel: 'Explore Dhee',
@@ -58,32 +74,15 @@ export const PRODUCTS = [
   {
     id: 'chotu',
     name: 'Chotu',
-    role: 'Personal agent',
+    role: 'Agent infrastructure',
     systemAction: 'Act',
     status: 'early-access',
-    qualifier: 'Mac (Apple silicon)',
-    summary: 'A local-first personal AI for the work already on your screen.',
+    qualifier: 'Personal + coding agent',
+    summary: 'The local personal and coding agent Plank uses to see the screen, work with files, and build inside a safe workspace.',
     href: ROUTES.chotu,
     external: false,
     actionLabel: 'Meet Chotu',
-    tickerLabel: 'Chotu · Early access for Mac',
-  },
-  {
-    id: 'models',
-    // Named, not described: people arrive from a post that says "Model Kitchen"
-    // and need to see that exact phrase to know they are in the right place.
-    // "Sankhya Models" rides alongside as the family, so both names resolve.
-    name: 'Model Kitchen',
-    role: 'Sankhya Models',
-    systemAction: 'Reason',
-    status: 'early-access',
-    qualifier: 'Build your own',
-    summary:
-      'Open-model APIs plus a stronger agent harness — reasoning, routing, and verification — so they punch above their weight.',
-    href: ROUTES.models,
-    external: false,
-    actionLabel: 'Open the kitchen',
-    tickerLabel: 'Model Kitchen · Build your own',
+    tickerLabel: 'Chotu · Agent infrastructure inside Plank',
   },
 ] as const satisfies readonly ProductDefinition[];
 
@@ -318,13 +317,13 @@ export type RouteSeo = {
 
 export const ROUTE_SEO = {
   home: {
-    title: 'Sankhya AI Labs — AI systems that remember, act, and reason',
+    title: 'Plank — Personalised learning, built for every student',
     description:
-      'Sankhya AI Labs builds Dhee memory, the Chotu personal agent, and Model Kitchen — open-model APIs with a stronger agent harness, so they punch above their weight.',
+      'Plank is a learning agent that learns your course, remembers where you struggle with Dhee, and teaches through the local Chotu agent infrastructure. Free for Mac with your OpenRouter key.',
     path: ROUTES.home,
-    image: '/assets/sankhya-ghats-hero.png',
-    imageAlt: 'Sankhya AI Labs building connected memory, agent, and model systems',
-    keywords: ['Sankhya AI Labs', 'Dhee memory', 'Chotu AI', 'build your own AI model', 'model orchestration'],
+    image: '/og.png',
+    imageAlt: 'Plank, the personalised learning agent from Sankhya AI Labs',
+    keywords: ['Plank learning agent', 'personalised AI tutor', 'AI for learning', 'Dhee memory', 'Chotu AI', 'OpenRouter BYOK'],
   },
   chotu: {
     title: 'Chotu — Your computer, finally personal',
@@ -392,8 +391,8 @@ export const ROUTE_SEO = {
 
 export const PRIMARY_NAV = [
   { label: 'Products', kind: 'products' },
+  { label: 'How it learns', kind: 'link', href: ROUTES.learning },
   { label: 'Research', kind: 'link', href: ROUTES.research },
-  { label: 'Company', kind: 'link', href: ROUTES.company },
   { label: 'Account', kind: 'link', href: ROUTES.account },
 ] as const;
 
@@ -401,9 +400,9 @@ export const FOOTER_GROUPS = [
   {
     label: 'Products',
     links: [
+      { label: 'Plank', href: ROUTES.plank },
       { label: 'Dhee', href: EXTERNAL_ROUTES.dhee },
       { label: 'Chotu', href: ROUTES.chotu },
-      { label: 'Model Kitchen', href: ROUTES.models },
     ],
   },
   {
@@ -411,6 +410,7 @@ export const FOOTER_GROUPS = [
     links: [
       { label: 'Research & Notes', href: ROUTES.research },
       { label: 'Dhee on GitHub', href: EXTERNAL_ROUTES.dheeGithub },
+      { label: 'Model Kitchen', href: ROUTES.models },
     ],
   },
   {

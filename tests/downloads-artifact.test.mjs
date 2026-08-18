@@ -5,6 +5,7 @@ import { __private } from '../api/downloads/[artifact].js';
 
 beforeEach(() => {
   delete process.env.CHOTU_R2_RELEASE_PREFIX;
+  delete process.env.PLANK_R2_RELEASE_PREFIX;
   delete process.env.CHOTU_R2_SIGNED_URL_TTL_SECONDS;
 });
 
@@ -31,6 +32,20 @@ test('download route keeps the existing release artifact keys', () => {
   assert.equal(
     __private.r2KeyForArtifact('chotu-win32-x64.zip'),
     'chotu/releases/stable/0.1.0/chotu-windows-x64.zip'
+  );
+});
+
+test('Plank downloads resolve under Plank without changing Chotu s prefix', () => {
+  process.env.CHOTU_R2_RELEASE_PREFIX = 'chotu/releases/stable/0.1.0';
+  process.env.PLANK_R2_RELEASE_PREFIX = 'plank/releases/stable/0.1.0';
+
+  assert.equal(
+    __private.r2KeyForArtifact('plank-darwin-arm64.dmg'),
+    'plank/releases/stable/0.1.0/plank-darwin-arm64.dmg'
+  );
+  assert.equal(
+    __private.r2KeyForArtifact('chotu-darwin-arm64.dmg'),
+    'chotu/releases/stable/0.1.0/chotu-darwin-arm64.dmg'
   );
 });
 
